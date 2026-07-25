@@ -1,0 +1,138 @@
+/* ==========================================================================
+   SHIFT — Design tokens
+   Single source of truth for colour, type, space, motion.
+   Nothing below this file should contain a raw hex value.
+   ========================================================================== */
+
+:root {
+  /* --- Colour: bone / graphite / steel ---------------------------------- */
+  --c-paper:      #F7F5F1;   /* lightest surface — cards on bone           */
+  --c-base:       #EFEDE8;   /* page background — warm off-white           */
+  --c-sunk:       #E5E2DA;   /* recessed panels, alternating bands         */
+  --c-line:       #D5D1C7;   /* hairlines, grid rules                      */
+  --c-line-soft:  #E2DED5;   /* barely-there rules                         */
+
+  --c-ink:        #17191A;   /* primary type, the logo                     */
+  --c-ink-2:      #3D4144;   /* secondary type                             */
+  --c-muted:      #7C7A73;   /* tertiary type, captions (4.6:1 on base)    */
+
+  --c-accent:     #3C5A6E;   /* muted steel blue — the only colour         */
+  --c-accent-lo:  #E6EAEE;   /* accent tint surface                        */
+  --c-accent-hi:  #4E7189;   /* accent hover / lifted                      */
+
+  --c-on-ink:     #F7F5F1;   /* type on graphite                           */
+  --c-on-accent:  #FFFFFF;
+
+  --c-danger:     #9E3B33;
+  --c-ok:         #3F6B52;
+
+  /* Focus ring — must survive both themes */
+  --c-focus:      #3C5A6E;
+
+  /* --- Type ------------------------------------------------------------- */
+  --f-sans: "Archivo", "Zen Kaku Gothic New", -apple-system, BlinkMacSystemFont,
+            "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Fluid scale. Ratio ~1.28 at the small end, opens up on desktop.
+     Japanese is set smaller than Latin at every display size: the glyphs are
+     full-width and far denser, so matching the Latin size overwhelms the
+     column and forces the headline to wrap. See the override in base.css. */
+  --t-display: clamp(2.75rem, 1rem + 5.6vw, 5.5rem);
+  --t-h1:      clamp(2.2rem,  1.3rem + 3.4vw, 3.9rem);
+  --t-h2:      clamp(1.7rem,  1.25rem + 1.9vw, 2.75rem);
+  --t-h3:      clamp(1.3rem,  1.1rem + 0.9vw, 1.9rem);
+  --t-lead:    clamp(1.06rem, 0.99rem + 0.4vw, 1.32rem);
+  --t-body:    clamp(1rem,    0.97rem + 0.15vw, 1.09rem);
+  --t-small:   0.875rem;
+  --t-label:   0.6875rem;
+
+  --lh-tight: 1.02;
+  --lh-head:  1.12;
+  --lh-body:  1.72;
+
+  --tr-label: 0.2em;   /* mono label tracking */
+  --tr-tight: -0.025em;
+
+  /* --- Space (4 / 8 rhythm) --------------------------------------------- */
+  --s-1: 0.25rem;  --s-2: 0.5rem;   --s-3: 0.75rem;  --s-4: 1rem;
+  --s-5: 1.5rem;   --s-6: 2rem;     --s-7: 3rem;     --s-8: 4rem;
+  --s-9: 6rem;     --s-10: 8rem;
+
+  --gutter:  clamp(1.25rem, 4vw, 3rem);
+  --section: clamp(4.5rem, 9vw, 9rem);
+  --maxw:    82.5rem;   /* 1320px */
+  --maxw-text: 38rem;   /* ~65-75ch */
+
+  --radius:    2px;     /* Swiss: near-square. The logo is the only curve.  */
+  --radius-lg: 3px;
+  --hair: 1px;
+
+  /* --- Motion ----------------------------------------------------------- */
+  /* One rhythm across the whole site. Mechanical, never floaty. */
+  --e-shift: cubic-bezier(0.16, 1, 0.30, 1);      /* snap into place       */
+  --e-mech:  cubic-bezier(0.76, 0, 0.24, 1);      /* gear turn, in-out     */
+  --e-out:   cubic-bezier(0.33, 1, 0.68, 1);      /* generic exit          */
+
+  --d-micro: 180ms;   /* hover, focus, press          */
+  --d-comp:  320ms;   /* component state change       */
+  --d-sect:  620ms;   /* section reveal               */
+  --d-page:  440ms;   /* page transition panel sweep  */
+
+  --stagger: 55ms;
+
+  /* --- Layering --------------------------------------------------------- */
+  --z-gear: 0;
+  --z-body: 1;
+  --z-header: 40;
+  --z-menu: 60;
+  --z-wipe: 90;
+}
+
+/* --------------------------------------------------------------------------
+   Dark scheme. Not an inversion — a re-tuned slate palette with the accent
+   lifted so it still clears 4.5:1. Follows the OS unless the user overrides.
+   -------------------------------------------------------------------------- */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --c-paper:     #24282B;
+    --c-base:      #1B1E20;
+    --c-sunk:      #16191A;
+    --c-line:      #333A3E;
+    --c-line-soft: #272C2F;
+
+    --c-ink:       #E8E5DE;
+    --c-ink-2:     #C2BFB8;
+    --c-muted:     #918D85;
+
+    --c-accent:    #8FB3CA;
+    --c-accent-lo: #232C33;
+    --c-accent-hi: #A8C6D9;
+
+    --c-on-ink:    #17191A;
+    --c-on-accent: #12171A;
+
+    --c-danger:    #D98A82;
+    --c-ok:        #86B79A;
+    --c-focus:     #8FB3CA;
+  }
+}
+
+:root[data-theme="dark"] {
+  --c-paper:     #24282B;
+  --c-base:      #1B1E20;
+  --c-sunk:      #16191A;
+  --c-line:      #333A3E;
+  --c-line-soft: #272C2F;
+  --c-ink:       #E8E5DE;
+  --c-ink-2:     #C2BFB8;
+  --c-muted:     #918D85;
+  --c-accent:    #8FB3CA;
+  --c-accent-lo: #232C33;
+  --c-accent-hi: #A8C6D9;
+  --c-on-ink:    #17191A;
+  --c-on-accent: #12171A;
+  --c-danger:    #D98A82;
+  --c-ok:        #86B79A;
+  --c-focus:     #8FB3CA;
+}

@@ -1,0 +1,270 @@
+/* ==========================================================================
+   SHIFT — Motion
+   One idea, applied at every scale: things move by discrete offsets and lock
+   into place. Mechanical, never floaty. Only transform and opacity animate.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Reveal on scroll. Content arrives from below behind a clip, so it reads as
+   a panel sliding up into its slot rather than a fade.
+   -------------------------------------------------------------------------- */
+[data-reveal] {
+  --rv-y: 24px;
+  opacity: 0;
+  transform: translate3d(0, var(--rv-y), 0);
+  transition: opacity var(--d-sect) linear,
+              transform var(--d-sect) var(--e-shift);
+  transition-delay: calc(var(--i, 0) * var(--stagger));
+  will-change: transform, opacity;
+}
+[data-reveal].is-in { opacity: 1; transform: translate3d(0, 0, 0); will-change: auto; }
+
+[data-reveal="left"]  { --rv-y: 0; transform: translate3d(-28px, 0, 0); }
+[data-reveal="right"] { --rv-y: 0; transform: translate3d(28px, 0, 0); }
+[data-reveal="scale"] { transform: translate3d(0, var(--rv-y), 0) scale(0.985); }
+[data-reveal="scale"].is-in { transform: none; }
+
+/* Masked line reveal — used on headlines. Each line is its own clipped row,
+   so the type shifts up out of a hard edge. Works for Latin and Japanese
+   because the split is by line, not by word. */
+.reveal-lines { display: grid; }
+.reveal-lines > span { display: block; overflow: hidden; padding-block-end: 0.08em; margin-block-end: -0.08em; }
+.reveal-lines > span > span {
+  display: block;
+  transform: translateY(105%);
+  transition: transform var(--d-sect) var(--e-shift);
+  transition-delay: calc(var(--i, 0) * 70ms);
+}
+.reveal-lines.is-in > span > span { transform: translateY(0); }
+
+/* --------------------------------------------------------------------------
+   Scroll displacement. Columns travel at different rates and converge to
+   alignment as the section reaches the middle of the viewport — panels
+   sliding into register. `--p` is written by motion.js (-1 → 1).
+   -------------------------------------------------------------------------- */
+[data-shift] {
+  transform: translate3d(0, calc(var(--p, 0) * var(--shift-amp, 40px)), 0);
+  will-change: transform;
+}
+
+/* --------------------------------------------------------------------------
+   The gear. Two counter-rotating chevron rings, barely visible, bound to
+   scroll position. It is the only decorative element on the site and it is
+   deliberately almost invisible.
+   -------------------------------------------------------------------------- */
+/* On a phone the viewport is the gear's whole world, so it sits mostly
+   off-canvas and fainter — it should register as texture, never as an object
+   competing with the type. */
+.gear {
+  position: fixed;
+  inset-block-start: 50%;
+  inset-inline-end: -46vw;
+  inline-size: 92vw;
+  aspect-ratio: 1;
+  translate: 0 -50%;
+  z-index: var(--z-gear);
+  pointer-events: none;
+  color: var(--c-ink);
+  opacity: 0.035;
+}
+@media (min-width: 62em) {
+  .gear { inset-inline-end: -14vmax; inline-size: 54vmax; opacity: 0.045; }
+}
+.gear__ring {
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+  transform: rotate(var(--gear-a, 0deg));
+}
+.gear__ring--2 { transform: rotate(calc(var(--gear-a, 0deg) * -1.7)); opacity: 0.75; }
+
+/* --------------------------------------------------------------------------
+   Hero puzzle grid.
+   A sliding-tile board. One slot stays empty; tiles move into it — on a slow
+   timer, and on click. Positions are set by puzzle.js as --tx / --ty in cell
+   units, so the browser only ever animates a transform.
+   -------------------------------------------------------------------------- */
+/* Twelve cells at every size — the board itself shifts orientation at the
+   breakpoint, 3x4 on a phone and 4x3 on a desktop. */
+.board {
+  --cols: 3; --rows: 4;
+  --gap: 8px;
+  position: relative;
+  inline-size: 100%;
+  aspect-ratio: var(--cols) / var(--rows);
+}
+@media (min-width: 48em) { .board { --cols: 4; --rows: 3; --gap: 10px; } }
+
+.tile {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: calc((100% - (var(--cols) - 1) * var(--gap)) / var(--cols));
+  block-size: calc((100% - (var(--rows) - 1) * var(--gap)) / var(--rows));
+  transform: translate3d(
+    calc(var(--tx, 0) * (100% + var(--gap))),
+    calc(var(--ty, 0) * (100% + var(--gap))),
+    0);
+  display: grid;
+  place-content: center;
+  background: var(--c-paper);
+  border: var(--hair) solid var(--c-line);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  opacity: 1;
+  transition: transform 560ms var(--e-mech),
+              opacity 400ms linear,
+              border-color var(--d-comp) linear,
+              background-color var(--d-comp) linear;
+  will-change: transform;
+}
+
+/* Entrance: tiles sit low and dim, then lock into the board one after
+   another. Once settled, the stagger is dropped so every later move is
+   immediate. */
+.board:not(.is-ready) .tile {
+  opacity: 0;
+  transform: translate3d(
+    calc(var(--tx, 0) * (100% + var(--gap))),
+    calc(var(--ty, 0) * (100% + var(--gap)) + 44px),
+    0);
+}
+.board.is-ready .tile { transition-delay: calc(var(--i, 0) * 45ms); }
+.board.is-settled .tile { transition-delay: 0ms; }
+
+.tile__mark {
+  font-family: var(--f-mono);
+  font-size: clamp(1rem, 3.2vw, 1.6rem);
+  color: var(--c-on-accent);
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity var(--d-comp) linear, transform var(--d-comp) var(--e-shift);
+  user-select: none;
+}
+
+/* Textural tiles — chevron rows and a dot grid, both drawn in CSS.
+   The repeating gradient tiles itself; giving it a background-size as well
+   would crop each repeat and turn the pattern into a dense moiré. */
+.tile--chev {
+  background-image: repeating-linear-gradient(
+    -45deg, transparent 0 9px, var(--c-line) 9px 10px);
+}
+.tile--dots {
+  background-image: radial-gradient(var(--c-line) 1.2px, transparent 1.2px);
+  background-size: 14px 14px;
+}
+/* The six tiles that make up the chevron. Declared after the textures, and
+   with two classes, so it wins over whatever pattern the tile was given —
+   which tiles form the arrow changes with the board's orientation. */
+.tile.tile--accent {
+  background-color: var(--c-accent);
+  background-image: none;
+  border-color: var(--c-accent);
+}
+.tile--accent .tile__mark { opacity: 0.9; transform: translateX(0); }
+
+/* A tile next to the free cell invites the click. */
+.tile.can-move { cursor: pointer; }
+.tile.can-move:hover { border-color: var(--c-accent); }
+.tile--accent.can-move:hover { border-color: var(--c-ink); }
+
+/* The empty slot, marked so the board reads as a mechanism with one free cell. */
+.slot {
+  position: absolute;
+  inline-size: calc((100% - (var(--cols) - 1) * var(--gap)) / var(--cols));
+  block-size: calc((100% - (var(--rows) - 1) * var(--gap)) / var(--rows));
+  transform: translate3d(calc(var(--tx,0) * (100% + var(--gap))), calc(var(--ty,0) * (100% + var(--gap))), 0);
+  border: var(--hair) dashed var(--c-line);
+  border-radius: var(--radius-lg);
+  transition: transform 620ms var(--e-mech);
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Page transition. Vertical panels sweep across, staggered, on leave — and
+   clear the other way on arrival. Same displacement idea at full-screen size.
+   -------------------------------------------------------------------------- */
+.wipe {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-wipe);
+  display: grid;
+  grid-template-columns: repeat(var(--panels, 6), 1fr);
+  pointer-events: none;
+  visibility: hidden;
+}
+.wipe__panel {
+  background: var(--c-ink);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform var(--d-page) var(--e-mech);
+  transition-delay: calc(var(--i) * 30ms);
+}
+/* Leaving: panels grow down and cover. */
+[data-wipe="out"] .wipe { visibility: visible; }
+[data-wipe="out"] .wipe__panel { transform: scaleY(1); }
+/* Arriving: panels start covered and clear upward. */
+[data-wipe="in"] .wipe { visibility: visible; }
+[data-wipe="in"] .wipe__panel { transform: scaleY(1); transform-origin: bottom; transition: none; }
+[data-wipe="in-run"] .wipe { visibility: visible; }
+[data-wipe="in-run"] .wipe__panel { transform: scaleY(0); transform-origin: bottom; }
+
+/* --------------------------------------------------------------------------
+   Marquee — a continuous horizontal shift. Duplicated track, translated by
+   exactly -50% so the loop is seamless.
+   -------------------------------------------------------------------------- */
+.marquee { overflow: hidden; border-block: var(--hair) solid var(--c-line); padding-block: var(--s-4); }
+.marquee__track {
+  display: flex;
+  inline-size: max-content;
+  gap: var(--s-6);
+  animation: marquee 42s linear infinite;
+}
+.marquee:hover .marquee__track { animation-play-state: paused; }
+.marquee__item {
+  display: inline-flex; align-items: center; gap: var(--s-6);
+  font-family: var(--f-mono); font-size: var(--t-label);
+  letter-spacing: var(--tr-label); text-transform: uppercase;
+  color: var(--c-muted); white-space: nowrap;
+}
+.marquee__item::after { content: "»"; color: var(--c-accent); }
+@keyframes marquee { to { transform: translateX(-50%); } }
+
+/* --------------------------------------------------------------------------
+   Counters — figures roll up when the block enters the viewport.
+   -------------------------------------------------------------------------- */
+.stat { display: grid; gap: var(--s-2); }
+.stat__n {
+  font-family: var(--f-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(2.25rem, 5vw, 3.75rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+.stat__k { font-size: var(--t-small); color: var(--c-muted); }
+
+/* ==========================================================================
+   Reduced motion.
+   Everything still arrives and every state is still legible — it just stops
+   travelling. The puzzle holds a solved board, the gear stops, the wipe is
+   skipped entirely (handled in JS).
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  [data-reveal] { opacity: 1; transform: none; }
+  [data-shift] { transform: none; }
+  .reveal-lines > span > span { transform: none; }
+  .board:not(.is-ready) .tile { opacity: 1; }
+  .marquee__track { animation: none; }
+  .gear { display: none; }
+  .wipe { display: none; }
+}

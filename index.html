@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="ja" data-lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title data-title-ja="SHIFT合同会社 — いまのやり方を、次のかたちへ。" data-title-en="SHIFT GK — Shift the way it gets done.">SHIFT合同会社 — いまのやり方を、次のかたちへ。</title>
+<meta name="description" content="SHIFT合同会社は東京を拠点に、事業運営・ブランド・仕組みづくりを担う持株会社です。自社事業を育て、その運営で得た仕組みをクライアントの現場に持ち込みます。">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="./index.html">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..112,300..700&family=IBM+Plex+Mono:wght@400;500&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/motion.css">
+
+<script>
+/* Apply the saved language before first paint so nothing flashes. */
+(function(){try{if(localStorage.getItem('shift-lang')==='en'){var d=document.documentElement;d.setAttribute('data-lang','en');d.setAttribute('lang','en');}}catch(e){}})();
+</script>
+</head>
+
+<body>
+<a class="skip" href="#main"><span class="ja">本文へスキップ</span><span class="en">Skip to content</span></a>
+
+<!-- Page transition panels -->
+<div class="wipe" aria-hidden="true" style="--panels:6">
+  <div class="wipe__panel" style="--i:0"></div>
+  <div class="wipe__panel" style="--i:1"></div>
+  <div class="wipe__panel" style="--i:2"></div>
+  <div class="wipe__panel" style="--i:3"></div>
+  <div class="wipe__panel" style="--i:4"></div>
+  <div class="wipe__panel" style="--i:5"></div>
+</div>
+
+<!-- The gear: concentric rings bound to scroll position -->
+<svg class="gear" data-gear viewBox="0 0 400 400" aria-hidden="true" focusable="false">
+  <g class="gear__ring" fill="none" stroke="currentColor">
+    <circle cx="200" cy="200" r="196" stroke-width="1"/>
+    <circle cx="200" cy="200" r="188" stroke-width="14" stroke-dasharray="2 9.83"/>
+    <circle cx="200" cy="200" r="180" stroke-width="1"/>
+    <circle cx="200" cy="200" r="140" stroke-width="1"/>
+  </g>
+  <g class="gear__ring gear__ring--2" fill="none" stroke="currentColor">
+    <circle cx="200" cy="200" r="104" stroke-width="1"/>
+    <circle cx="200" cy="200" r="97" stroke-width="12" stroke-dasharray="2 8.9"/>
+    <circle cx="200" cy="200" r="90" stroke-width="1"/>
+    <circle cx="200" cy="200" r="34" stroke-width="1"/>
+  </g>
+</svg>
+
+<!-- ====================================================================== -->
+<!-- Header                                                                  -->
+<!-- ====================================================================== -->
+<header class="header" data-header>
+  <div class="wrap header__inner">
+    <a class="header__brand" href="index.html" aria-label="SHIFT合同会社 — ホーム">
+      <span class="logo logo--header" role="img" aria-label="SHIFT"></span>
+    </a>
+
+    <nav class="rail" data-rail aria-label="メインナビゲーション">
+      <span class="rail__block" aria-hidden="true"></span>
+      <span class="rail__chev" aria-hidden="true">»</span>
+      <a class="rail__link" href="index.html" aria-current="page"><span class="ja">ホーム</span><span class="en">Home</span></a>
+      <a class="rail__link" href="services.html"><span class="ja">サービス</span><span class="en">Services</span></a>
+      <a class="rail__link" href="ventures.html"><span class="ja">事業・ブランド</span><span class="en">Ventures</span></a>
+      <a class="rail__link" href="about.html"><span class="ja">会社概要</span><span class="en">About</span></a>
+    </nav>
+
+    <div class="header__actions">
+      <div class="lang" role="group" aria-label="言語 / Language">
+        <span class="lang__thumb" aria-hidden="true"></span>
+        <button class="lang__btn" type="button" data-lang-btn="ja" aria-pressed="true">JA</button>
+        <button class="lang__btn" type="button" data-lang-btn="en" aria-pressed="false">EN</button>
+      </div>
+
+      <a class="btn btn--sm" href="contact.html" data-desk-cta>
+        <span class="btn__roll">
+          <span><span class="ja">お問い合わせ</span><span class="en">Contact</span></span>
+          <span><span class="ja">お問い合わせ</span><span class="en">Contact</span></span>
+        </span>
+        <span class="btn__chev" aria-hidden="true">»</span>
+      </a>
+
+      <button class="burger" type="button" data-burger aria-expanded="false" aria-controls="menu" aria-label="メニュー">
+        <span class="burger__bar"></span>
+        <span class="burger__bar"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile menu -->
+<div class="menu" id="menu" data-menu-panel>
+  <div class="wrap">
+    <span class="label label--bare"><span class="ja">メニュー</span><span class="en">Menu</span></span>
+  </div>
+  <nav class="wrap menu__list" aria-label="モバイルナビゲーション">
+    <div class="menu__item"><a class="menu__link" href="index.html" style="--i:0" aria-current="page"><span><span class="ja">ホーム</span><span class="en">Home</span></span><span class="num">01</span></a></div>
+    <div class="menu__item"><a class="menu__link" href="services.html" style="--i:1"><span><span class="ja">サービス</span><span class="en">Services</span></span><span class="num">02</span></a></div>
+    <div class="menu__item"><a class="menu__link" href="ventures.html" style="--i:2"><span><span class="ja">事業・ブランド</span><span class="en">Ventures</span></span><span class="num">03</span></a></div>
+    <div class="menu__item"><a class="menu__link" href="about.html" style="--i:3"><span><span class="ja">会社概要</span><span class="en">About</span></span><span class="num">04</span></a></div>
+    <div class="menu__item"><a class="menu__link" href="contact.html" style="--i:4"><span><span class="ja">お問い合わせ</span><span class="en">Contact</span></span><span class="num">05</span></a></div>
+  </nav>
+  <div class="wrap menu__foot">
+    <span class="label label--bare">TOKYO, JAPAN</span>
+    <a class="link" href="mailto:admin@shiftgk.com">admin@shiftgk.com</a>
+  </div>
+</div>
+
+<main id="main">
+
+<!-- ====================================================================== -->
+<!-- Hero                                                                    -->
+<!-- ====================================================================== -->
+<section class="section hero" style="padding-block-start: clamp(7rem, 16vw, 11rem)">
+  <div class="wrap grid">
+
+    <div class="col-6 stack flow-lg" style="align-content:center">
+      <span class="label" data-reveal style="--i:0">
+        <span class="ja">合同会社 SHIFT ／ 東京</span><span class="en">SHIFT GK &mdash; Tokyo</span>
+      </span>
+
+      <h1 class="t-display reveal-lines">
+        <span><span><span class="ja">いまのやり方を、</span><span class="en">Shift the way</span></span></span>
+        <span><span><span class="ja">次のかたちへ。</span><span class="en">it gets done.</span></span></span>
+      </h1>
+
+      <p class="t-lead" data-reveal style="--i:3">
+        <span class="ja">東京を拠点に、事業運営・ブランド・仕組みづくりを担う持株会社です。自社の事業を育てながら、その運営で得た仕組みをそのままクライアントの現場に持ち込みます。</span>
+        <span class="en">A Tokyo holding company for operations, brand, and systems. We build and run our own ventures, then bring the systems that actually work into our clients' businesses.</span>
+      </p>
+
+      <div class="row" data-reveal style="--i:4">
+        <a class="btn" href="contact.html">
+          <span class="btn__roll">
+            <span><span class="ja">相談する</span><span class="en">Start a conversation</span></span>
+            <span><span class="ja">相談する</span><span class="en">Start a conversation</span></span>
+          </span>
+          <span class="btn__chev" aria-hidden="true">»</span>
+        </a>
+        <a class="btn btn--ghost" href="services.html">
+          <span class="btn__roll">
+            <span><span class="ja">サービスを見る</span><span class="en">What we do</span></span>
+            <span><span class="ja">サービスを見る</span><span class="en">What we do</span></span>
+          </span>
+          <span class="btn__chev" aria-hidden="true">»</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- The board. Decorative: it says the same thing the headline does. -->
+    <div class="col-5 start-8" style="align-self:center">
+      <div class="board" data-board aria-hidden="true">
+        <div class="slot"></div>
+        <div class="tile tile--chev"><span class="tile__mark">›</span></div>
+        <div class="tile tile--dots"><span class="tile__mark">›</span></div>
+        <div class="tile"><span class="tile__mark">›</span></div>
+        <div class="tile tile--chev"><span class="tile__mark">›</span></div>
+        <div class="tile"><span class="tile__mark">›</span></div>
+        <div class="tile tile--dots"><span class="tile__mark">›</span></div>
+        <div class="tile"><span class="tile__mark">›</span></div>
+        <div class="tile tile--chev"><span class="tile__mark">›</span></div>
+        <div class="tile tile--dots"><span class="tile__mark">›</span></div>
+        <div class="tile"><span class="tile__mark">›</span></div>
+        <div class="tile tile--chev"><span class="tile__mark">›</span></div>
+      </div>
+      <p class="t-small muted" style="margin-block-start:var(--s-4); text-align:right" data-reveal>
+        <span class="ja">タイルをクリックすると崩れます。数秒で整い直します。</span>
+        <span class="en">Click a tile to disturb it. It reorganises itself.</span>
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- Capability strip -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee__track">
+    <span class="marquee__item">Brand Operations</span>
+    <span class="marquee__item">ブランド運営</span>
+    <span class="marquee__item">Design &amp; Production</span>
+    <span class="marquee__item">デザイン・制作</span>
+    <span class="marquee__item">Systems &amp; Automation</span>
+    <span class="marquee__item">仕組み化・自動化</span>
+    <span class="marquee__item">Hospitality Operations</span>
+    <span class="marquee__item">ホスピタリティ運営</span>
+    <span class="marquee__item">Brand Operations</span>
+    <span class="marquee__item">ブランド運営</span>
+    <span class="marquee__item">Design &amp; Production</span>
+    <span class="marquee__item">デザイン・制作</span>
+    <span class="marquee__item">Systems &amp; Automation</span>
+    <span class="marquee__item">仕組み化・自動化</span>
+    <span class="marquee__item">Hospitality Operations</span>
+    <span class="marquee__item">ホスピタリティ運営</span>
+  </div>
+</div>
+
+<!-- ====================================================================== -->
+<!-- About SHIFT                                                             -->
+<!-- ==== GUTO: this is the block you said you'd still think about.     ==== -->
+<!-- ==== Replace the two paragraphs below with your own words.         ==== -->
+<!-- ====================================================================== -->
+<section class="section" id="about-shift">
+  <div class="wrap grid">
+    <div class="col-4" data-shift="-30">
+      <span class="label" data-reveal><span class="ja">01 ／ SHIFTについて</span><span class="en">01 &mdash; About SHIFT</span></span>
+    </div>
+
+    <div class="col-7 start-6 stack flow-lg" data-shift="30">
+      <h2 class="t-h2 reveal-lines">
+        <span><span><span class="ja">名前が、そのまま</span><span class="en">The name is</span></span></span>
+        <span><span><span class="ja">仕事の内容です。</span><span class="en">the job description.</span></span></span>
+      </h2>
+
+      <p class="t-lead" data-reveal>
+        <span class="ja">SHIFT とは、いまやっていることを、より速く、より賢いかたちへ動かすこと。作業を増やすのではなく、置き換えます。手で回していたものを仕組みに、その場しのぎを再現できる形に。</span>
+        <span class="en">SHIFT means moving what you already do into a faster, smarter shape. Not adding work &mdash; replacing it. What was handled by hand becomes a system; what was improvised becomes repeatable.</span>
+      </p>
+
+      <p class="t-body ink-2" data-reveal>
+        <span class="ja">〔このセクションはプレースホルダーです。会社の考え方をご自身の言葉に差し替えてください。〕</span>
+        <span class="en">[Placeholder. Replace this paragraph with the company's own words.]</span>
+      </p>
+
+      <div data-reveal>
+        <a class="link" href="about.html">
+          <span class="ja">会社概要を見る</span><span class="en">Read about the company</span>
+          <span class="link__chev" aria-hidden="true">»</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================================== -->
+<!-- Services                                                                -->
+<!-- ====================================================================== -->
+<section class="section section--sunk">
+  <div class="wrap stack flow-lg">
+    <div class="grid" style="align-items:end">
+      <div class="col-6 head">
+        <span class="label" data-reveal><span class="ja">02 ／ サービス</span><span class="en">02 &mdash; Services</span></span>
+        <h2 class="t-h2 head__title reveal-lines">
+          <span><span><span class="ja">請けるのは、</span><span class="en">We take on the</span></span></span>
+          <span><span><span class="ja">運営そのもの。</span><span class="en">running of things.</span></span></span>
+        </h2>
+      </div>
+      <div class="col-5 start-8" data-reveal>
+        <p class="t-body ink-2">
+          <span class="ja">単発の制作ではなく、毎月続く業務を引き受けます。引き受けたあと、その業務自体を減らします。</span>
+          <span class="en">Not one-off deliverables &mdash; the work that comes back every month. And once we have it, we make there be less of it.</span>
+        </p>
+      </div>
+    </div>
+
+    <div style="margin-block-start:var(--s-6)">
+      <article class="spec" data-reveal>
+        <div class="spec__n">01</div>
+        <h3 class="spec__title">
+          <span class="ja">ブランド運営</span><span class="en">Brand operations</span>
+          <span class="chev" aria-hidden="true">»</span>
+        </h3>
+        <div class="spec__body">
+          <span class="ja">アカウントを丸ごと預かります。計画、取引先とのやり取り、進行管理、月次報告まで。ブランド側の窓口が一つで済む状態をつくります。</span>
+          <span class="en">We hold the account end to end: planning, partner communication, scheduling, and the monthly reporting. The brand deals with one point of contact instead of five.</span>
+          <div class="spec__tags"><span class="tag">Planning</span><span class="tag">Partner comms</span><span class="tag">Reporting</span></div>
+        </div>
+      </article>
+
+      <article class="spec" data-reveal>
+        <div class="spec__n">02</div>
+        <h3 class="spec__title">
+          <span class="ja">デザイン・制作</span><span class="en">Design &amp; production</span>
+          <span class="chev" aria-hidden="true">»</span>
+        </h3>
+        <div class="spec__body">
+          <span class="ja">アイデンティティ、印刷物、メニュー、キャンペーン素材、デジタル。日本語と英語の両方で、実際に現場で使われる形まで仕上げます。</span>
+          <span class="en">Identity, print, menus, campaign assets, digital. Produced in Japanese and English, and finished to the state where it actually gets used on the floor.</span>
+          <div class="spec__tags"><span class="tag">Identity</span><span class="tag">Print</span><span class="tag">Bilingual</span></div>
+        </div>
+      </article>
+
+      <article class="spec" data-reveal>
+        <div class="spec__n">03</div>
+        <h3 class="spec__title">
+          <span class="ja">仕組み化・自動化</span><span class="en">Systems &amp; automation</span>
+          <span class="chev" aria-hidden="true">»</span>
+        </h3>
+        <div class="spec__body">
+          <span class="ja">毎月くり返している手作業を、再現できる仕組みに置き換えます。請求、レポート、データ整理。人が判断すべきところだけを人に残します。</span>
+          <span class="en">The manual work that repeats every month becomes a repeatable system: invoicing, reporting, data handling. What is left for a person is only what needs judgement.</span>
+          <div class="spec__tags"><span class="tag">Invoicing</span><span class="tag">Reporting</span><span class="tag">Data</span></div>
+        </div>
+      </article>
+
+      <article class="spec" data-reveal>
+        <div class="spec__n">04</div>
+        <h3 class="spec__title">
+          <span class="ja">ホスピタリティ運営</span><span class="en">Hospitality operations</span>
+          <span class="chev" aria-hidden="true">»</span>
+        </h3>
+        <div class="spec__body">
+          <span class="ja">ナイトライフと接客の現場運営。VIP対応、ゲストプログラム、スタッフのシフトと当日の進行まで、現場に立った経験から組み立てます。</span>
+          <span class="en">Nightlife and guest-facing operations: VIP handling, guest programmes, staffing and the running of the night itself &mdash; built by someone who has worked the floor.</span>
+          <div class="spec__tags"><span class="tag">VIP</span><span class="tag">Guest programmes</span><span class="tag">Staffing</span></div>
+        </div>
+      </article>
+    </div>
+
+    <div data-reveal>
+      <a class="link" href="services.html">
+        <span class="ja">サービスの詳細</span><span class="en">Services in detail</span>
+        <span class="link__chev" aria-hidden="true">»</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================================== -->
+<!-- Ventures                                                                -->
+<!-- ====================================================================== -->
+<section class="section">
+  <div class="wrap stack flow-lg">
+    <div class="grid" style="align-items:end">
+      <div class="col-6 head">
+        <span class="label" data-reveal><span class="ja">03 ／ 事業・ブランド</span><span class="en">03 &mdash; Ventures</span></span>
+        <h2 class="t-h2 head__title reveal-lines">
+          <span><span><span class="ja">自分たちでも</span><span class="en">We run the</span></span></span>
+          <span><span><span class="ja">回しています。</span><span class="en">work ourselves.</span></span></span>
+        </h2>
+      </div>
+      <div class="col-5 start-8" data-reveal>
+        <p class="t-body ink-2">
+          <span class="ja">SHIFTが所有し、自分たちで運営しているブランド。クライアントに薦める仕組みは、まずここで動かしています。</span>
+          <span class="en">The brands SHIFT owns and runs. Anything we recommend to a client is already running here first.</span>
+        </p>
+      </div>
+    </div>
+
+    <div class="bento" style="margin-block-start:var(--s-6)" data-reveal-group>
+      <div class="bento__item bento__item--wide">
+        <article class="venture">
+          <div class="venture__top">
+            <h3 class="venture__name">MONEZY</h3>
+            <span class="venture__role"><span class="ja">自社事業</span><span class="en">Own venture</span></span>
+          </div>
+          <p class="venture__desc">
+            <span class="ja">日本で暮らす人のためのパーソナルファイナンス・プロダクト。SHIFTが単独で開発しています。</span>
+            <span class="en">A personal finance product for people living in Japan. Built in-house.</span>
+          </p>
+          <div class="venture__foot">
+            <span class="venture__meta">PRODUCT / IN DEVELOPMENT</span>
+            <span class="venture__chev" aria-hidden="true">»</span>
+          </div>
+        </article>
+      </div>
+
+      <div class="bento__item bento__item--wide">
+        <article class="venture">
+          <div class="venture__top">
+            <h3 class="venture__name">NINJA TYO</h3>
+            <span class="venture__role"><span class="ja">自社事業</span><span class="en">Own venture</span></span>
+          </div>
+          <p class="venture__desc">
+            <span class="ja">東京発のアパレルブランド。企画から生産、販売までを自社で持っています。</span>
+            <span class="en">A Tokyo clothing brand, held end to end from design through production and sale.</span>
+          </p>
+          <div class="venture__foot">
+            <span class="venture__meta">APPAREL / TOKYO</span>
+            <span class="venture__chev" aria-hidden="true">»</span>
+          </div>
+        </article>
+      </div>
+
+      <!-- GUTO: add another business by copying one .bento__item block. -->
+    </div>
+
+    <div data-reveal>
+      <a class="link" href="ventures.html">
+        <span class="ja">すべての事業を見る</span><span class="en">See every venture</span>
+        <span class="link__chev" aria-hidden="true">»</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================================== -->
+<!-- Approach                                                                -->
+<!-- ====================================================================== -->
+<section class="section section--sunk">
+  <div class="wrap grid">
+    <div class="col-5" data-shift="-24">
+      <div class="head">
+        <span class="label" data-reveal><span class="ja">04 ／ 進め方</span><span class="en">04 &mdash; Approach</span></span>
+        <h2 class="t-h2 head__title reveal-lines">
+          <span><span><span class="ja">三手で</span><span class="en">Three moves,</span></span></span>
+          <span><span><span class="ja">動かします。</span><span class="en">in order.</span></span></span>
+        </h2>
+      </div>
+    </div>
+
+    <div class="col-6 start-7 stack" style="--flow: var(--s-5)" data-shift="24" data-reveal-group>
+      <div class="card">
+        <div class="card__index"><span class="label label--accent label--bare">STEP 01</span><span class="num muted">›</span></div>
+        <h3 class="card__title"><span class="ja">見る</span><span class="en">Look</span></h3>
+        <p class="card__body">
+          <span class="ja">いま実際に何が起きているかを、月単位で洗い出します。思っている業務と、動いている業務は違います。</span>
+          <span class="en">We map what is actually happening, month by month. The work people think they do and the work they do are rarely the same.</span>
+        </p>
+      </div>
+      <div class="card">
+        <div class="card__index"><span class="label label--accent label--bare">STEP 02</span><span class="num muted">›</span></div>
+        <h3 class="card__title"><span class="ja">動かす</span><span class="en">Shift</span></h3>
+        <p class="card__body">
+          <span class="ja">手作業を仕組みに置き換えます。一度に全部ではなく、効く順に一つずつ。</span>
+          <span class="en">Manual steps are replaced with systems &mdash; one at a time, in the order that pays off fastest, not all at once.</span>
+        </p>
+      </div>
+      <div class="card">
+        <div class="card__index"><span class="label label--accent label--bare">STEP 03</span><span class="num muted">›</span></div>
+        <h3 class="card__title"><span class="ja">渡す</span><span class="en">Hand over</span></h3>
+        <p class="card__body">
+          <span class="ja">運営を続けることも、そちらのチームに引き渡すこともできます。仕組みは残る形で置いていきます。</span>
+          <span class="en">We either keep running it, or hand it to your team. Either way the system stays behind, documented.</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================================== -->
+<!-- CTA                                                                     -->
+<!-- ====================================================================== -->
+<section class="section">
+  <div class="wrap grid" style="align-items:center">
+    <div class="col-7 head">
+      <span class="label" data-reveal><span class="ja">05 ／ お問い合わせ</span><span class="en">05 &mdash; Contact</span></span>
+      <h2 class="t-h1 reveal-lines" style="max-width:14ch">
+        <span><span><span class="ja">何を渡せばいいか</span><span class="en">Not sure what</span></span></span>
+        <span><span><span class="ja">分からなくても大丈夫。</span><span class="en">to hand over? Ask.</span></span></span>
+      </h2>
+      <p class="t-lead" data-reveal>
+        <span class="ja">いま困っていることを一つ挙げてもらえれば、そこから話せます。3営業日以内に返信します。</span>
+        <span class="en">Name one thing that is not working and we can start there. We reply within three business days.</span>
+      </p>
+    </div>
+    <div class="col-4 start-9" data-reveal>
+      <a class="btn btn--full" href="contact.html">
+        <span class="btn__roll">
+          <span><span class="ja">問い合わせる</span><span class="en">Get in touch</span></span>
+          <span><span class="ja">問い合わせる</span><span class="en">Get in touch</span></span>
+        </span>
+        <span class="btn__chev" aria-hidden="true">»</span>
+      </a>
+      <p class="t-small muted" style="margin-block-start:var(--s-4); text-align:center">
+        <a class="link" href="mailto:admin@shiftgk.com">admin@shiftgk.com</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ====================================================================== -->
+<!-- Footer                                                                  -->
+<!-- ====================================================================== -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__grid">
+      <div class="footer__head">
+        <span class="logo logo--footer" role="img" aria-label="SHIFT"></span>
+        <p class="t-small" style="opacity:.75">
+          <span class="ja">SHIFT合同会社 — 東京を拠点に、事業運営・ブランド・仕組みづくりを担う持株会社。</span>
+          <span class="en">SHIFT GK &mdash; a Tokyo holding company for operations, brand, and systems.</span>
+        </p>
+      </div>
+
+      <nav class="footer__col" aria-label="フッターナビゲーション">
+        <span class="footer__label"><span class="ja">サイト</span><span class="en">Site</span></span>
+        <a class="footer__link" href="index.html"><span class="ja">ホーム</span><span class="en">Home</span></a>
+        <a class="footer__link" href="services.html"><span class="ja">サービス</span><span class="en">Services</span></a>
+        <a class="footer__link" href="ventures.html"><span class="ja">事業・ブランド</span><span class="en">Ventures</span></a>
+        <a class="footer__link" href="about.html"><span class="ja">会社概要</span><span class="en">About</span></a>
+        <a class="footer__link" href="contact.html"><span class="ja">お問い合わせ</span><span class="en">Contact</span></a>
+      </nav>
+
+      <div class="footer__col">
+        <span class="footer__label"><span class="ja">連絡先</span><span class="en">Contact</span></span>
+        <a class="footer__link" href="mailto:admin@shiftgk.com">admin@shiftgk.com</a>
+        <span class="footer__link" style="opacity:.6">TOKYO, JAPAN</span>
+        <a class="footer__link" href="privacy.html" style="margin-block-start:var(--s-3)"><span class="ja">プライバシーポリシー</span><span class="en">Privacy policy</span></a>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <span>&copy; <span class="num">2026</span> SHIFT GK</span>
+      <span><span class="ja">合同会社 ／ 東京</span><span class="en">Godo Kaisha &mdash; Tokyo</span></span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/config.js"></script>
+<script defer src="assets/js/lang.js"></script>
+<script defer src="assets/js/nav.js"></script>
+<script defer src="assets/js/motion.js"></script>
+<script defer src="assets/js/puzzle.js"></script>
+</body>
+</html>
