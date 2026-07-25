@@ -1,19 +1,24 @@
 /* ==========================================================================
    SHIFT — machinery
    The background is a working machine, not a decoration. Every part is drawn
-   from its real geometry and driven by scroll position:
+   from its real geometry and driven by scroll position.
 
-   - Gears have proper trapezoidal teeth, a pitch radius set by tooth count,
-     spokes, a hub and a bolt circle. Meshing gears sit exactly r1+r2 apart
-     and counter-rotate at the true ratio, so the teeth stay in step.
-   - The rack travels exactly as far as its pinion rolls (x = theta * r), so
-     it never appears to slip.
-   - The piston is solved from the actual slider-crank equation, which is why
-     it lingers at the ends of its stroke instead of moving sinusoidally.
-   - The belt runs along the real external tangents between its two pulleys.
+   Each machine is a self-contained assembly: it sits on a bedplate, turns in
+   pillow-block bearings, and is bolted to a frame, with its drive shaft
+   running off the edge of the drawing toward the line shaft that turns them
+   all. One assembly per section, and sections clip, so no two machines ever
+   pile up on each other.
 
-   All of it is line work. Nothing here is interactive, and it all stops for
-   prefers-reduced-motion.
+   Geometry, not guesswork:
+   - Gears have trapezoidal teeth and a pitch radius of m*N/2, so any two
+     sharing a module mesh. Centres sit at exactly r1+r2 and counter-rotate at
+     -N1/N2, which keeps the teeth in step.
+   - The rack travels its pinion's arc length, x = theta*r. No slip.
+   - The piston is solved from the slider-crank equation, so it lingers at the
+     ends of its stroke instead of gliding.
+   - The belt runs along the true external tangents between its two pulleys.
+
+   All line work, all inert, and all of it stops for prefers-reduced-motion.
    ========================================================================== */
 
 (function () {
@@ -32,11 +37,16 @@
   function xy(r, a) {
     return (Math.cos(a) * r).toFixed(2) + " " + (Math.sin(a) * r).toFixed(2);
   }
+  function add(parent, children) {
+    children.forEach(function (c) { parent.appendChild(c); });
+    return parent;
+  }
 
-  /* ------------------------------------------------------------------------
-     A gear outline. `m` is the module — the tooth size. Pitch radius is
-     m*N/2, so two gears sharing a module always mesh.
-     ------------------------------------------------------------------------ */
+  /* ======================================================================
+     Parts
+     ====================================================================== */
+
+  /* A gear outline. `m` is the module — the tooth size. */
   function gearOutline(N, m) {
     var r = m * N / 2, ra = r + m, rd = r - 1.15 * m;
     var step = TAU / N;
@@ -58,13 +68,15 @@
     var spin = el("g", {});
     var sw = opts.sw || 1.5;
 
-    spin.appendChild(el("path", { d: gearOutline(teeth, m), "stroke-width": sw }));
-    spin.appendChild(el("circle", { r: (r * 0.74).toFixed(1), "stroke-width": 1 }));
-    spin.appendChild(el("circle", { r: (r * 0.19).toFixed(1), "stroke-width": sw }));
+    add(spin, [
+      el("path", { d: gearOutline(teeth, m), "stroke-width": sw }),
+      el("circle", { r: (r * 0.74).toFixed(1), "stroke-width": 1 }),
+      el("circle", { r: (r * 0.19).toFixed(1), "stroke-width": sw })
+    ]);
 
     var spokes = opts.spokes || 5;
     for (var s = 0; s < spokes; s++) {
-      var a = s * TAU / spokes + (opts.phase || 0);
+      var a = s * TAU / spokes;
       spin.appendChild(el("line", {
         x1: (Math.cos(a) * r * 0.21).toFixed(1), y1: (Math.sin(a) * r * 0.21).toFixed(1),
         x2: (Math.cos(a) * r * 0.72).toFixed(1), y2: (Math.sin(a) * r * 0.72).toFixed(1),
@@ -81,34 +93,80 @@
     return { node: g, spin: spin, r: r, teeth: teeth, cx: cx, cy: cy };
   }
 
-  function spinTo(g, deg) { g.spin.setAttribute("transform", "rotate(" + deg.toFixed(2) + ")"); }
+  function spinTo(g, deg) {
+    g.spin.setAttribute("transform", "rotate(" + deg.toFixed(2) + ")");
+  }
+
+  /* A pillow-block bearing: what a real shaft actually turns in. */
+  function bearing(cx, cy, s) {
+    return add(el("g", { "stroke-width": 1.3, class: "mc-frame" }), [
+      el("path", {
+        d: "M " + (cx - s) + " " + (cy + s * 0.95) +
+           " L " + (cx - s) + " " + (cy - s * 0.1) +
+           " A " + (s * 0.62) + " " + (s * 0.62) + " 0 0 1 " + (cx + s) + " " + (cy - s * 0.1) +
+           " L " + (cx + s) + " " + (cy + s * 0.95) + " Z"
+      }),
+      el("circle", { cx: cx, cy: cy, r: (s * 0.34).toFixed(1) }),
+      el("circle", { cx: cx - s * 0.62, cy: cy + s * 0.62, r: s * 0.1 }),
+      el("circle", { cx: cx + s * 0.62, cy: cy + s * 0.62, r: s * 0.1 })
+    ]);
+  }
+
+  /* A bedplate, with the hatching that means "fixed to the ground". */
+  function bedplate(x, y, w) {
+    var g = el("g", { "stroke-width": 1.2, class: "mc-frame" });
+    g.appendChild(el("path", { d: "M " + x + " " + y + " L " + (x + w) + " " + y }));
+    for (var i = 6; i < w; i += 13) {
+      g.appendChild(el("path", {
+        d: "M " + (x + i) + " " + y + " L " + (x + i - 9) + " " + (y + 9),
+        "stroke-width": 0.9
+      }));
+    }
+    return g;
+  }
+
+  /* The shaft leaving the drawing toward the line shaft driving everything. */
+  function driveShaft(x1, y1, x2, y2) {
+    return add(el("g", { class: "mc-frame", "stroke-width": 1.1 }), [
+      el("path", { d: "M " + x1 + " " + y1 + " L " + x2 + " " + y2, "stroke-dasharray": "7 5" }),
+      el("circle", { cx: x2, cy: y2, r: 3.5, "stroke-width": 1.4 })
+    ]);
+  }
 
   /* ======================================================================
-     Machines. Each returns { svg, update(p) } where p is 0..1 progress.
+     Assemblies. Each returns { svg, update(p) } with p as 0..1 progress.
      ====================================================================== */
   var BUILD = {};
 
-  /* --- A three-stage gear train ---------------------------------------- */
+  /* --- Three-stage reduction gearbox ------------------------------------ */
   BUILD.geartrain = function () {
     var m = 6.5;
-    var svg = el("svg", { viewBox: "0 0 430 320", fill: "none", stroke: "currentColor" });
+    var svg = el("svg", { viewBox: "0 0 470 330", fill: "none", stroke: "currentColor" });
 
-    var A = gear(150, 168, 30, m, { spokes: 6 });
+    var A = gear(152, 168, 30, m, { spokes: 6 });
+    /* Each next centre at exactly r1 + r2, so the teeth engage. */
+    var a1 = -24 * Math.PI / 180, d1 = A.r + m * 20 / 2;
+    var B = gear(A.cx + Math.cos(a1) * d1, A.cy + Math.sin(a1) * d1, 20, m, { spokes: 5 });
+    var a2 = 38 * Math.PI / 180, d2 = B.r + m * 13 / 2;
+    var C = gear(B.cx + Math.cos(a2) * d2, B.cy + Math.sin(a2) * d2, 13, m, { spokes: 4 });
 
-    /* Each next centre sits at exactly r1 + r2 from the last, so the teeth
-       actually engage instead of merely overlapping. */
-    var ang1 = -24 * Math.PI / 180, d1 = A.r + (m * 20 / 2);
-    var B = gear(A.cx + Math.cos(ang1) * d1, A.cy + Math.sin(ang1) * d1, 20, m, { spokes: 5 });
+    /* Casing, centre lines and mounting bolts — the gearbox it lives in. */
+    var frame = el("g", { class: "mc-frame", "stroke-width": 1.2 });
+    frame.appendChild(el("rect", { x: 34, y: 14, width: 412, height: 268, rx: 6 }));
+    [[46, 26], [434, 26], [46, 270], [434, 270]].forEach(function (p) {
+      frame.appendChild(el("circle", { cx: p[0], cy: p[1], r: 4 }));
+    });
+    frame.appendChild(el("path", {
+      d: "M " + A.cx + " " + A.cy + " L " + B.cx.toFixed(1) + " " + B.cy.toFixed(1) +
+         " L " + C.cx.toFixed(1) + " " + C.cy.toFixed(1),
+      "stroke-dasharray": "9 4 2 4", "stroke-width": 0.9
+    }));
+    svg.appendChild(frame);
+    svg.appendChild(bedplate(34, 282, 412));
+    svg.appendChild(driveShaft(A.cx, A.cy, 34, A.cy));
 
-    var ang2 = 38 * Math.PI / 180, d2 = B.r + (m * 13 / 2);
-    var C = gear(B.cx + Math.cos(ang2) * d2, B.cy + Math.sin(ang2) * d2, 13, m, { spokes: 4 });
-
-    /* The centre lines, as they'd appear on the drawing this is imitating. */
-    var plate = el("g", { "stroke-width": 1, opacity: "0.5", "stroke-dasharray": "5 5" });
-    plate.appendChild(el("path", { d: "M " + A.cx + " " + A.cy + " L " + B.cx.toFixed(1) + " " + B.cy.toFixed(1) + " L " + C.cx.toFixed(1) + " " + C.cy.toFixed(1) }));
-    svg.appendChild(plate);
-
-    svg.appendChild(A.node); svg.appendChild(B.node); svg.appendChild(C.node);
+    add(svg, [A.node, B.node, C.node]);
+    add(svg, [bearing(A.cx, A.cy, 15), bearing(B.cx, B.cy, 12), bearing(C.cx, C.cy, 10)]);
 
     return {
       svg: svg,
@@ -121,34 +179,40 @@
     };
   };
 
-  /* --- Rack and pinion -------------------------------------------------- */
+  /* --- Rack and pinion on a linear slide -------------------------------- */
   BUILD.rack = function () {
     var m = 7, teeth = 18;
-    var svg = el("svg", { viewBox: "0 0 460 230", fill: "none", stroke: "currentColor" });
-    var P = gear(230, 96, teeth, m, { spokes: 4 });
-    var r = P.r;
-    var pitchY = 96 + r;
+    var svg = el("svg", { viewBox: "0 0 470 250", fill: "none", stroke: "currentColor" });
+    var P = gear(235, 92, teeth, m, { spokes: 4 });
+    var r = P.r, pitchY = 92 + r;
 
-    /* The rack's teeth point up and share the pinion's module. */
-    var pitch = Math.PI * m;
-    var span = 900, n = Math.ceil(span / pitch);
-    var d = "M " + (-span / 2) + " " + (pitchY + m * 1.15);
+    var frame = el("g", { class: "mc-frame", "stroke-width": 1.2 });
+    /* The slide the rack runs in. */
+    frame.appendChild(el("rect", { x: 24, y: pitchY + m * 2.2, width: 422, height: 20, rx: 2 }));
+    svg.appendChild(frame);
+    svg.appendChild(bedplate(24, pitchY + m * 2.2 + 20, 422));
+    svg.appendChild(driveShaft(P.cx, P.cy, 446, P.cy));
+
+    /* The rack. Teeth point up and share the pinion's module. */
+    var pitch = Math.PI * m, span = 960, n = Math.ceil(span / pitch);
+    var d = "M " + (-span / 2) + " " + (pitchY + m * 1.2);
     for (var i = 0; i < n; i++) {
       var x = -span / 2 + i * pitch;
-      d += " L " + (x + pitch * 0.18).toFixed(1) + " " + (pitchY + m * 1.15) +
+      d += " L " + (x + pitch * 0.18).toFixed(1) + " " + (pitchY + m * 1.2) +
            " L " + (x + pitch * 0.32).toFixed(1) + " " + (pitchY - m) +
            " L " + (x + pitch * 0.68).toFixed(1) + " " + (pitchY - m) +
-           " L " + (x + pitch * 0.82).toFixed(1) + " " + (pitchY + m * 1.15);
+           " L " + (x + pitch * 0.82).toFixed(1) + " " + (pitchY + m * 1.2);
     }
-    d += " L " + (span / 2) + " " + (pitchY + m * 1.15);
+    d += " L " + (span / 2) + " " + (pitchY + m * 1.2);
 
     var slide = el("g", {});
-    slide.appendChild(el("path", { d: d, "stroke-width": 1.5 }));
-    slide.appendChild(el("path", { d: "M " + (-span / 2) + " " + (pitchY + m * 3.4) + " L " + (span / 2) + " " + (pitchY + m * 3.4), "stroke-width": 1 }));
-    var wrap = el("g", { transform: "translate(230 0)" });
+    slide.appendChild(el("path", { d: d, "stroke-width": 1.6 }));
+    var wrap = el("g", { transform: "translate(235 0)" });
     wrap.appendChild(slide);
     svg.appendChild(wrap);
+
     svg.appendChild(P.node);
+    svg.appendChild(bearing(P.cx, P.cy, 14));
 
     return {
       svg: svg,
@@ -156,41 +220,59 @@
         var deg = p * 620;
         spinTo(P, deg);
         /* Rolling without slipping: the rack moves exactly the arc length. */
-        var travel = (deg * Math.PI / 180) * r;
-        slide.setAttribute("transform", "translate(" + (-travel).toFixed(2) + " 0)");
+        slide.setAttribute("transform",
+          "translate(" + (-(deg * Math.PI / 180) * r).toFixed(2) + " 0)");
       }
     };
   };
 
-  /* --- Slider-crank: crank, connecting rod, piston ---------------------- */
+  /* --- Slider-crank: flywheel, connecting rod, piston, cylinder --------- */
   BUILD.piston = function () {
-    var svg = el("svg", { viewBox: "0 0 460 260", fill: "none", stroke: "currentColor" });
-    var cx = 110, cy = 130, crank = 52, rod = 175, bore = 46;
+    var svg = el("svg", { viewBox: "0 0 480 270", fill: "none", stroke: "currentColor" });
+    var cx = 112, cy = 128, crank = 52, rod = 178, bore = 44, wall = 250;
 
-    var frame = el("g", { "stroke-width": 1, opacity: "0.6" });
-    frame.appendChild(el("path", { d: "M 250 " + (cy - bore) + " L 440 " + (cy - bore) + " M 250 " + (cy + bore) + " L 440 " + (cy + bore) }));
-    frame.appendChild(el("path", { d: "M 440 " + (cy - bore) + " L 440 " + (cy + bore), "stroke-width": 1.5 }));
-    frame.appendChild(el("circle", { cx: cx, cy: cy, r: crank, "stroke-dasharray": "4 6" }));
+    var frame = el("g", { class: "mc-frame", "stroke-width": 1.3 });
+    /* Cylinder, with a flange where it bolts to the crankcase. */
+    frame.appendChild(el("path", {
+      d: "M " + wall + " " + (cy - bore) + " L 452 " + (cy - bore) +
+         " M " + wall + " " + (cy + bore) + " L 452 " + (cy + bore) +
+         " M 452 " + (cy - bore) + " L 452 " + (cy + bore)
+    }));
+    frame.appendChild(el("path", {
+      d: "M " + wall + " " + (cy - bore - 12) + " L " + wall + " " + (cy + bore + 12),
+      "stroke-width": 1.6
+    }));
+    [cy - bore - 6, cy + bore + 6].forEach(function (y) {
+      frame.appendChild(el("circle", { cx: wall, cy: y, r: 3.2 }));
+    });
+    frame.appendChild(el("circle", { cx: cx, cy: cy, r: crank, "stroke-dasharray": "4 6", "stroke-width": 0.9 }));
     svg.appendChild(frame);
+    svg.appendChild(bedplate(40, 216, 200));
+    svg.appendChild(driveShaft(cx, cy, 40, cy));
 
-    var housing = gear(cx, cy, 22, 5.4, { spokes: 4, sw: 1.4 });
-    svg.appendChild(housing.node);
+    var fly = gear(cx, cy, 22, 5.4, { spokes: 4, sw: 1.4 });
+    svg.appendChild(fly.node);
+    svg.appendChild(bearing(cx, cy, 16));
 
-    var conrod = el("path", { "stroke-width": 2 });
+    var conrod = el("path", { "stroke-width": 2.2 });
     var pin = el("circle", { r: 6, "stroke-width": 1.5 });
     var head = el("g", { "stroke-width": 2 });
-    var headRect = el("rect", { x: -26, y: -bore + 6, width: 52, height: (bore - 6) * 2, rx: 3 });
-    head.appendChild(headRect);
-    head.appendChild(el("path", { d: "M -14 " + (-bore + 16) + " L -14 " + (bore - 16) + " M 6 " + (-bore + 16) + " L 6 " + (bore - 16), "stroke-width": 1 }));
-    svg.appendChild(conrod); svg.appendChild(head); svg.appendChild(pin);
+    add(head, [
+      el("rect", { x: -26, y: -bore + 5, width: 52, height: (bore - 5) * 2, rx: 3 }),
+      el("path", {
+        d: "M -15 " + (-bore + 14) + " L -15 " + (bore - 14) +
+           " M 5 " + (-bore + 14) + " L 5 " + (bore - 14),
+        "stroke-width": 1
+      })
+    ]);
+    add(svg, [conrod, head, pin]);
 
     return {
       svg: svg,
       update: function (p) {
         var th = p * 6.4 * Math.PI;
-        spinTo(housing, th * 180 / Math.PI);
-        var px = cx + Math.cos(th) * crank;
-        var py = cy + Math.sin(th) * crank;
+        spinTo(fly, th * 180 / Math.PI);
+        var px = cx + Math.cos(th) * crank, py = cy + Math.sin(th) * crank;
         /* Slider-crank: x = r cos t + sqrt(L^2 - (r sin t)^2) */
         var s = Math.sin(th) * crank;
         var hx = cx + Math.cos(th) * crank + Math.sqrt(rod * rod - s * s);
@@ -204,16 +286,25 @@
 
   /* --- Belt drive over two pulleys -------------------------------------- */
   BUILD.pulley = function () {
-    var svg = el("svg", { viewBox: "0 0 440 250", fill: "none", stroke: "currentColor" });
-    var c1 = { x: 105, y: 125, r: 68 }, c2 = { x: 335, y: 125, r: 38 };
-    var d = c2.x - c1.x;
-    var beta = Math.acos((c1.r - c2.r) / d);
+    var svg = el("svg", { viewBox: "0 0 460 265", fill: "none", stroke: "currentColor" });
+    var c1 = { x: 112, y: 122, r: 68 }, c2 = { x: 342, y: 122, r: 38 };
+    var d = c2.x - c1.x, beta = Math.acos((c1.r - c2.r) / d);
 
     function tp(c, sign) {
       return { x: c.x + Math.cos(sign * beta) * c.r, y: c.y + Math.sin(sign * beta) * c.r };
     }
     var a1 = tp(c1, -1), a2 = tp(c2, -1), b1 = tp(c1, 1), b2 = tp(c2, 1);
 
+    svg.appendChild(bedplate(46, 226, 350));
+    add(svg, [
+      driveShaft(c1.x, c1.y, 46, c1.y),
+      el("path", {
+        d: "M " + c1.x + " " + c1.y + " L " + c1.x + " 226 M " + c2.x + " " + c2.y + " L " + c2.x + " 226",
+        class: "mc-frame", "stroke-width": 1.2
+      })
+    ]);
+
+    /* The belt, along the true external tangents. */
     var belt = el("path", {
       d: "M " + a1.x.toFixed(1) + " " + a1.y.toFixed(1) +
          " L " + a2.x.toFixed(1) + " " + a2.y.toFixed(1) +
@@ -226,14 +317,14 @@
 
     var p1 = gear(c1.x, c1.y, 24, 5.2, { spokes: 6, sw: 1.3 });
     var p2 = gear(c2.x, c2.y, 14, 5.0, { spokes: 4, sw: 1.3 });
-    svg.appendChild(p1.node); svg.appendChild(p2.node);
+    add(svg, [p1.node, p2.node, bearing(c1.x, c1.y, 15), bearing(c2.x, c2.y, 11)]);
 
     return {
       svg: svg,
       update: function (p) {
         var t = p * 700;
         spinTo(p1, t);
-        /* A belt links them by surface speed, so the ratio is by radius. */
+        /* A belt couples them by surface speed, so the ratio is by radius. */
         spinTo(p2, t * c1.r / c2.r);
         belt.setAttribute("stroke-dashoffset", (-t * 0.9).toFixed(1));
       }
@@ -241,7 +332,7 @@
   };
 
   /* ======================================================================
-     Mount every [data-machine], then drive them from scroll.
+     Mount and drive
      ====================================================================== */
   var machines = [];
 
@@ -250,7 +341,7 @@
     if (!build) return;
     var m = build();
     host.appendChild(m.svg);
-    machines.push({ host: host, update: m.update, fixed: host.hasAttribute("data-machine-fixed"), on: false });
+    machines.push({ host: host, update: m.update, on: true });
   });
 
   if (!machines.length) return;
@@ -261,10 +352,8 @@
         machines.forEach(function (m) { if (m.host === e.target) m.on = e.isIntersecting; });
       });
       request();
-    }, { rootMargin: "30% 0px 30% 0px" });
+    }, { rootMargin: "35% 0px 35% 0px" });
     machines.forEach(function (m) { io.observe(m.host); });
-  } else {
-    machines.forEach(function (m) { m.on = true; });
   }
 
   var ticking = false;
@@ -272,20 +361,11 @@
   function frame() {
     ticking = false;
     var vh = window.innerHeight;
-    var doc = document.documentElement;
-    var max = doc.scrollHeight - vh;
-    var page = max > 0 ? window.scrollY / max : 0;
-
     machines.forEach(function (m) {
-      if (!m.on && !m.fixed) return;
-      var p;
-      if (m.fixed) {
-        p = page;
-      } else {
-        var r = m.host.getBoundingClientRect();
-        /* 0 as the machine enters from the bottom, 1 as it leaves the top. */
-        p = 1 - (r.top + r.height) / (vh + r.height);
-      }
+      if (!m.on) return;
+      var r = m.host.getBoundingClientRect();
+      /* 0 as the assembly enters from the bottom, 1 as it leaves the top. */
+      var p = 1 - (r.top + r.height) / (vh + r.height);
       m.update(Math.max(-0.15, Math.min(1.15, p)));
     });
   }
@@ -298,6 +378,5 @@
 
   window.addEventListener("scroll", request, { passive: true });
   window.addEventListener("resize", request, { passive: true });
-  machines.forEach(function (m) { m.on = true; });
   request();
 })();

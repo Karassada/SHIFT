@@ -146,7 +146,7 @@ h1, h2, h3, h4 {
 }
 
 .section { padding-block: var(--section); position: relative; }
-.section--sunk { background: var(--c-sunk); }
+.section--sunk { background: var(--surface-sunk); }
 .section--tight { padding-block: clamp(3rem, 6vw, 5.5rem); }
 
 /* 12-column Swiss grid. Collapses to a single column below 768px. */

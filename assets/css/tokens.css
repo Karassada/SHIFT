@@ -68,6 +68,14 @@
   --radius-lg: 3px;
   --hair: 1px;
 
+  /* Surfaces are translucent so the machinery stays readable behind them.
+     Panels still register as panels — the border and the tint do that — but
+     they no longer black out the mechanism they are sitting on. */
+  --surface:      color-mix(in srgb, var(--c-paper) 58%, transparent);
+  --surface-lift: color-mix(in srgb, var(--c-paper) 78%, transparent);
+  --surface-sunk: color-mix(in srgb, var(--c-sunk)  55%, transparent);
+  --surface-accent: color-mix(in srgb, var(--c-accent) 74%, transparent);
+
   /* --- Motion ----------------------------------------------------------- */
   /* One rhythm across the whole site. Mechanical, never floaty. */
   --e-shift: cubic-bezier(0.16, 1, 0.30, 1);      /* snap into place       */

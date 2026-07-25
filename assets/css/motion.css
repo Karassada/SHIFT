@@ -48,11 +48,6 @@
 }
 
 /* --------------------------------------------------------------------------
-   The gear. Two counter-rotating chevron rings, barely visible, bound to
-   scroll position. It is the only decorative element on the site and it is
-   deliberately almost invisible.
-   -------------------------------------------------------------------------- */
-/* --------------------------------------------------------------------------
    Machinery layer.
    Technical line work sitting behind the content — visible enough to read as
    a mechanism, quiet enough that it never fights the type. Built and driven
@@ -63,34 +58,31 @@
   z-index: var(--z-gear);
   pointer-events: none;
   color: var(--c-ink);
-  opacity: 0.13;
+  opacity: 0.16;
 }
 .machine svg { inline-size: 100%; block-size: auto; overflow: visible; }
 
-/* The drive train, always present, turning with the whole page. */
-.machine--drive {
-  position: fixed;
-  inset-block-start: 50%;
-  inset-inline-end: -30vw;
-  inline-size: 88vw;
-  translate: 0 -50%;
-  opacity: 0.10;
-}
-@media (min-width: 62em) {
-  .machine--drive { inset-inline-end: -3vw; inline-size: 44vw; opacity: 0.15; }
-}
+/* Frame, bearings and bedplate sit back a step from the moving parts, so the
+   eye reads the mechanism first and the hardware holding it second. */
+.machine .mc-frame { opacity: 0.6; }
 
-/* Section-anchored machines. They scroll with their section and are driven
-   by how far through the viewport that section has travelled. */
-.machine--rack   { inset-block-start: 4%;  inset-inline-start: -14%; inline-size: 78%; }
-.machine--piston { inset-block-end: 2%;   inset-inline-end: -10%;  inline-size: 66%; }
-.machine--pulley { inset-block-start: 12%; inset-inline-end: -12%;  inline-size: 58%; }
+/* One assembly per section, each in its own bay. Sections clip, so a machine
+   can never wander into its neighbour's space.
+
+   Each assembly sits fully inside the viewport: a casing or bedplate sliced
+   by the screen edge reads as a mistake rather than as a machine continuing
+   out of frame. The rack is the exception — it is meant to run on past. */
+.machine--geartrain { inset-block-start: 50%; inset-inline-end: 0; inline-size: 60%; translate: 0 -50%; }
+.machine--rack      { inset-block-start: 6%;  inset-inline-start: -18%; inline-size: 74%; }
+.machine--piston    { inset-block-end: 8%;    inset-inline-end: 0; inline-size: 58%; }
+.machine--pulley    { inset-block-start: 14%; inset-inline-end: 0; inline-size: 52%; }
 
 @media (max-width: 47.99em) {
-  .machine { opacity: 0.09; }
-  .machine--rack   { inline-size: 150%; inset-inline-start: -30%; }
-  .machine--piston { inline-size: 135%; inset-inline-end: -35%; }
-  .machine--pulley { inline-size: 130%; inset-inline-end: -30%; }
+  .machine { opacity: 0.12; }
+  .machine--geartrain { inline-size: 108%; inset-inline-end: -4%; }
+  .machine--rack      { inline-size: 130%; inset-inline-start: -22%; }
+  .machine--piston    { inline-size: 112%; inset-inline-end: -6%; }
+  .machine--pulley    { inline-size: 105%; inset-inline-end: -3%; }
 }
 
 /* Content always sits above the machinery. */
@@ -130,7 +122,7 @@
     0);
   display: grid;
   place-content: center;
-  background: var(--c-paper);
+  background: var(--surface);
   border: var(--hair) solid var(--c-line);
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -180,7 +172,7 @@
    with two classes, so it wins over whatever pattern the tile was given —
    which tiles form the arrow changes with the board's orientation. */
 .tile.tile--accent {
-  background-color: var(--c-accent);
+  background-color: var(--surface-accent);
   background-image: none;
   border-color: var(--c-accent);
 }
