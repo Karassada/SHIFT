@@ -335,14 +335,138 @@
               border-color var(--d-comp) linear,
               background-color var(--d-comp) linear;
 }
-.card:hover { transform: translate(3px, -3px); border-color: var(--c-ink); }
-.card__index { display: flex; justify-content: space-between; align-items: center; }
-.card__title { font-size: var(--t-h3); font-weight: 600; letter-spacing: var(--tr-tight); }
-.card__body { color: var(--c-ink-2); font-size: var(--t-small); line-height: 1.7; }
+.card:hover { transform: translate(3px, -3px); border-color: var(--c-accent); }
+.card__index { display: flex; justify-content: space-between; align-items: center; gap: var(--s-4); }
+.card__title {
+  font-size: var(--t-h3);
+  font-weight: 700;
+  letter-spacing: var(--tr-tight);
+  color: var(--c-accent);
+}
+/* A rule between the title and the detail, so the eye knows where the
+   heading stops and the explanation starts. */
+.card__body {
+  color: var(--c-ink-2);
+  font-size: var(--t-small);
+  line-height: 1.75;
+  padding-block-start: var(--s-4);
+  border-block-start: var(--hair) solid var(--c-line);
+  text-wrap: pretty;
+}
 
 /* Whole-card link overlay, keeps one tab stop and a real focus ring. */
 .card__hit { position: absolute; inset: 0; border-radius: inherit; }
 .card:has(.card__hit:focus-visible) { outline: 2px solid var(--c-focus); outline-offset: 3px; }
+
+/* ==========================================================================
+   Numbered badge — the anchor at the top-left of anything explained in steps
+   ========================================================================== */
+
+.badge {
+  display: inline-grid;
+  place-content: center;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  flex: none;
+  border-radius: var(--radius-lg);
+  background: var(--c-accent);
+  color: var(--c-on-accent);
+  font-family: var(--f-mono);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: background-color var(--d-comp) linear;
+}
+.badge--ghost {
+  background: var(--c-accent-lo);
+  color: var(--c-accent);
+  border: var(--hair) solid var(--c-accent);
+}
+
+/* ==========================================================================
+   Service cards
+   Each explanation is a box: a number to anchor it, a coloured title, one
+   bold line that carries the point, then the detail underneath. Scannable
+   without being read.
+   ========================================================================== */
+
+.scards { display: grid; gap: var(--s-4); }
+
+.scard {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--s-5);
+  padding: var(--s-6);
+  background: var(--surface);
+  border: var(--hair) solid var(--c-line);
+  border-radius: var(--radius-lg);
+  transition: transform var(--d-comp) var(--e-shift),
+              border-color var(--d-comp) linear,
+              background-color var(--d-comp) linear;
+}
+@media (max-width: 47.99em) {
+  .scard { grid-template-columns: 1fr; gap: var(--s-4); padding: var(--s-5); }
+}
+.scard:hover { transform: translate(4px, -4px); border-color: var(--c-accent); }
+
+.scard__main { display: grid; gap: var(--s-3); min-inline-size: 0; }
+
+.scard__title {
+  font-size: var(--t-h3);
+  font-weight: 700;
+  letter-spacing: var(--tr-tight);
+  color: var(--c-accent);
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-3);
+}
+.scard__title .chev {
+  font-family: var(--f-mono);
+  font-size: 0.7em;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity var(--d-comp) linear, transform var(--d-comp) var(--e-shift);
+}
+.scard:hover .scard__title .chev { opacity: 1; transform: translateX(0); }
+
+/* The one line to read if you read nothing else. */
+.scard__summary {
+  font-size: var(--t-lead);
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--c-ink);
+  text-wrap: pretty;
+}
+
+.scard__body {
+  color: var(--c-ink-2);
+  font-size: var(--t-small);
+  line-height: 1.78;
+  padding-block-start: var(--s-4);
+  border-block-start: var(--hair) solid var(--c-line);
+  text-wrap: pretty;
+}
+
+.scard__tags { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+
+/* ==========================================================================
+   Callout — a statement worth boxing off from the paragraphs around it
+   ========================================================================== */
+
+.callout {
+  padding: var(--s-6);
+  background: var(--c-accent-lo);
+  border-inline-start: 3px solid var(--c-accent);
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+}
+.callout > * + * { margin-block-start: var(--s-4); }
+.callout__lead {
+  font-size: var(--t-lead);
+  font-weight: 600;
+  line-height: 1.55;
+  color: var(--c-ink);
+  text-wrap: pretty;
+}
 
 /* Numbered service rows — a spec sheet that opens on hover. */
 .spec {
@@ -368,8 +492,10 @@
 .spec__tags { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-block-start: var(--s-4); }
 .tag {
   font-family: var(--f-mono); font-size: var(--t-label); letter-spacing: 0.1em;
-  padding: 0.3rem 0.6rem; border: var(--hair) solid var(--c-line);
-  border-radius: 999px; color: var(--c-muted); text-transform: uppercase;
+  padding: 0.3rem 0.7rem;
+  border: var(--hair) solid color-mix(in srgb, var(--c-accent) 32%, transparent);
+  background: var(--c-accent-lo);
+  border-radius: 999px; color: var(--c-accent); text-transform: uppercase;
 }
 
 /* ==========================================================================

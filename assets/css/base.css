@@ -102,27 +102,36 @@ h1, h2, h3, h4 {
 .t-body { max-width: var(--maxw-text); text-wrap: pretty; }
 .t-small { font-size: var(--t-small); }
 
-/* The mono label layer — indices, eyebrows, meta. Reads as a spec sheet. */
+/* The mono label layer — indices, eyebrows, meta. Reads as a spec sheet, and
+   carries the accent so every section opens with a spot of colour. */
 .label {
   font-family: var(--f-mono);
   font-size: var(--t-label);
   font-weight: 500;
   letter-spacing: var(--tr-label);
   text-transform: uppercase;
-  color: var(--c-muted);
+  color: var(--c-accent);
   display: inline-flex;
   align-items: center;
-  gap: var(--s-2);
+  gap: var(--s-3);
 }
-.label--accent { color: var(--c-accent); }
+.label--muted { color: var(--c-muted); }
 .label::before {
   content: "";
-  inline-size: 1.5rem;
-  block-size: var(--hair);
+  inline-size: 1.75rem;
+  block-size: 2px;
   background: currentColor;
   flex: none;
 }
 .label--bare::before { display: none; }
+
+/* Headings run two-tone: the closing line takes the accent, so the eye is
+   pulled through the sentence instead of hitting a wall of one colour. */
+.reveal-lines > span:last-child:not(:only-child) { color: var(--c-accent); }
+
+/* Bold is a real signal here, not decoration — it marks the phrase that
+   carries the point of the paragraph. */
+strong, b { font-weight: 700; color: var(--c-ink); }
 
 .num {
   font-family: var(--f-mono);
