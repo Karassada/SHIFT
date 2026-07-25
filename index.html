@@ -36,21 +36,8 @@
   <div class="wipe__panel" style="--i:5"></div>
 </div>
 
-<!-- The gear: concentric rings bound to scroll position -->
-<svg class="gear" data-gear viewBox="0 0 400 400" aria-hidden="true" focusable="false">
-  <g class="gear__ring" fill="none" stroke="currentColor">
-    <circle cx="200" cy="200" r="196" stroke-width="1"/>
-    <circle cx="200" cy="200" r="188" stroke-width="14" stroke-dasharray="2 9.83"/>
-    <circle cx="200" cy="200" r="180" stroke-width="1"/>
-    <circle cx="200" cy="200" r="140" stroke-width="1"/>
-  </g>
-  <g class="gear__ring gear__ring--2" fill="none" stroke="currentColor">
-    <circle cx="200" cy="200" r="104" stroke-width="1"/>
-    <circle cx="200" cy="200" r="97" stroke-width="12" stroke-dasharray="2 8.9"/>
-    <circle cx="200" cy="200" r="90" stroke-width="1"/>
-    <circle cx="200" cy="200" r="34" stroke-width="1"/>
-  </g>
-</svg>
+<!-- The drive train: three meshing gears, turned by page scroll -->
+<div class="machine machine--drive" data-machine="geartrain" data-machine-fixed aria-hidden="true"></div>
 
 <!-- ====================================================================== -->
 <!-- Header                                                                  -->
@@ -206,11 +193,11 @@
 <!-- ====================================================================== -->
 <section class="section" id="about-shift">
   <div class="wrap grid">
-    <div class="col-4" data-shift="-30">
+    <div class="col-4" data-shift="-58">
       <span class="label" data-reveal><span class="ja">01 ／ SHIFTについて</span><span class="en">01 &mdash; About SHIFT</span></span>
     </div>
 
-    <div class="col-7 start-6 stack flow-lg" data-shift="30">
+    <div class="col-7 start-6 stack flow-lg" data-shift="58">
       <h2 class="t-h2 reveal-lines">
         <span><span><span class="ja">名前が、そのまま</span><span class="en">The name is</span></span></span>
         <span><span><span class="ja">仕事の内容です。</span><span class="en">the job description.</span></span></span>
@@ -240,6 +227,7 @@
 <!-- Services                                                                -->
 <!-- ====================================================================== -->
 <section class="section section--sunk">
+  <div class="machine machine--rack" data-machine="rack" aria-hidden="true"></div>
   <div class="wrap stack flow-lg">
     <div class="grid" style="align-items:end">
       <div class="col-6 head">
@@ -324,6 +312,7 @@
 <!-- Ventures                                                                -->
 <!-- ====================================================================== -->
 <section class="section">
+  <div class="machine machine--pulley" data-machine="pulley" aria-hidden="true"></div>
   <div class="wrap stack flow-lg">
     <div class="grid" style="align-items:end">
       <div class="col-6 head">
@@ -392,8 +381,9 @@
 <!-- Approach                                                                -->
 <!-- ====================================================================== -->
 <section class="section section--sunk">
+  <div class="machine machine--piston" data-machine="piston" aria-hidden="true"></div>
   <div class="wrap grid">
-    <div class="col-5" data-shift="-24">
+    <div class="col-5" data-shift="-50">
       <div class="head">
         <span class="label" data-reveal><span class="ja">04 ／ 進め方</span><span class="en">04 &mdash; Approach</span></span>
         <h2 class="t-h2 head__title reveal-lines">
@@ -403,7 +393,7 @@
       </div>
     </div>
 
-    <div class="col-6 start-7 stack" style="--flow: var(--s-5)" data-shift="24" data-reveal-group>
+    <div class="col-6 start-7 stack" style="--flow: var(--s-5)" data-shift="50" data-reveal-group>
       <div class="card">
         <div class="card__index"><span class="label label--accent label--bare">STEP 01</span><span class="num muted">›</span></div>
         <h3 class="card__title"><span class="ja">見る</span><span class="en">Look</span></h3>
@@ -508,5 +498,6 @@
 <script defer src="assets/js/nav.js"></script>
 <script defer src="assets/js/motion.js"></script>
 <script defer src="assets/js/puzzle.js"></script>
+<script defer src="assets/js/machinery.js"></script>
 </body>
 </html>

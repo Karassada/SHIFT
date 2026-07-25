@@ -52,30 +52,54 @@
    scroll position. It is the only decorative element on the site and it is
    deliberately almost invisible.
    -------------------------------------------------------------------------- */
-/* On a phone the viewport is the gear's whole world, so it sits mostly
-   off-canvas and fainter — it should register as texture, never as an object
-   competing with the type. */
-.gear {
-  position: fixed;
-  inset-block-start: 50%;
-  inset-inline-end: -46vw;
-  inline-size: 92vw;
-  aspect-ratio: 1;
-  translate: 0 -50%;
+/* --------------------------------------------------------------------------
+   Machinery layer.
+   Technical line work sitting behind the content — visible enough to read as
+   a mechanism, quiet enough that it never fights the type. Built and driven
+   by machinery.js.
+   -------------------------------------------------------------------------- */
+.machine {
+  position: absolute;
   z-index: var(--z-gear);
   pointer-events: none;
   color: var(--c-ink);
-  opacity: 0.035;
+  opacity: 0.13;
+}
+.machine svg { inline-size: 100%; block-size: auto; overflow: visible; }
+
+/* The drive train, always present, turning with the whole page. */
+.machine--drive {
+  position: fixed;
+  inset-block-start: 50%;
+  inset-inline-end: -30vw;
+  inline-size: 88vw;
+  translate: 0 -50%;
+  opacity: 0.10;
 }
 @media (min-width: 62em) {
-  .gear { inset-inline-end: -14vmax; inline-size: 54vmax; opacity: 0.045; }
+  .machine--drive { inset-inline-end: -3vw; inline-size: 44vw; opacity: 0.15; }
 }
-.gear__ring {
-  transform-box: view-box;
-  transform-origin: 50% 50%;
-  transform: rotate(var(--gear-a, 0deg));
+
+/* Section-anchored machines. They scroll with their section and are driven
+   by how far through the viewport that section has travelled. */
+.machine--rack   { inset-block-start: 4%;  inset-inline-start: -14%; inline-size: 78%; }
+.machine--piston { inset-block-end: 2%;   inset-inline-end: -10%;  inline-size: 66%; }
+.machine--pulley { inset-block-start: 12%; inset-inline-end: -12%;  inline-size: 58%; }
+
+@media (max-width: 47.99em) {
+  .machine { opacity: 0.09; }
+  .machine--rack   { inline-size: 150%; inset-inline-start: -30%; }
+  .machine--piston { inline-size: 135%; inset-inline-end: -35%; }
+  .machine--pulley { inline-size: 130%; inset-inline-end: -30%; }
 }
-.gear__ring--2 { transform: rotate(calc(var(--gear-a, 0deg) * -1.7)); opacity: 0.75; }
+
+/* Content always sits above the machinery. */
+.section > .wrap, .phero > .wrap { position: relative; z-index: var(--z-body); }
+
+/* Each machine stays inside its own bay. Without this a tall machine would
+   spill into the next section and, at the foot of the page, add scroll height
+   to a document that has nothing left to show. */
+.section:has(.machine), .phero:has(.machine) { overflow: clip; }
 
 /* --------------------------------------------------------------------------
    Hero puzzle grid.

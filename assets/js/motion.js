@@ -1,6 +1,6 @@
 /* ==========================================================================
    SHIFT — scroll motion
-   Reveals, column displacement, the gear, and counters.
+   Reveals, column displacement, and counters.
    One rAF ticker drives everything that depends on scroll position, and it
    only runs while something is actually on screen.
    ========================================================================== */
@@ -88,14 +88,14 @@
   }
 
   /* ------------------------------------------------------------------------
-     Scroll-driven displacement and the gear.
+     Scroll-driven displacement.
      `--p` runs from 1 (element still below the fold) through 0 (centred) to
      -1 (above), so columns converge into alignment as a section arrives.
+     The machinery has its own ticker in machinery.js.
      ------------------------------------------------------------------------ */
   if (reduced) return;
 
   var shifters = Array.prototype.slice.call(document.querySelectorAll("[data-shift]"));
-  var gear = document.querySelector("[data-gear]");
   var active = new Set();
 
   if (shifters.length && "IntersectionObserver" in window) {
@@ -107,12 +107,12 @@
       request();
     }, { rootMargin: "20% 0px 20% 0px" });
     shifters.forEach(function (el) {
-      el.style.setProperty("--shift-amp", (el.dataset.shift || 40) + "px");
+      el.style.setProperty("--shift-amp", (el.dataset.shift || 64) + "px");
       sio.observe(el);
     });
   } else {
     shifters.forEach(function (el) {
-      el.style.setProperty("--shift-amp", (el.dataset.shift || 40) + "px");
+      el.style.setProperty("--shift-amp", (el.dataset.shift || 64) + "px");
       active.add(el);
     });
   }
@@ -130,14 +130,6 @@
       var p = (centre - vh / 2) / (vh / 2 + r.height / 2);
       el.style.setProperty("--p", Math.max(-1.2, Math.min(1.2, p)).toFixed(4));
     });
-
-    if (gear) {
-      var doc = document.documentElement;
-      var max = doc.scrollHeight - window.innerHeight;
-      var prog = max > 0 ? window.scrollY / max : 0;
-      /* A little under a full turn across the whole page. */
-      gear.style.setProperty("--gear-a", (prog * 300).toFixed(2) + "deg");
-    }
   }
 
   function request() {

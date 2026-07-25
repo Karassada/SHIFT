@@ -35,20 +35,7 @@
   <div class="wipe__panel" style="--i:5"></div>
 </div>
 
-<svg class="gear" data-gear viewBox="0 0 400 400" aria-hidden="true" focusable="false">
-  <g class="gear__ring" fill="none" stroke="currentColor">
-    <circle cx="200" cy="200" r="196" stroke-width="1"/>
-    <circle cx="200" cy="200" r="188" stroke-width="14" stroke-dasharray="2 9.83"/>
-    <circle cx="200" cy="200" r="180" stroke-width="1"/>
-    <circle cx="200" cy="200" r="140" stroke-width="1"/>
-  </g>
-  <g class="gear__ring gear__ring--2" fill="none" stroke="currentColor">
-    <circle cx="200" cy="200" r="104" stroke-width="1"/>
-    <circle cx="200" cy="200" r="97" stroke-width="12" stroke-dasharray="2 8.9"/>
-    <circle cx="200" cy="200" r="90" stroke-width="1"/>
-    <circle cx="200" cy="200" r="34" stroke-width="1"/>
-  </g>
-</svg>
+<div class="machine machine--drive" data-machine="geartrain" data-machine-fixed aria-hidden="true"></div>
 
 <header class="header" data-header>
   <div class="wrap header__inner">
@@ -125,10 +112,10 @@
 
 <section class="section section--tight">
   <div class="wrap grid">
-    <div class="col-4" data-shift="-24">
+    <div class="col-4" data-shift="-50">
       <span class="label" data-reveal><span class="ja">02 ／ 会社について</span><span class="en">02 &mdash; The company</span></span>
     </div>
-    <div class="col-7 start-6 stack flow-lg" data-shift="24">
+    <div class="col-7 start-6 stack flow-lg" data-shift="50">
       <p class="t-lead" data-reveal>
         <span class="ja">SHIFT合同会社は、東京を拠点とする持株会社です。自社ブランドを育てながら、クライアントのアカウント運営を引き受けています。どちらも同じ考え方で動かしています。手で回していたものを仕組みに、その場しのぎを再現できる形に。</span>
         <span class="en">SHIFT GK is a Tokyo holding company. We grow our own brands and hold client accounts, and both run on the same idea: what was handled by hand becomes a system, and what was improvised becomes repeatable.</span>
@@ -147,8 +134,9 @@
 </section>
 
 <section class="section section--sunk">
+  <div class="machine machine--rack" data-machine="rack" aria-hidden="true"></div>
   <div class="wrap grid">
-    <div class="col-5" data-shift="-20">
+    <div class="col-5" data-shift="-46">
       <div class="head">
         <span class="label" data-reveal><span class="ja">03 ／ 考え方</span><span class="en">03 &mdash; Principles</span></span>
         <h2 class="t-h2 head__title reveal-lines">
@@ -157,7 +145,7 @@
         </h2>
       </div>
     </div>
-    <div class="col-6 start-7 stack" style="--flow: var(--s-5)" data-shift="20" data-reveal-group>
+    <div class="col-6 start-7 stack" style="--flow: var(--s-5)" data-shift="46" data-reveal-group>
       <div class="card">
         <div class="card__index"><span class="label label--accent label--bare">01</span><span class="num muted">›</span></div>
         <h3 class="card__title"><span class="ja">まず現場を見る</span><span class="en">Look before moving</span></h3>
@@ -183,6 +171,7 @@
 </section>
 
 <section class="section">
+  <div class="machine machine--piston" data-machine="piston" aria-hidden="true"></div>
   <div class="wrap stack flow-lg">
     <div class="head">
       <span class="label" data-reveal><span class="ja">04 ／ 会社概要</span><span class="en">04 &mdash; Company profile</span></span>
@@ -301,6 +290,7 @@
 <script defer src="assets/js/nav.js"></script>
 <script defer src="assets/js/motion.js"></script>
 <script defer src="assets/js/puzzle.js"></script>
+<script defer src="assets/js/machinery.js"></script>
 
 </body>
 </html>
