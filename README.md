@@ -27,7 +27,7 @@ assets/css/base.css        reset, typography, grid
 assets/css/components.css  header, buttons, cards, forms, footer
 assets/css/motion.css      every animation
 assets/js/config.js        contact form endpoint + email address
-assets/js/puzzle.js        the sliding-tile board on the homepage
+assets/js/machinery.js     the gears, governor, cam, ratchet, piston, belt
 assets/img/shift-logo.svg  the logo, as vector
 ```
 
@@ -45,8 +45,8 @@ both spans. Japanese is the default; the choice is remembered per visitor.
 ### Changing the colours
 
 All of them are in `assets/css/tokens.css`, at the top. Change `--c-accent`
-and the whole site follows — buttons, links, the chevron on the homepage
-board, focus rings.
+and the whole site follows — buttons, links, the accent parts of the
+machinery, focus rings.
 
 ### Things marked for you
 
@@ -57,7 +57,9 @@ unfinished:
   Placeholder paragraphs, waiting for your words.
 - **会社概要 table** — `about.html`. Rows reading 準備中 / To be confirmed need
   the real details from the 履歴事項全部証明書. Nothing there is invented.
-- **Ventures** — `ventures.html`. Copy a `.bento__item` block to add another.
+- **Venture links** — `index.html` and `ventures.html`. The rows are not linked
+  yet because the URLs aren't known. The markup to wrap a row in is sitting in
+  a comment right above the list. Copy a `.vrow` block to add another venture.
 
 ---
 

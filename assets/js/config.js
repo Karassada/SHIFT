@@ -12,6 +12,6 @@ window.SHIFT_CONFIG = {
   formEndpoint: "",
   contactEmail: "admin@shiftgk.com",
 
-  /* Reduce the wipe/board work on machines that ask for calm. */
+  /* Stop the machinery and the page wipe for anyone who asks for calm. */
   reducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches
 };
