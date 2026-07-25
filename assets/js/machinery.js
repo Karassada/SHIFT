@@ -331,6 +331,140 @@
     };
   };
 
+  /* --- Centrifugal governor -------------------------------------------- */
+  /* The arms swing out, and because the lower links are the same length as
+     the upper ones the sleeve rises by exactly 2L*cos(a). It is the oldest
+     self-regulating machine there is, which is the point. */
+  BUILD.governor = function () {
+    var svg = el("svg", { viewBox: "0 0 220 280", fill: "none", stroke: "currentColor" });
+    var x = 110, top = 62, L = 66, ball = 13;
+
+    svg.appendChild(add(el("g", { class: "mc-frame", "stroke-width": 1.2 }), [
+      el("path", { d: "M " + x + " 28 L " + x + " 236" }),
+      el("path", { d: "M 62 236 L 158 236" }),
+      el("circle", { cx: x, cy: top, r: 4 })
+    ]));
+    svg.appendChild(bedplate(58, 236, 104));
+
+    var spin = gear(x, 246, 16, 4.6, { spokes: 4, sw: 1.2 });
+    svg.appendChild(spin.node);
+
+    var armL = el("path", { "stroke-width": 2 });
+    var armR = el("path", { "stroke-width": 2 });
+    var linkL = el("path", { "stroke-width": 1.4 });
+    var linkR = el("path", { "stroke-width": 1.4 });
+    var ballL = el("circle", { r: ball, "stroke-width": 1.8 });
+    var ballR = el("circle", { r: ball, "stroke-width": 1.8 });
+    var sleeve = el("rect", { x: x - 13, width: 26, height: 16, rx: 2, "stroke-width": 1.6 });
+    add(svg, [armL, armR, linkL, linkR, sleeve, ballL, ballR]);
+
+    return {
+      svg: svg,
+      update: function (p) {
+        spinTo(spin, p * 1400);
+        /* Opens and closes twice as the section passes. */
+        var a = (16 + 30 * (0.5 - 0.5 * Math.cos(p * 4 * Math.PI))) * Math.PI / 180;
+        var dx = Math.sin(a) * L, dy = Math.cos(a) * L;
+        var sy = top + 2 * dy;
+        [[armL, ballL, linkL, -1], [armR, ballR, linkR, 1]].forEach(function (s) {
+          var bx = x + s[3] * dx, by = top + dy;
+          s[0].setAttribute("d", "M " + x + " " + top + " L " + bx.toFixed(1) + " " + by.toFixed(1));
+          s[1].setAttribute("cx", bx.toFixed(1));
+          s[1].setAttribute("cy", by.toFixed(1));
+          s[2].setAttribute("d", "M " + bx.toFixed(1) + " " + by.toFixed(1) + " L " + x + " " + sy.toFixed(1));
+        });
+        sleeve.setAttribute("y", (sy - 8).toFixed(1));
+      }
+    };
+  };
+
+  /* --- Eccentric cam and roller follower -------------------------------- */
+  BUILD.cam = function () {
+    var svg = el("svg", { viewBox: "0 0 240 270", fill: "none", stroke: "currentColor" });
+    var sx = 108, sy = 168, R = 52, ecc = 22, roll = 14;
+
+    svg.appendChild(add(el("g", { class: "mc-frame", "stroke-width": 1.2 }), [
+      el("path", { d: "M " + (sx - 16) + " 30 L " + (sx - 16) + " 74 M " + (sx + 16) + " 30 L " + (sx + 16) + " 74" }),
+      el("circle", { cx: sx, cy: sy, r: 3.5 })
+    ]));
+    svg.appendChild(bedplate(44, 236, 150));
+    svg.appendChild(driveShaft(sx, sy, 194, sy));
+
+    var cam = el("circle", { r: R, "stroke-width": 1.8 });
+    var camHub = el("circle", { r: 6, "stroke-width": 1.2 });
+    var roller = el("circle", { r: roll, "stroke-width": 1.6 });
+    var rod = el("path", { "stroke-width": 2.2 });
+    add(svg, [cam, camHub, rod, roller]);
+    svg.appendChild(bearing(sx, sy, 14));
+
+    return {
+      svg: svg,
+      update: function (p) {
+        var th = p * 5 * Math.PI;
+        var cxx = sx + Math.cos(th) * ecc, cyy = sy + Math.sin(th) * ecc;
+        cam.setAttribute("cx", cxx.toFixed(1));
+        cam.setAttribute("cy", cyy.toFixed(1));
+        camHub.setAttribute("cx", cxx.toFixed(1));
+        camHub.setAttribute("cy", cyy.toFixed(1));
+        /* The roller sits on the axis, so its height follows from the cam
+           centre being off it: dy = sqrt((R+r)^2 - dx^2). */
+        var dx = cxx - sx;
+        var ry = cyy - Math.sqrt((R + roll) * (R + roll) - dx * dx);
+        roller.setAttribute("cx", sx);
+        roller.setAttribute("cy", ry.toFixed(1));
+        rod.setAttribute("d", "M " + sx + " " + ry.toFixed(1) + " L " + sx + " 34");
+      }
+    };
+  };
+
+  /* --- Ratchet and pawl ------------------------------------------------- */
+  /* Turns one way and locks the other — the reason a shift stays shifted. */
+  BUILD.ratchet = function () {
+    var svg = el("svg", { viewBox: "0 0 240 240", fill: "none", stroke: "currentColor" });
+    var cx = 110, cy = 118, r = 74, N = 16, step = TAU / N;
+
+    /* Teeth drawn about the origin so the whole wheel is one rotate(). */
+    var d = "M " + xy(r, 0);
+    for (var i = 0; i < N; i++) {
+      var a = i * step;
+      d += " L " + xy(r * 0.78, a + step * 0.62) + " L " + xy(r, a + step);
+    }
+
+    var wheel = el("g", {});
+    add(wheel, [
+      el("path", { d: d + " Z", "stroke-width": 1.6 }),
+      el("circle", { r: 20, "stroke-width": 1.3 }),
+      el("circle", { r: 5, "stroke-width": 1.2 })
+    ]);
+    var hub = el("g", { transform: "translate(" + cx + " " + cy + ")" });
+    hub.appendChild(wheel);
+
+    svg.appendChild(bedplate(38, 212, 156));
+    svg.appendChild(driveShaft(cx, cy, 38, cy));
+    svg.appendChild(hub);
+    svg.appendChild(bearing(cx, cy, 14));
+
+    /* The pawl: pivoted above and to the right, tip resting on the teeth. */
+    var pawl = el("g", { "stroke-width": 1.9 });
+    add(pawl, [
+      el("path", { d: "M 204 44 L 132 92" }),
+      el("circle", { cx: 204, cy: 44, r: 4.5, "stroke-width": 1.3 }),
+      el("path", { d: "M 204 44 L 214 30", class: "mc-frame", "stroke-width": 1.2 })
+    ]);
+    svg.appendChild(pawl);
+
+    return {
+      svg: svg,
+      update: function (p) {
+        var deg = p * 540;
+        spinTo({ spin: wheel }, deg);
+        /* Rides up the back of a tooth, then drops off its end. */
+        var frac = ((deg / (360 / N)) % 1 + 1) % 1;
+        pawl.setAttribute("transform", "rotate(" + (-7 + 9 * frac).toFixed(2) + " 204 44)");
+      }
+    };
+  };
+
   /* ======================================================================
      Mount and drive
      ====================================================================== */

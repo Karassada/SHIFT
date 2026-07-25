@@ -430,6 +430,54 @@
 .venture:hover .venture__chev { opacity: 1; transform: translateX(0); }
 
 /* ==========================================================================
+   Ventures list
+   Deliberately quiet. These are things SHIFT happens to own, not the pitch —
+   a name, a line, and a way out to their own site if you care.
+   ========================================================================== */
+
+.vlist { border-block-start: var(--hair) solid var(--c-line); }
+
+.vrow {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s-2);
+  padding-block: var(--s-5);
+  padding-inline: var(--s-3);
+  margin-inline: calc(var(--s-3) * -1);
+  border-block-end: var(--hair) solid var(--c-line);
+  transition: background-color var(--d-comp) linear,
+              transform var(--d-comp) var(--e-shift);
+}
+@media (min-width: 48em) {
+  .vrow { grid-template-columns: 13rem 1fr auto; gap: var(--s-6); align-items: baseline; }
+}
+
+.vrow__name {
+  font-size: var(--t-h3);
+  font-weight: 600;
+  letter-spacing: var(--tr-tight);
+}
+.vrow__desc { color: var(--c-ink-2); font-size: var(--t-small); line-height: 1.7; }
+
+.vrow__go {
+  font-family: var(--f-mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--tr-label);
+  text-transform: uppercase;
+  color: var(--c-accent);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  white-space: nowrap;
+}
+.vrow__go span { transition: transform var(--d-comp) var(--e-shift); }
+
+/* Only the rows that actually go somewhere respond to a pointer. */
+a.vrow { color: inherit; }
+a.vrow:hover { background: var(--surface-sunk); transform: translateX(4px); }
+a.vrow:hover .vrow__go span { transform: translateX(4px); }
+
+/* ==========================================================================
    会社概要 table — the standard Japanese company profile block
    ========================================================================== */
 

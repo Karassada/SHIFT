@@ -72,10 +72,17 @@
    Each assembly sits fully inside the viewport: a casing or bedplate sliced
    by the screen edge reads as a mistake rather than as a machine continuing
    out of frame. The rack is the exception — it is meant to run on past. */
+/* Large assemblies carry the sections with room for them. */
 .machine--geartrain { inset-block-start: 50%; inset-inline-end: 0; inline-size: 60%; translate: 0 -50%; }
 .machine--rack      { inset-block-start: 6%;  inset-inline-start: -18%; inline-size: 74%; }
 .machine--piston    { inset-block-end: 8%;    inset-inline-end: 0; inline-size: 58%; }
 .machine--pulley    { inset-block-start: 14%; inset-inline-end: 0; inline-size: 52%; }
+
+/* Small mechanisms fill the quieter stretches, so movement carries all the
+   way down the page instead of stopping after the first screen. */
+.machine--governor { inset-block-start: 50%; inset-inline-start: 2%; inline-size: 15%; translate: 0 -50%; }
+.machine--cam      { inset-block-start: 50%; inset-inline-end: 3%;  inline-size: 17%; translate: 0 -50%; }
+.machine--ratchet  { inset-block-end: 10%;   inset-inline-start: 3%; inline-size: 18%; }
 
 @media (max-width: 47.99em) {
   .machine { opacity: 0.12; }
@@ -83,6 +90,9 @@
   .machine--rack      { inline-size: 130%; inset-inline-start: -22%; }
   .machine--piston    { inline-size: 112%; inset-inline-end: -6%; }
   .machine--pulley    { inline-size: 105%; inset-inline-end: -3%; }
+  .machine--governor  { inline-size: 34%; inset-inline-start: -6%; }
+  .machine--cam       { inline-size: 38%; inset-inline-end: -8%; }
+  .machine--ratchet   { inline-size: 40%; inset-inline-start: -8%; }
 }
 
 /* Content always sits above the machinery. */
