@@ -19,7 +19,11 @@
 
 <script>
 /* Apply the saved language before first paint so nothing flashes. */
-(function(){try{if(localStorage.getItem('shift-lang')==='en'){var d=document.documentElement;d.setAttribute('data-lang','en');d.setAttribute('lang','en');}}catch(e){}})();
+(function(){var d=document.documentElement;
+try{if(localStorage.getItem('shift-lang')==='en'){d.setAttribute('data-lang','en');d.setAttribute('lang','en');}}catch(e){}
+/* Reveal animations are opt-in: without this class every element renders
+   normally, so a script failure can never leave the page blank. */
+try{if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches){d.className+=' js-anim';}}catch(e){}})();
 </script>
 </head>
 
@@ -91,17 +95,16 @@
 </div>
 
 <main id="main">
-<section class="phero">
-  <div class="machine machine--ratchet" data-machine="ratchet" aria-hidden="true"></div>
+<section class="phero has-machine">
   <div class="machine machine--geartrain" data-machine="geartrain" aria-hidden="true"></div>
   <div class="wrap grid">
     <div class="col-8">
       <span class="label" data-reveal><span class="ja">01 ／ お問い合わせ</span><span class="en">01 &mdash; Contact</span></span>
-      <h1 class="t-h1 phero__title reveal-lines" style="margin-block-start:var(--s-5)">
+      <h1 class="t-h1 phero__title reveal-lines" style="margin-top:var(--s-5)">
         <span><span><span class="ja">まず一つ、</span><span class="en">Start with one</span></span></span>
         <span><span><span class="ja">困りごとを。</span><span class="en">thing that's stuck.</span></span></span>
       </h1>
-      <p class="t-lead" data-reveal style="--i:2; margin-block-start:var(--s-5)">
+      <p class="t-lead" data-reveal style="--i:2; margin-top:var(--s-5)">
         <span class="ja">全体像が固まっていなくても構いません。いま一番うまくいっていないことを一つ挙げてもらえれば、そこから話せます。3営業日以内に返信します。</span>
         <span class="en">You do not need the whole picture worked out. Name the one thing that is working least well and we can start there. We reply within three business days.</span>
       </p>
@@ -110,7 +113,7 @@
   </div>
 </section>
 
-<section class="section section--tight">
+<section class="section section--tight has-machine">
   <div class="machine machine--pulley" data-machine="pulley" aria-hidden="true"></div>
   <div class="wrap grid">
 
@@ -220,8 +223,8 @@
       <div class="footer__head">
         <span class="logo logo--footer" role="img" aria-label="SHIFT"></span>
         <p class="t-small" style="opacity:.75">
-          <span class="ja">SHIFT合同会社 — 東京を拠点に、事業運営・ブランド・仕組みづくりを担う持株会社。</span>
-          <span class="en">SHIFT GK &mdash; a Tokyo holding company for operations, brand, and systems.</span>
+          <span class="ja">SHIFT合同会社 — 東京を拠点に、会社の仕組みづくりを手がけています。</span>
+          <span class="en">SHIFT GK &mdash; a Tokyo company that sets up the systems a business runs on.</span>
         </p>
       </div>
 
@@ -238,7 +241,7 @@
         <span class="footer__label"><span class="ja">連絡先</span><span class="en">Contact</span></span>
         <a class="footer__link" href="mailto:admin@shiftgk.com">admin@shiftgk.com</a>
         <span class="footer__link" style="opacity:.6">TOKYO, JAPAN</span>
-        <a class="footer__link" href="privacy.html" style="margin-block-start:var(--s-3)"><span class="ja">プライバシーポリシー</span><span class="en">Privacy policy</span></a>
+        <a class="footer__link" href="privacy.html" style="margin-top:var(--s-3)"><span class="ja">プライバシーポリシー</span><span class="en">Privacy policy</span></a>
       </div>
     </div>
 

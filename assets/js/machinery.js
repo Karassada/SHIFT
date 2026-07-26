@@ -512,5 +512,8 @@
 
   window.addEventListener("scroll", request, { passive: true });
   window.addEventListener("resize", request, { passive: true });
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) request();
+  });
   request();
 })();

@@ -71,9 +71,13 @@
   /* Surfaces are translucent so the machinery stays readable behind them.
      Panels still register as panels — the border and the tint do that — but
      they no longer black out the mechanism they are sitting on. */
-  --surface:      color-mix(in srgb, var(--c-paper) 58%, transparent);
-  --surface-lift: color-mix(in srgb, var(--c-paper) 78%, transparent);
-  --surface-sunk: color-mix(in srgb, var(--c-sunk)  55%, transparent);
+  --surface:        #F4F2ED;
+  --surface:        color-mix(in srgb, var(--c-paper) 58%, transparent);
+  --surface-lift:   #F5F3EF;
+  --surface-lift:   color-mix(in srgb, var(--c-paper) 78%, transparent);
+  --surface-sunk:   #EAE7E0;
+  --surface-sunk:   color-mix(in srgb, var(--c-sunk)  55%, transparent);
+  --surface-accent: #6B8296;
   --surface-accent: color-mix(in srgb, var(--c-accent) 74%, transparent);
 
   /* --- Motion ----------------------------------------------------------- */
@@ -123,6 +127,16 @@
     --c-danger:    #D98A82;
     --c-ok:        #86B79A;
     --c-focus:     #8FB3CA;
+    /* Same surfaces re-mixed for the dark palette, each with a solid
+       fallback first for browsers without color-mix. */
+    --surface:        #202426;
+    --surface:        color-mix(in srgb, var(--c-paper) 58%, transparent);
+    --surface-lift:   #222629;
+    --surface-lift:   color-mix(in srgb, var(--c-paper) 78%, transparent);
+    --surface-sunk:   #181B1D;
+    --surface-sunk:   color-mix(in srgb, var(--c-sunk)  55%, transparent);
+    --surface-accent: #718C9E;
+    --surface-accent: color-mix(in srgb, var(--c-accent) 74%, transparent);
   }
 }
 
@@ -143,4 +157,14 @@
   --c-danger:    #D98A82;
   --c-ok:        #86B79A;
   --c-focus:     #8FB3CA;
+  /* Same surfaces re-mixed for the dark palette, each with a solid
+     fallback first for browsers without color-mix. */
+  --surface:        #202426;
+  --surface:        color-mix(in srgb, var(--c-paper) 58%, transparent);
+  --surface-lift:   #222629;
+  --surface-lift:   color-mix(in srgb, var(--c-paper) 78%, transparent);
+  --surface-sunk:   #181B1D;
+  --surface-sunk:   color-mix(in srgb, var(--c-sunk)  55%, transparent);
+  --surface-accent: #718C9E;
+  --surface-accent: color-mix(in srgb, var(--c-accent) 74%, transparent);
 }

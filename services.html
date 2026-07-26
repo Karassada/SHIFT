@@ -19,7 +19,11 @@
 
 <script>
 /* Apply the saved language before first paint so nothing flashes. */
-(function(){try{if(localStorage.getItem('shift-lang')==='en'){var d=document.documentElement;d.setAttribute('data-lang','en');d.setAttribute('lang','en');}}catch(e){}})();
+(function(){var d=document.documentElement;
+try{if(localStorage.getItem('shift-lang')==='en'){d.setAttribute('data-lang','en');d.setAttribute('lang','en');}}catch(e){}
+/* Reveal animations are opt-in: without this class every element renders
+   normally, so a script failure can never leave the page blank. */
+try{if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches){d.className+=' js-anim';}}catch(e){}})();
 </script>
 </head>
 
@@ -91,16 +95,16 @@
 </div>
 
 <main id="main">
-<section class="phero">
+<section class="phero has-machine">
   <div class="machine machine--geartrain" data-machine="geartrain" aria-hidden="true"></div>
   <div class="wrap grid">
     <div class="col-8">
       <span class="label" data-reveal><span class="ja">01 ／ サービス</span><span class="en">01 &mdash; Services</span></span>
-      <h1 class="t-h1 phero__title reveal-lines" style="margin-block-start:var(--s-5)">
-        <span><span><span class="ja">請けるのは、</span><span class="en">We take on the</span></span></span>
-        <span><span><span class="ja">運営そのもの。</span><span class="en">running of things.</span></span></span>
+      <h1 class="t-h1 phero__title reveal-lines" style="margin-top:var(--s-5)">
+        <span><span><span class="ja">会社の仕組みを、</span><span class="en">We set up the</span></span></span>
+        <span><span><span class="ja">まとめて整えます。</span><span class="en">whole backbone.</span></span></span>
       </h1>
-      <p class="t-lead" data-reveal style="--i:2; margin-block-start:var(--s-5)">
+      <p class="t-lead" data-reveal style="--i:2; margin-top:var(--s-5)">
         <span class="ja">会社が動くための土台を、まとめて用意します。ゼロからの立ち上げでも、いまある環境の整理からでも。難しい言葉は使いません。</span>
         <span class="en">We set up the groundwork a business runs on, all of it together &mdash; from nothing, or by putting what you already have in order. No jargon required.</span>
       </p>
@@ -109,8 +113,7 @@
   </div>
 </section>
 
-<section class="section section--tight">
-  <div class="machine machine--ratchet" data-machine="ratchet" aria-hidden="true"></div>
+<section class="section section--tight has-machine">
   <div class="machine machine--rack" data-machine="rack" aria-hidden="true"></div>
   <div class="wrap">
       <div class="scards">
@@ -127,8 +130,8 @@
         <span class="badge" aria-hidden="true">02</span>
         <div class="scard__main">
           <h3 class="scard__title"><span class="ja">会社を知っているAI</span><span class="en">An AI that knows the business</span><span class="chev" aria-hidden="true">»</span></h3>
-          <p class="scard__summary"><span class="ja">貼り付けて聞くAIではなく、事情を分かっているAIを。</span><span class="en">Not a chatbot you paste into. One that already knows.</span></p>
-          <p class="scard__body"><span class="ja">会社のファイル、予定、これまでのやり取りを踏まえて動くAIを、お手元の環境に用意します。データはドライブに控えを取るので、消えて取り返しがつかない、ということが起きません。</span><span class="en">An AI running on your own machine with your files, your calendar and your history already behind it &mdash; and a copy of everything kept on your Drive, so nothing can be lost for good.</span></p>
+          <p class="scard__summary"><span class="ja">貼り付けて聞くAIではなく、事情を分かっているAIを。</span><span class="en">Not a chatbot you paste things into &mdash; one that already knows.</span></p>
+          <p class="scard__body"><span class="ja">会社のファイル、予定、これまでのやり取りを踏まえて動くAIを、お手元の環境に用意します。データはドライブに控えを残すので、消えて取り返しがつかない、という事態は起きません。</span><span class="en">An AI running on your own machine with your files, your calendar and your history already behind it &mdash; and a copy of everything kept on your Drive, so nothing can be lost for good.</span></p>
           <div class="scard__tags"><span class="tag">On your machine</span><span class="tag">Backed up</span><span class="tag">Context</span></div>
         </div>
       </article>
@@ -163,7 +166,7 @@
   </div>
 </section>
 
-<section class="section section--sunk">
+<section class="section section--sunk has-machine">
   <div class="machine machine--piston" data-machine="piston" aria-hidden="true"></div>
   <div class="wrap grid">
     <div class="col-5" data-shift="-50">
@@ -195,7 +198,8 @@
   </div>
 </section>
 
-<section class="section">
+<section class="section has-machine">
+  <div class="machine machine--ratchet" data-machine="ratchet" aria-hidden="true"></div>
   <div class="wrap grid" style="align-items:center">
     <div class="col-7 head">
       <h2 class="t-h2 reveal-lines" style="max-width:16ch">
@@ -215,7 +219,7 @@
         </span>
         <span class="btn__chev" aria-hidden="true">»</span>
       </a>
-      <p class="t-small muted" style="margin-block-start:var(--s-4); text-align:center">
+      <p class="t-small muted" style="margin-top:var(--s-4); text-align:center">
         <a class="link" href="mailto:admin@shiftgk.com">admin@shiftgk.com</a>
       </p>
     </div>
@@ -229,8 +233,8 @@
       <div class="footer__head">
         <span class="logo logo--footer" role="img" aria-label="SHIFT"></span>
         <p class="t-small" style="opacity:.75">
-          <span class="ja">SHIFT合同会社 — 東京を拠点に、事業運営・ブランド・仕組みづくりを担う持株会社。</span>
-          <span class="en">SHIFT GK &mdash; a Tokyo holding company for operations, brand, and systems.</span>
+          <span class="ja">SHIFT合同会社 — 東京を拠点に、会社の仕組みづくりを手がけています。</span>
+          <span class="en">SHIFT GK &mdash; a Tokyo company that sets up the systems a business runs on.</span>
         </p>
       </div>
 
@@ -247,7 +251,7 @@
         <span class="footer__label"><span class="ja">連絡先</span><span class="en">Contact</span></span>
         <a class="footer__link" href="mailto:admin@shiftgk.com">admin@shiftgk.com</a>
         <span class="footer__link" style="opacity:.6">TOKYO, JAPAN</span>
-        <a class="footer__link" href="privacy.html" style="margin-block-start:var(--s-3)"><span class="ja">プライバシーポリシー</span><span class="en">Privacy policy</span></a>
+        <a class="footer__link" href="privacy.html" style="margin-top:var(--s-3)"><span class="ja">プライバシーポリシー</span><span class="en">Privacy policy</span></a>
       </div>
     </div>
 

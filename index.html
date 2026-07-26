@@ -19,7 +19,11 @@
 
 <script>
 /* Apply the saved language before first paint so nothing flashes. */
-(function(){try{if(localStorage.getItem('shift-lang')==='en'){var d=document.documentElement;d.setAttribute('data-lang','en');d.setAttribute('lang','en');}}catch(e){}})();
+(function(){var d=document.documentElement;
+try{if(localStorage.getItem('shift-lang')==='en'){d.setAttribute('data-lang','en');d.setAttribute('lang','en');}}catch(e){}
+/* Reveal animations are opt-in: without this class every element renders
+   normally, so a script failure can never leave the page blank. */
+try{if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches){d.className+=' js-anim';}}catch(e){}})();
 </script>
 </head>
 
@@ -100,7 +104,7 @@
 <!-- ====================================================================== -->
 <!-- Hero                                                                    -->
 <!-- ====================================================================== -->
-<section class="section hero" style="padding-block-start: clamp(7rem, 16vw, 11rem)">
+<section class="section hero has-machine" style="padding-top: clamp(7rem, 16vw, 11rem)">
   <div class="machine machine--geartrain" data-machine="geartrain" aria-hidden="true"></div>
   <div class="wrap grid">
 
@@ -115,7 +119,7 @@
       </h1>
 
       <p class="t-lead" data-reveal style="--i:3">
-        <span class="ja">東京の合同会社です。会社の土台づくりから、業務を理解して動くAIの導入、ダッシュボードやウェブサイトまで。ばらばらになっている作業を、ひとつの仕組みにまとめます。</span>
+        <span class="ja">東京を拠点とする合同会社です。会社の土台づくりから、業務を理解して動くAIの導入、ダッシュボードやウェブサイトまで。ばらばらになっている作業を、ひとつの仕組みにまとめます。</span>
         <span class="en">A Tokyo company. We set up the groundwork a business runs on, put an AI in place that understands it, and build the dashboards and sites that make it visible &mdash; turning scattered work into one system.</span>
       </p>
 
@@ -182,7 +186,7 @@
 <!-- ==== GUTO: this is the block you said you'd still think about.     ==== -->
 <!-- ==== Replace the two paragraphs below with your own words.         ==== -->
 <!-- ====================================================================== -->
-<section class="section" id="about-shift">
+<section class="section has-machine" id="about-shift">
   <div class="machine machine--governor" data-machine="governor" aria-hidden="true"></div>
   <div class="wrap grid">
     <div class="col-4" data-shift="-58">
@@ -207,7 +211,7 @@
       </div>
 
       <p class="t-body ink-2" data-reveal>
-        <span class="ja">〔このセクションはプレースホルダーです。会社の考え方をご自身の言葉に差し替えてください。〕</span>
+        <span class="ja">〔ここは差し替え用のプレースホルダーです。会社の考え方を、ご自身の言葉で書いてください。〕</span>
         <span class="en">[Placeholder. Replace this paragraph with the company's own words.]</span>
       </p>
 
@@ -224,7 +228,7 @@
 <!-- ====================================================================== -->
 <!-- Services                                                                -->
 <!-- ====================================================================== -->
-<section class="section section--sunk">
+<section class="section section--sunk has-machine">
   <div class="machine machine--rack" data-machine="rack" aria-hidden="true"></div>
   <div class="wrap stack flow-lg">
     <div class="grid" style="align-items:end">
@@ -243,7 +247,7 @@
       </div>
     </div>
 
-    <div style="margin-block-start:var(--s-6)">
+    <div style="margin-top:var(--s-6)">
       <div class="scards">
       <article class="scard" data-reveal>
         <span class="badge" aria-hidden="true">01</span>
@@ -258,8 +262,8 @@
         <span class="badge" aria-hidden="true">02</span>
         <div class="scard__main">
           <h3 class="scard__title"><span class="ja">会社を知っているAI</span><span class="en">An AI that knows the business</span><span class="chev" aria-hidden="true">»</span></h3>
-          <p class="scard__summary"><span class="ja">貼り付けて聞くAIではなく、事情を分かっているAIを。</span><span class="en">Not a chatbot you paste into. One that already knows.</span></p>
-          <p class="scard__body"><span class="ja">会社のファイル、予定、これまでのやり取りを踏まえて動くAIを、お手元の環境に用意します。データはドライブに控えを取るので、消えて取り返しがつかない、ということが起きません。</span><span class="en">An AI running on your own machine with your files, your calendar and your history already behind it &mdash; and a copy of everything kept on your Drive, so nothing can be lost for good.</span></p>
+          <p class="scard__summary"><span class="ja">貼り付けて聞くAIではなく、事情を分かっているAIを。</span><span class="en">Not a chatbot you paste things into &mdash; one that already knows.</span></p>
+          <p class="scard__body"><span class="ja">会社のファイル、予定、これまでのやり取りを踏まえて動くAIを、お手元の環境に用意します。データはドライブに控えを残すので、消えて取り返しがつかない、という事態は起きません。</span><span class="en">An AI running on your own machine with your files, your calendar and your history already behind it &mdash; and a copy of everything kept on your Drive, so nothing can be lost for good.</span></p>
           <div class="scard__tags"><span class="tag">On your machine</span><span class="tag">Backed up</span><span class="tag">Context</span></div>
         </div>
       </article>
@@ -305,7 +309,7 @@
 <!-- ====================================================================== -->
 <!-- Ventures                                                                -->
 <!-- ====================================================================== -->
-<section class="section">
+<section class="section has-machine">
   <div class="machine machine--cam" data-machine="cam" aria-hidden="true"></div>
   <div class="wrap stack flow-lg">
     <div class="head">
@@ -333,7 +337,7 @@
 <!-- ====================================================================== -->
 <!-- Approach                                                                -->
 <!-- ====================================================================== -->
-<section class="section section--sunk">
+<section class="section section--sunk has-machine">
   <div class="machine machine--piston" data-machine="piston" aria-hidden="true"></div>
   <div class="wrap grid">
     <div class="col-5" data-shift="-50">
@@ -378,7 +382,7 @@
 <!-- ====================================================================== -->
 <!-- CTA                                                                     -->
 <!-- ====================================================================== -->
-<section class="section">
+<section class="section has-machine">
   <div class="machine machine--pulley" data-machine="pulley" aria-hidden="true"></div>
   <div class="wrap grid" style="align-items:center">
     <div class="col-7 head">
@@ -388,8 +392,8 @@
         <span><span><span class="ja">ご連絡ください。</span><span class="en">touch.</span></span></span>
       </h2>
       <p class="t-lead" data-reveal>
-        <span class="ja">ご相談、お見積り、何からどう整えるべきかの相談まで。3営業日以内に返信します。</span>
-        <span class="en">Questions, quotes, or just working out where to start. We reply within three business days.</span>
+        <span class="ja">ご相談もお見積りも、何から手をつけるべきか分からない段階でも構いません。3営業日以内に返信します。</span>
+        <span class="en">Questions, quotes, or not yet knowing where to start &mdash; all fine. We reply within three business days.</span>
       </p>
     </div>
     <div class="col-4 start-9" data-reveal>
@@ -400,7 +404,7 @@
         </span>
         <span class="btn__chev" aria-hidden="true">»</span>
       </a>
-      <p class="t-small muted" style="margin-block-start:var(--s-4); text-align:center">
+      <p class="t-small muted" style="margin-top:var(--s-4); text-align:center">
         <a class="link" href="mailto:admin@shiftgk.com">admin@shiftgk.com</a>
       </p>
     </div>
@@ -418,8 +422,8 @@
       <div class="footer__head">
         <span class="logo logo--footer" role="img" aria-label="SHIFT"></span>
         <p class="t-small" style="opacity:.75">
-          <span class="ja">SHIFT合同会社 — 東京を拠点に、事業運営・ブランド・仕組みづくりを担う持株会社。</span>
-          <span class="en">SHIFT GK &mdash; a Tokyo holding company for operations, brand, and systems.</span>
+          <span class="ja">SHIFT合同会社 — 東京を拠点に、会社の仕組みづくりを手がけています。</span>
+          <span class="en">SHIFT GK &mdash; a Tokyo company that sets up the systems a business runs on.</span>
         </p>
       </div>
 
@@ -436,7 +440,7 @@
         <span class="footer__label"><span class="ja">連絡先</span><span class="en">Contact</span></span>
         <a class="footer__link" href="mailto:admin@shiftgk.com">admin@shiftgk.com</a>
         <span class="footer__link" style="opacity:.6">TOKYO, JAPAN</span>
-        <a class="footer__link" href="privacy.html" style="margin-block-start:var(--s-3)"><span class="ja">プライバシーポリシー</span><span class="en">Privacy policy</span></a>
+        <a class="footer__link" href="privacy.html" style="margin-top:var(--s-3)"><span class="ja">プライバシーポリシー</span><span class="en">Privacy policy</span></a>
       </div>
     </div>
 

@@ -19,7 +19,11 @@
 
 <script>
 /* Apply the saved language before first paint so nothing flashes. */
-(function(){try{if(localStorage.getItem('shift-lang')==='en'){var d=document.documentElement;d.setAttribute('data-lang','en');d.setAttribute('lang','en');}}catch(e){}})();
+(function(){var d=document.documentElement;
+try{if(localStorage.getItem('shift-lang')==='en'){d.setAttribute('data-lang','en');d.setAttribute('lang','en');}}catch(e){}
+/* Reveal animations are opt-in: without this class every element renders
+   normally, so a script failure can never leave the page blank. */
+try{if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches){d.className+=' js-anim';}}catch(e){}})();
 </script>
 </head>
 
@@ -91,15 +95,15 @@
 </div>
 
 <main id="main">
-<section class="phero">
+<section class="phero has-machine">
   <div class="machine machine--geartrain" data-machine="geartrain" aria-hidden="true"></div>
   <div class="wrap grid">
     <div class="col-8">
       <span class="label" data-reveal><span class="ja">プライバシーポリシー</span><span class="en">Privacy policy</span></span>
-      <h1 class="t-h1 phero__title" data-reveal style="margin-block-start:var(--s-5)">
+      <h1 class="t-h1 phero__title" data-reveal style="margin-top:var(--s-5)">
         <span class="ja">個人情報の取り扱いについて</span><span class="en">How we handle personal information</span>
       </h1>
-      <p class="t-lead" data-reveal style="margin-block-start:var(--s-5)">
+      <p class="t-lead" data-reveal style="margin-top:var(--s-5)">
         <span class="ja">SHIFT合同会社（以下「当社」）は、個人情報の保護に関する法律その他の関係法令を遵守し、本ウェブサイトを通じて取得する個人情報を以下のとおり取り扱います。</span>
         <span class="en">SHIFT GK ("we") complies with Japan's Act on the Protection of Personal Information and related regulations. This is how we handle the personal information collected through this website.</span>
       </p>
@@ -107,7 +111,7 @@
   </div>
 </section>
 
-<section class="section section--tight">
+<section class="section section--tight has-machine">
   <div class="machine machine--rack" data-machine="rack" aria-hidden="true"></div>
   <div class="wrap grid">
     <div class="col-8 start-2 stack" style="--flow: var(--s-4)">
@@ -155,7 +159,7 @@
       </div>
 
       <div data-reveal>
-        <hr class="rule" style="margin-block-end:var(--s-4)">
+        <hr class="rule" style="margin-bottom:var(--s-4)">
         <p class="t-small muted">
           <span class="ja">制定日：準備中。本ポリシーは必要に応じて改定します。</span>
           <span class="en">Effective date: to be confirmed. We may revise this policy as needed.</span>
@@ -173,8 +177,8 @@
       <div class="footer__head">
         <span class="logo logo--footer" role="img" aria-label="SHIFT"></span>
         <p class="t-small" style="opacity:.75">
-          <span class="ja">SHIFT合同会社 — 東京を拠点に、事業運営・ブランド・仕組みづくりを担う持株会社。</span>
-          <span class="en">SHIFT GK &mdash; a Tokyo holding company for operations, brand, and systems.</span>
+          <span class="ja">SHIFT合同会社 — 東京を拠点に、会社の仕組みづくりを手がけています。</span>
+          <span class="en">SHIFT GK &mdash; a Tokyo company that sets up the systems a business runs on.</span>
         </p>
       </div>
 
@@ -191,7 +195,7 @@
         <span class="footer__label"><span class="ja">連絡先</span><span class="en">Contact</span></span>
         <a class="footer__link" href="mailto:admin@shiftgk.com">admin@shiftgk.com</a>
         <span class="footer__link" style="opacity:.6">TOKYO, JAPAN</span>
-        <a class="footer__link" href="privacy.html" style="margin-block-start:var(--s-3)"><span class="ja">プライバシーポリシー</span><span class="en">Privacy policy</span></a>
+        <a class="footer__link" href="privacy.html" style="margin-top:var(--s-3)"><span class="ja">プライバシーポリシー</span><span class="en">Privacy policy</span></a>
       </div>
     </div>
 

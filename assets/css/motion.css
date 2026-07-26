@@ -7,35 +7,42 @@
 /* --------------------------------------------------------------------------
    Reveal on scroll. Content arrives from below behind a clip, so it reads as
    a panel sliding up into its slot rather than a fade.
+
+   The hidden state is opt-in, gated behind .js-anim, which the inline script
+   in <head> only adds once it knows the browser can drive the animation. The
+   default state of every element is therefore *visible*: if a script fails,
+   an observer never fires, or the CSS arrives without the JS, the page still
+   renders in full instead of going blank.
    -------------------------------------------------------------------------- */
-[data-reveal] {
-  --rv-y: 24px;
+[data-reveal] { --rv-y: 24px; }
+
+.js-anim [data-reveal] {
   opacity: 0;
   transform: translate3d(0, var(--rv-y), 0);
   transition: opacity var(--d-sect) linear,
               transform var(--d-sect) var(--e-shift);
   transition-delay: calc(var(--i, 0) * var(--stagger));
-  will-change: transform, opacity;
 }
-[data-reveal].is-in { opacity: 1; transform: translate3d(0, 0, 0); will-change: auto; }
+.js-anim [data-reveal].is-in { opacity: 1; transform: translate3d(0, 0, 0); }
 
-[data-reveal="left"]  { --rv-y: 0; transform: translate3d(-28px, 0, 0); }
-[data-reveal="right"] { --rv-y: 0; transform: translate3d(28px, 0, 0); }
-[data-reveal="scale"] { transform: translate3d(0, var(--rv-y), 0) scale(0.985); }
-[data-reveal="scale"].is-in { transform: none; }
+.js-anim [data-reveal="left"]  { --rv-y: 0; transform: translate3d(-28px, 0, 0); }
+.js-anim [data-reveal="right"] { --rv-y: 0; transform: translate3d(28px, 0, 0); }
+.js-anim [data-reveal="scale"] { transform: translate3d(0, var(--rv-y), 0) scale(0.985); }
+.js-anim [data-reveal="scale"].is-in { transform: none; }
 
 /* Masked line reveal — used on headlines. Each line is its own clipped row,
    so the type shifts up out of a hard edge. Works for Latin and Japanese
    because the split is by line, not by word. */
 .reveal-lines { display: grid; }
-.reveal-lines > span { display: block; overflow: hidden; padding-block-end: 0.08em; margin-block-end: -0.08em; }
-.reveal-lines > span > span {
+.reveal-lines > span { display: block; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+.js-anim .reveal-lines > span { overflow: hidden; }
+.js-anim .reveal-lines > span > span {
   display: block;
   transform: translateY(105%);
   transition: transform var(--d-sect) var(--e-shift);
   transition-delay: calc(var(--i, 0) * 70ms);
 }
-.reveal-lines.is-in > span > span { transform: translateY(0); }
+.js-anim .reveal-lines.is-in > span > span { transform: translateY(0); }
 
 /* --------------------------------------------------------------------------
    Scroll displacement. Columns travel at different rates and converge to
@@ -43,8 +50,7 @@
    sliding into register. `--p` is written by motion.js (-1 → 1).
    -------------------------------------------------------------------------- */
 [data-shift] {
-  transform: translate3d(0, calc(var(--p, 0) * var(--shift-amp, 40px)), 0);
-  will-change: transform;
+  transform: translate3d(0, calc(var(--p, 0) * var(--shift-amp, 64px)), 0);
 }
 
 /* --------------------------------------------------------------------------
@@ -60,7 +66,7 @@
   color: var(--c-ink);
   opacity: 0.16;
 }
-.machine svg { inline-size: 100%; block-size: auto; overflow: visible; }
+.machine svg { width: 100%; height: auto; overflow: visible; }
 
 /* Frame, bearings and bedplate sit back a step from the moving parts, so the
    eye reads the mechanism first and the hardware holding it second. */
@@ -73,26 +79,26 @@
    by the screen edge reads as a mistake rather than as a machine continuing
    out of frame. The rack is the exception — it is meant to run on past. */
 /* Large assemblies carry the sections with room for them. */
-.machine--geartrain { inset-block-start: 50%; inset-inline-end: 0; inline-size: 60%; translate: 0 -50%; }
-.machine--rack      { inset-block-start: 6%;  inset-inline-start: -18%; inline-size: 74%; }
-.machine--piston    { inset-block-end: 8%;    inset-inline-end: 0; inline-size: 58%; }
-.machine--pulley    { inset-block-start: 14%; inset-inline-end: 0; inline-size: 52%; }
+.machine--geartrain { top: 50%; right: 0; width: 60%; translate: 0 -50%; }
+.machine--rack      { top: 6%;  left: -18%; width: 74%; }
+.machine--piston    { bottom: 8%;    right: 0; width: 58%; }
+.machine--pulley    { top: 14%; right: 0; width: 52%; }
 
 /* Small mechanisms fill the quieter stretches, so movement carries all the
    way down the page instead of stopping after the first screen. */
-.machine--governor { inset-block-start: 50%; inset-inline-start: 2%; inline-size: 15%; translate: 0 -50%; }
-.machine--cam      { inset-block-start: 50%; inset-inline-end: 3%;  inline-size: 17%; translate: 0 -50%; }
-.machine--ratchet  { inset-block-end: 10%;   inset-inline-start: 3%; inline-size: 18%; }
+.machine--governor { top: 50%; left: 2%; width: 15%; translate: 0 -50%; }
+.machine--cam      { top: 50%; right: 3%;  width: 17%; translate: 0 -50%; }
+.machine--ratchet  { bottom: 10%;   left: 3%; width: 18%; }
 
 @media (max-width: 47.99em) {
   .machine { opacity: 0.12; }
-  .machine--geartrain { inline-size: 108%; inset-inline-end: -4%; }
-  .machine--rack      { inline-size: 130%; inset-inline-start: -22%; }
-  .machine--piston    { inline-size: 112%; inset-inline-end: -6%; }
-  .machine--pulley    { inline-size: 105%; inset-inline-end: -3%; }
-  .machine--governor  { inline-size: 34%; inset-inline-start: -6%; }
-  .machine--cam       { inline-size: 38%; inset-inline-end: -8%; }
-  .machine--ratchet   { inline-size: 40%; inset-inline-start: -8%; }
+  .machine--geartrain { width: 108%; right: -4%; }
+  .machine--rack      { width: 130%; left: -22%; }
+  .machine--piston    { width: 112%; right: -6%; }
+  .machine--pulley    { width: 105%; right: -3%; }
+  .machine--governor  { width: 34%; left: -6%; }
+  .machine--cam       { width: 38%; right: -8%; }
+  .machine--ratchet   { width: 40%; left: -8%; }
 }
 
 /* Content always sits above the machinery. */
@@ -101,19 +107,26 @@
 /* Each machine stays inside its own bay. Without this a tall machine would
    spill into the next section and, at the foot of the page, add scroll height
    to a document that has nothing left to show. */
-.section:has(.machine), .phero:has(.machine) { overflow: clip; }
+.has-machine { overflow: hidden; }
 
 /* --------------------------------------------------------------------------
    Hero.
    The gearbox is the hero image here, not background texture, so it gets
    room and enough contrast to carry the composition on its own.
    -------------------------------------------------------------------------- */
-.hero { min-block-size: min(78vh, 740px); display: grid; align-items: center; }
-.hero .machine--geartrain { opacity: 0.26; inline-size: 54%; }
+.hero { min-height: min(78vh, 740px); display: grid; align-items: center; }
+.hero .machine--geartrain { opacity: 0.26; width: 54%; }
 @media (max-width: 47.99em) {
-  .hero { min-block-size: auto; }
-  .hero .machine--geartrain { opacity: 0.16; inline-size: 112%; }
+  .hero { min-height: auto; }
+  .hero .machine--geartrain { opacity: 0.16; width: 112%; }
 }
+
+/* Interior page headers are much shorter than the home hero. At the home
+   size the gearbox stood taller than the section holding it, so it was
+   clipped top and bottom and ran up under the fixed header. Sized to fit. */
+.phero .machine--geartrain { width: 38%; opacity: 0.15; }
+@media (max-width: 61.99em) { .phero .machine--geartrain { width: 58%; } }
+@media (max-width: 47.99em) { .phero .machine--geartrain { width: 96%; opacity: 0.11; } }
 
 /* The drawing's caption block. */
 .hero__fig {
@@ -130,13 +143,13 @@
 }
 .hero__fig::before {
   content: "";
-  inline-size: 4.5rem;
-  block-size: var(--hair);
+  width: 4.5rem;
+  height: var(--hair);
   background: var(--c-line);
-  margin-block-end: var(--s-2);
+  margin-bottom: var(--s-2);
 }
 @media (max-width: 47.99em) {
-  .hero__fig { justify-items: start; text-align: start; margin-block-start: var(--s-6); }
+  .hero__fig { justify-items: start; text-align: start; margin-top: var(--s-6); }
 }
 
 /* --------------------------------------------------------------------------
@@ -172,10 +185,10 @@
    Marquee — a continuous horizontal shift. Duplicated track, translated by
    exactly -50% so the loop is seamless.
    -------------------------------------------------------------------------- */
-.marquee { overflow: hidden; border-block: var(--hair) solid var(--c-line); padding-block: var(--s-4); }
+.marquee { overflow: hidden; border-top: var(--hair); border-bottom: solid; padding-top: var(--s-4); padding-bottom: var(--s-4); }
 .marquee__track {
   display: flex;
-  inline-size: max-content;
+  width: max-content;
   gap: var(--s-6);
   animation: marquee 42s linear infinite;
 }
