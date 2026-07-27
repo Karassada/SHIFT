@@ -215,3 +215,44 @@ strong, b { font-weight: 700; color: var(--c-ink); }
   transition: transform var(--d-micro) var(--e-shift);
 }
 .skip:focus { transform: translateY(0); }
+
+/* ==========================================================================
+   Print
+   A company page gets printed and attached to things. Strip the interface,
+   keep the content, and put link targets and the contact address on the
+   paper where they are actually useful.
+   ========================================================================== */
+@media print {
+  :root {
+    --c-base: #fff; --c-paper: #fff; --c-sunk: #fff;
+    --surface: #fff; --surface-lift: #fff; --surface-sunk: #fff;
+    --c-ink: #000; --c-ink-2: #222; --c-muted: #555;
+    --c-line: #bbb; --c-accent: #234; --c-accent-lo: #fff;
+  }
+
+  .header, .menu, .wipe, .machine, .marquee, .burger, .lang,
+  .skip, .btn, .hero__fig { display: none !important; }
+
+  body { background: #fff; color: #000; font-size: 11pt; }
+  main { padding-top: 0; }
+  .section, .phero { padding-top: 1.2rem; padding-bottom: 1.2rem; }
+
+  /* Never split a boxed explanation across a page break. */
+  .scard, .card, .callout, .vrow, .profile__row {
+    break-inside: avoid; page-break-inside: avoid;
+    border: 1px solid #bbb; background: #fff;
+  }
+  h1, h2, h3 { break-after: avoid; page-break-after: avoid; color: #000; }
+  .scard__title, .card__title, .label { color: #234; }
+  .badge { border: 1px solid #234; background: #fff; color: #234; }
+
+  /* Reveal animations must never hide anything on paper. */
+  [data-reveal], .reveal-lines > span > span { opacity: 1 !important; transform: none !important; }
+
+  /* A printed link is useless without its address. */
+  main a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 9pt; color: #555; }
+  main a[href^="mailto"]::after { content: ""; }
+
+  .footer { background: #fff; color: #000; border-top: 1px solid #bbb; padding-top: 1rem; }
+  .footer a, .footer__label, .footer__bottom { color: #000; opacity: 1; }
+}

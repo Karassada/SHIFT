@@ -202,20 +202,6 @@
 .marquee__item::after { content: "»"; color: var(--c-accent); }
 @keyframes marquee { to { transform: translateX(-50%); } }
 
-/* --------------------------------------------------------------------------
-   Counters — figures roll up when the block enters the viewport.
-   -------------------------------------------------------------------------- */
-.stat { display: grid; gap: var(--s-2); }
-.stat__n {
-  font-family: var(--f-mono);
-  font-variant-numeric: tabular-nums;
-  font-size: clamp(2.25rem, 5vw, 3.75rem);
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: -0.04em;
-}
-.stat__k { font-size: var(--t-small); color: var(--c-muted); }
-
 /* ==========================================================================
    Reduced motion.
    Everything still arrives and every state is still legible — it just stops
@@ -237,6 +223,5 @@
   [data-shift] { transform: none; }
   .reveal-lines > span > span { transform: none; }
   .marquee__track { animation: none; }
-  .gear { display: none; }
   .wipe { display: none; }
 }

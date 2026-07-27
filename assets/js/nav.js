@@ -158,6 +158,13 @@
       root.setAttribute("data-wipe", "out");
       var href = a.href;
       window.setTimeout(function () { window.location.href = href; }, OUT_MS);
+
+      /* If the navigation never happens — offline, a blocked request, the
+         user cancelling — the panels would stay drawn over the page and
+         there would be no way back. Uncover after a few seconds. */
+      window.setTimeout(function () {
+        if (root.getAttribute("data-wipe") === "out") root.removeAttribute("data-wipe");
+      }, 6000);
     });
 
     /* Arrival */

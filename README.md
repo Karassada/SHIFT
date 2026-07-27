@@ -21,15 +21,35 @@ ventures.html     事業・ブランド / Ventures — your other businesses
 about.html        会社概要 / About + the company profile table
 contact.html      お問い合わせ / Contact form
 privacy.html      プライバシーポリシー / Privacy policy
+404.html          shown for any address that doesn't exist
+
+sitemap.xml       list of pages, for search engines
+robots.txt        points at the sitemap
 
 assets/css/tokens.css      colours, type sizes, spacing, motion timing
-assets/css/base.css        reset, typography, grid
+assets/css/base.css        reset, typography, grid, print styles
 assets/css/components.css  header, buttons, cards, forms, footer
 assets/css/motion.css      every animation
 assets/js/config.js        contact form endpoint + email address
 assets/js/machinery.js     the gears, governor, cam, ratchet, piston, belt
 assets/img/shift-logo.svg  the logo, as vector
+assets/img/og-card.png     the picture shown when the link is shared
+assets/img/og-card.svg     the source that PNG is rendered from
 ```
+
+### The link-share picture
+
+When you paste the site link into LINE, WhatsApp, Slack or X, they show
+`assets/img/og-card.png`. To change it, edit `og-card.svg` and re-render:
+
+```bash
+qlmanage -t -s 1200 -o /tmp/og assets/img/og-card.svg
+sips -c 630 1200 /tmp/og/og-card.svg.png --out assets/img/og-card.png
+```
+
+The card is 1200×630 drawn on a 1200×1200 canvas — the thumbnailer stretches
+the short side otherwise, so the square is deliberate and the crop takes the
+middle band back out.
 
 ### Both languages live in the HTML
 

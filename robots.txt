@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://karassada.github.io/SHIFT/sitemap.xml

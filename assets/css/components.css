@@ -357,8 +357,6 @@
 }
 
 /* Whole-card link overlay, keeps one tab stop and a real focus ring. */
-.card__hit { position: absolute; inset: 0; border-radius: inherit; }
-.card__hit:focus-visible { outline: 2px solid var(--c-focus); outline-offset: 3px; }
 
 /* ==========================================================================
    Numbered badge — the anchor at the top-left of anything explained in steps
@@ -379,12 +377,6 @@
   letter-spacing: 0.02em;
   transition: background-color var(--d-comp) linear;
 }
-.badge--ghost {
-  background: var(--c-accent-lo);
-  color: var(--c-accent);
-  border: var(--hair) solid var(--c-accent);
-}
-
 /* ==========================================================================
    Service cards
    Each explanation is a box: a number to anchor it, a coloured title, one
@@ -471,27 +463,9 @@
 }
 
 /* Numbered service rows — a spec sheet that opens on hover. */
-.spec {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: var(--s-4) var(--s-6);
-  align-items: start;
-  padding-top: var(--s-6); padding-bottom: var(--s-6);
-  border-top: var(--hair) solid var(--c-line);
-  transition: background-color var(--d-comp) linear;
-}
 @media (min-width: 48em) {
-  .spec { grid-template-columns: 5rem 1fr 1.2fr; padding-left: var(--s-4); padding-right: var(--s-4); }
 }
-.spec:last-child { border-bottom: var(--hair) solid var(--c-line); }
-.spec:hover { background: var(--surface-sunk); }
-.spec__n { font-family: var(--f-mono); font-size: var(--t-label); color: var(--c-accent); padding-top: 0.6em; letter-spacing: var(--tr-label); }
-.spec__title { font-size: var(--t-h3); font-weight: 600; letter-spacing: var(--tr-tight); display: flex; align-items: baseline; gap: var(--s-3); }
-.spec__title .chev { color: var(--c-accent); font-family: var(--f-mono); font-size: 0.7em; opacity: 0; transform: translateX(-6px); transition: all var(--d-comp) var(--e-shift); }
-.spec:hover .spec__title .chev { opacity: 1; transform: translateX(0); }
-.spec__body { color: var(--c-ink-2); font-size: var(--t-small); line-height: 1.75; grid-column: 1 / -1; }
 @media (min-width: 48em) { .spec__body { grid-column: auto; } }
-.spec__tags { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-top: var(--s-4); }
 .tag {
   font-family: var(--f-mono); font-size: var(--t-label); letter-spacing: 0.1em;
   padding: 0.3rem 0.7rem;
@@ -505,59 +479,14 @@
    Venture bento — asymmetric tiles that make room for each other
    ========================================================================== */
 
-.bento { display: grid; gap: var(--s-4); grid-template-columns: repeat(6, 1fr); }
 @media (max-width: 47.99em) { .bento { grid-template-columns: 1fr; } }
 
-.bento__item { grid-column: span 2; }
-.bento__item--wide { grid-column: span 3; }
-.bento__item--full { grid-column: span 6; }
 @media (min-width: 48em) and (max-width: 63.99em) {
-  .bento__item, .bento__item--wide { grid-column: span 3; }
 }
 @media (max-width: 47.99em) {
-  .bento__item, .bento__item--wide, .bento__item--full { grid-column: auto; }
 }
 
-.venture {
-  position: relative;
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  gap: var(--s-5);
-  min-height: 15rem;
-  padding: var(--s-5);
-  background: var(--surface);
-  border: var(--hair) solid var(--c-line);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  isolation: isolate;
-  transition: transform var(--d-comp) var(--e-shift), border-color var(--d-comp) linear;
-}
 /* Accent panel sweeps in from the left on hover. */
-.venture::before {
-  content: "";
-  position: absolute; inset: 0;
-  background: var(--c-accent-lo);
-  transform: translateX(-100%);
-  transition: transform var(--d-sect) var(--e-mech);
-  z-index: -1;
-}
-.venture:hover::before { transform: translateX(0); }
-.venture:hover { transform: translate(4px, -4px); border-color: var(--c-accent); }
-
-.venture__top { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--s-4); }
-.venture__role {
-  font-family: var(--f-mono); font-size: var(--t-label); letter-spacing: 0.14em;
-  text-transform: uppercase; color: var(--c-muted);
-  padding: 0.25rem 0.5rem; border: var(--hair) solid var(--c-line); border-radius: 999px;
-  white-space: nowrap;
-}
-.venture__name { font-size: var(--t-h3); font-weight: 600; letter-spacing: var(--tr-tight); }
-.venture__desc { color: var(--c-ink-2); font-size: var(--t-small); line-height: 1.7; }
-.venture__foot { display: flex; justify-content: space-between; align-items: center; gap: var(--s-3); }
-.venture__meta { font-family: var(--f-mono); font-size: var(--t-label); color: var(--c-muted); letter-spacing: 0.1em; }
-.venture__chev { font-family: var(--f-mono); color: var(--c-accent); opacity: 0; transform: translateX(-8px); transition: all var(--d-comp) var(--e-shift); }
-.venture:hover .venture__chev { opacity: 1; transform: translateX(0); }
-
 /* ==========================================================================
    Ventures list
    Deliberately quiet. These are things SHIFT happens to own, not the pitch —
@@ -588,18 +517,6 @@
 }
 .vrow__desc { color: var(--c-ink-2); font-size: var(--t-small); line-height: 1.7; }
 
-.vrow__go {
-  font-family: var(--f-mono);
-  font-size: var(--t-label);
-  letter-spacing: var(--tr-label);
-  text-transform: uppercase;
-  color: var(--c-accent);
-  display: inline-flex;
-  align-items: center;
-  gap: var(--s-2);
-  white-space: nowrap;
-}
-.vrow__go span { transition: transform var(--d-comp) var(--e-shift); }
 
 /* Only the rows that actually go somewhere respond to a pointer. */
 a.vrow { color: inherit; }
@@ -710,9 +627,3 @@ select.input { cursor: pointer; }
 
 .phero { padding-top: calc(var(--section) + 3rem); padding-bottom: var(--section); position: relative; }
 .phero__title { max-width: 16ch; }
-.phero__meta {
-  display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-6);
-  margin-top: var(--s-6);
-  padding-top: var(--s-4);
-  border-top: var(--hair) solid var(--c-line);
-}
