@@ -67,7 +67,9 @@
 .machine {
   --mc-line: 0.17;    /* the static drawing            */
   --mc-frame: 0.10;   /* boards, rails, guides         */
-  --mc-sig: 0.46;     /* whatever is currently moving  */
+  --mc-sig: 0.5;      /* whatever is currently moving  */
+  --mc-glow: 0.15;    /* the light it spills           */
+  --mc-lamp: 0.62;    /* indicator lamps               */
   position: absolute;
   z-index: var(--z-gear);
   pointer-events: none;
@@ -78,6 +80,10 @@
 .machine .mc-line   { stroke-opacity: var(--mc-line); fill-opacity: var(--mc-line); }
 .machine .mc-frame  { stroke-opacity: var(--mc-frame); fill-opacity: var(--mc-frame); }
 .machine .mc-signal { color: var(--c-accent); stroke-opacity: var(--mc-sig); fill-opacity: var(--mc-sig); }
+/* The bloom under a live stroke, and the halo around a lamp. Wide and faint —
+   it should read as light spilling, never as a second line. */
+.machine .mc-glow   { color: var(--c-accent); stroke-opacity: var(--mc-glow); fill-opacity: var(--mc-glow); }
+.machine .mc-lamp   { color: var(--c-accent); fill-opacity: var(--mc-lamp); }
 
 /* One per section, each in its own bay. Sections clip, so nothing can wander
    into its neighbour's space. Each sits fully inside the viewport — a board
@@ -92,17 +98,19 @@
    down the page instead of stopping after the first screen. */
 .machine--stack { top: 50%; left: 2%;  width: 13%; translate: 0 -50%; }
 .machine--pulse { top: 50%; right: 3%; width: 17%; translate: 0 -50%; }
-.machine--tree  { bottom: 10%; left: 3%; width: 17%; }
+.machine--folders { bottom: 9%; left: 2%; width: 17%; }
+.machine--cluster { top: 12%; right: 0; width: 58%; }
 
 @media (max-width: 47.99em) {
-  .machine { --mc-line: 0.13; --mc-frame: 0.07; --mc-sig: 0.34; }
+  .machine { --mc-line: 0.13; --mc-frame: 0.07; --mc-sig: 0.38; --mc-glow: 0.1; --mc-lamp: 0.46; }
   .machine--circuit  { width: 112%; right: -6%; }
   .machine--matrix   { width: 150%; left: -26%; }
   .machine--network  { width: 118%; right: -9%; }
   .machine--pipeline { width: 112%; right: -6%; }
   .machine--stack    { width: 30%; left: -5%; }
   .machine--pulse    { width: 38%; right: -8%; }
-  .machine--tree     { width: 38%; left: -7%; }
+  .machine--folders  { width: 40%; left: -7%; }
+  .machine--cluster  { width: 122%; right: -10%; }
 }
 
 /* Content always sits above the machinery. */
@@ -119,7 +127,7 @@
    and enough contrast to carry the composition on its own.
    -------------------------------------------------------------------------- */
 .hero { min-height: min(78vh, 740px); display: grid; align-items: center; }
-.hero .machine--circuit { --mc-line: 0.26; --mc-frame: 0.15; --mc-sig: 0.62; width: 54%; }
+.hero .machine--circuit { --mc-line: 0.26; --mc-frame: 0.15; --mc-sig: 0.72; --mc-glow: 0.22; --mc-lamp: 0.85; width: 54%; }
 @media (max-width: 47.99em) {
   .hero { min-height: auto; }
   .hero .machine--circuit { --mc-line: 0.15; --mc-sig: 0.4; width: 118%; }
