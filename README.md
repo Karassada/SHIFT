@@ -31,7 +31,8 @@ assets/css/base.css        reset, typography, grid, print styles
 assets/css/components.css  header, buttons, cards, forms, footer
 assets/css/motion.css      every animation
 assets/js/config.js        contact form endpoint + email address
-assets/js/machinery.js     the gears, governor, cam, ratchet, piston, belt
+assets/js/machinery.js     the circuit, matrix, network, pipeline, stack,
+                           signal and tree drawn behind the content
 assets/img/shift-logo.svg  the logo, as vector
 assets/img/og-card.png     the picture shown when the link is shared
 assets/img/og-card.svg     the source that PNG is rendered from

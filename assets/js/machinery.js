@@ -1,24 +1,17 @@
 /* ==========================================================================
-   SHIFT — machinery
-   The background is a working machine, not a decoration. Every part is drawn
-   from its real geometry and driven by scroll position.
+   SHIFT — the background system
+   Technical line work behind the content, driven by scroll position.
 
-   Each machine is a self-contained assembly: it sits on a bedplate, turns in
-   pillow-block bearings, and is bolted to a frame, with its drive shaft
-   running off the edge of the drawing toward the line shaft that turns them
-   all. One assembly per section, and sections clip, so no two machines ever
-   pile up on each other.
+   The subject is what the company actually works on: circuit traces, a data
+   matrix, a network of connected nodes, a processing pipeline, storage
+   layers, a signal trace, a dependency tree. Same discipline as a drawing —
+   real geometry, right angles, nothing decorative floating loose — and the
+   accent colour is reserved for the parts that are *moving*: the signal on
+   the trace, the packet in the pipeline, the cells currently being written.
 
-   Geometry, not guesswork:
-   - Gears have trapezoidal teeth and a pitch radius of m*N/2, so any two
-     sharing a module mesh. Centres sit at exactly r1+r2 and counter-rotate at
-     -N1/N2, which keeps the teeth in step.
-   - The rack travels its pinion's arc length, x = theta*r. No slip.
-   - The piston is solved from the slider-crank equation, so it lingers at the
-     ends of its stroke instead of gliding.
-   - The belt runs along the true external tangents between its two pulleys.
-
-   All line work, all inert, and all of it stops for prefers-reduced-motion.
+   Everything is deterministic from a single 0..1 progress value, so it reads
+   the same on the way back up as on the way down, and it all stops for
+   prefers-reduced-motion.
    ========================================================================== */
 
 (function () {
@@ -27,440 +20,426 @@
   if (window.SHIFT_CONFIG.reducedMotion) return;
 
   var NS = "http://www.w3.org/2000/svg";
-  var TAU = Math.PI * 2;
+  var uid = 0;
 
   function el(name, attrs) {
     var e = document.createElementNS(NS, name);
     for (var k in attrs) e.setAttribute(k, attrs[k]);
     return e;
   }
-  function xy(r, a) {
-    return (Math.cos(a) * r).toFixed(2) + " " + (Math.sin(a) * r).toFixed(2);
-  }
-  function add(parent, children) {
-    children.forEach(function (c) { parent.appendChild(c); });
-    return parent;
-  }
+  function add(parent, kids) { kids.forEach(function (k) { parent.appendChild(k); }); return parent; }
+  function grp(cls, attrs) { attrs = attrs || {}; attrs.class = cls; attrs.fill = attrs.fill || "none"; attrs.stroke = "currentColor"; return el("g", attrs); }
 
-  /* ======================================================================
-     Parts
-     ====================================================================== */
-
-  /* A gear outline. `m` is the module — the tooth size. */
-  function gearOutline(N, m) {
-    var r = m * N / 2, ra = r + m, rd = r - 1.15 * m;
-    var step = TAU / N;
-    var d = "M " + xy(rd, 0);
-    for (var i = 0; i < N; i++) {
-      var a = i * step;
-      d += " L " + xy(ra, a + step * 0.18) +
-           " L " + xy(ra, a + step * 0.32) +
-           " L " + xy(rd, a + step * 0.50) +
-           " A " + rd.toFixed(2) + " " + rd.toFixed(2) + " 0 0 1 " + xy(rd, a + step);
-    }
-    return d + " Z";
+  /* A dashed copy of a trace, offset along its own length, reads as a signal
+     travelling down the wire. No path measurement needed — the dash pattern
+     does the work. */
+  function signal(d, period, width) {
+    return el("path", {
+      d: d, "stroke-width": width || 2.6, "stroke-linecap": "round",
+      "stroke-dasharray": "14 " + (period - 14), "stroke-dashoffset": 0
+    });
+  }
+  function runSignal(node, period, p, speed, phase) {
+    node.setAttribute("stroke-dashoffset",
+      (-(((p * speed + (phase || 0)) % 1) * period)).toFixed(2));
   }
 
-  function gear(cx, cy, teeth, m, opts) {
-    opts = opts || {};
-    var r = m * teeth / 2;
-    var g = el("g", { transform: "translate(" + cx + " " + cy + ")" });
-    var spin = el("g", {});
-    var sw = opts.sw || 1.5;
-
-    add(spin, [
-      el("path", { d: gearOutline(teeth, m), "stroke-width": sw }),
-      el("circle", { r: (r * 0.74).toFixed(1), "stroke-width": 1 }),
-      el("circle", { r: (r * 0.19).toFixed(1), "stroke-width": sw })
-    ]);
-
-    var spokes = opts.spokes || 5;
-    for (var s = 0; s < spokes; s++) {
-      var a = s * TAU / spokes;
-      spin.appendChild(el("line", {
-        x1: (Math.cos(a) * r * 0.21).toFixed(1), y1: (Math.sin(a) * r * 0.21).toFixed(1),
-        x2: (Math.cos(a) * r * 0.72).toFixed(1), y2: (Math.sin(a) * r * 0.72).toFixed(1),
-        "stroke-width": 1.2
-      }));
-      var b = a + Math.PI / spokes;
-      spin.appendChild(el("circle", {
-        cx: (Math.cos(b) * r * 0.47).toFixed(1), cy: (Math.sin(b) * r * 0.47).toFixed(1),
-        r: (r * 0.055).toFixed(1), "stroke-width": 1
-      }));
-    }
-
-    g.appendChild(spin);
-    return { node: g, spin: spin, r: r, teeth: teeth, cx: cx, cy: cy };
-  }
-
-  function spinTo(g, deg) {
-    g.spin.setAttribute("transform", "rotate(" + deg.toFixed(2) + ")");
-  }
-
-  /* A pillow-block bearing: what a real shaft actually turns in. */
-  function bearing(cx, cy, s) {
-    return add(el("g", { "stroke-width": 1.3, class: "mc-frame" }), [
-      el("path", {
-        d: "M " + (cx - s) + " " + (cy + s * 0.95) +
-           " L " + (cx - s) + " " + (cy - s * 0.1) +
-           " A " + (s * 0.62) + " " + (s * 0.62) + " 0 0 1 " + (cx + s) + " " + (cy - s * 0.1) +
-           " L " + (cx + s) + " " + (cy + s * 0.95) + " Z"
-      }),
-      el("circle", { cx: cx, cy: cy, r: (s * 0.34).toFixed(1) }),
-      el("circle", { cx: cx - s * 0.62, cy: cy + s * 0.62, r: s * 0.1 }),
-      el("circle", { cx: cx + s * 0.62, cy: cy + s * 0.62, r: s * 0.1 })
+  function via(x, y) {
+    return add(el("g", { fill: "none", stroke: "currentColor" }), [
+      el("circle", { cx: x, cy: y, r: 7, "stroke-width": 2 }),
+      el("circle", { cx: x, cy: y, r: 2.6, "stroke-width": 1.4 })
     ]);
   }
 
-  /* A bedplate, with the hatching that means "fixed to the ground". */
-  function bedplate(x, y, w) {
-    var g = el("g", { "stroke-width": 1.2, class: "mc-frame" });
-    g.appendChild(el("path", { d: "M " + x + " " + y + " L " + (x + w) + " " + y }));
-    for (var i = 6; i < w; i += 13) {
-      g.appendChild(el("path", {
-        d: "M " + (x + i) + " " + y + " L " + (x + i - 9) + " " + (y + 9),
-        "stroke-width": 0.9
-      }));
-    }
-    return g;
-  }
-
-  /* The shaft leaving the drawing toward the line shaft driving everything. */
-  function driveShaft(x1, y1, x2, y2) {
-    return add(el("g", { class: "mc-frame", "stroke-width": 1.1 }), [
-      el("path", { d: "M " + x1 + " " + y1 + " L " + x2 + " " + y2, "stroke-dasharray": "7 5" }),
-      el("circle", { cx: x2, cy: y2, r: 3.5, "stroke-width": 1.4 })
-    ]);
-  }
-
-  /* ======================================================================
-     Assemblies. Each returns { svg, update(p) } with p as 0..1 progress.
-     ====================================================================== */
   var BUILD = {};
 
-  /* --- Three-stage reduction gearbox ------------------------------------ */
-  BUILD.geartrain = function () {
-    var m = 6.5;
-    var svg = el("svg", { viewBox: "0 0 470 330", fill: "none", stroke: "currentColor" });
+  /* --- Circuit board: the hero piece ------------------------------------ */
+  BUILD.circuit = function () {
+    var svg = el("svg", { viewBox: "0 0 480 340", fill: "none" });
+    var ID = "c" + (uid++);
 
-    var A = gear(152, 168, 30, m, { spokes: 6 });
-    /* Each next centre at exactly r1 + r2, so the teeth engage. */
-    var a1 = -24 * Math.PI / 180, d1 = A.r + m * 20 / 2;
-    var B = gear(A.cx + Math.cos(a1) * d1, A.cy + Math.sin(a1) * d1, 20, m, { spokes: 5 });
-    var a2 = 38 * Math.PI / 180, d2 = B.r + m * 13 / 2;
-    var C = gear(B.cx + Math.cos(a2) * d2, B.cy + Math.sin(a2) * d2, 13, m, { spokes: 4 });
-
-    /* Casing, centre lines and mounting bolts — the gearbox it lives in. */
-    var frame = el("g", { class: "mc-frame", "stroke-width": 1.2 });
-    frame.appendChild(el("rect", { x: 34, y: 14, width: 412, height: 268, rx: 6 }));
-    [[46, 26], [434, 26], [46, 270], [434, 270]].forEach(function (p) {
-      frame.appendChild(el("circle", { cx: p[0], cy: p[1], r: 4 }));
+    /* Board outline and mounting holes. */
+    var frame = grp("mc-frame", { "stroke-width": 1.4 });
+    add(frame, [
+      el("rect", { x: 14, y: 14, width: 452, height: 312, rx: 6 }),
+      el("rect", { x: 28, y: 28, width: 424, height: 284, rx: 3, "stroke-dasharray": "3 6", "stroke-width": 1 })
+    ]);
+    [[34, 34], [446, 34], [34, 306], [446, 306]].forEach(function (c) {
+      frame.appendChild(el("circle", { cx: c[0], cy: c[1], r: 5 }));
     });
-    frame.appendChild(el("path", {
-      d: "M " + A.cx + " " + A.cy + " L " + B.cx.toFixed(1) + " " + B.cy.toFixed(1) +
-         " L " + C.cx.toFixed(1) + " " + C.cy.toFixed(1),
-      "stroke-dasharray": "9 4 2 4", "stroke-width": 0.9
-    }));
     svg.appendChild(frame);
-    svg.appendChild(bedplate(34, 282, 412));
-    svg.appendChild(driveShaft(A.cx, A.cy, 34, A.cy));
 
-    add(svg, [A.node, B.node, C.node]);
-    add(svg, [bearing(A.cx, A.cy, 15), bearing(B.cx, B.cy, 12), bearing(C.cx, C.cy, 10)]);
+    /* The traces. Right angles only, the way a board is actually routed. */
+    var TRACES = [
+      "M 250 132 L 150 132 L 150 62 L 66 62",
+      "M 250 158 L 196 158 L 196 258 L 84 258",
+      "M 386 142 L 438 142 L 438 74",
+      "M 386 172 L 416 172 L 416 288 L 300 288",
+      "M 250 184 L 118 184",
+      "M 386 202 L 452 202"
+    ];
+    var lines = grp("mc-line", { "stroke-width": 2 });
+    TRACES.forEach(function (d) { lines.appendChild(el("path", { d: d, "stroke-linecap": "square" })); });
+    /* A few unrouted traces, for density. */
+    ["M 66 118 L 116 118 L 116 96 L 176 96",
+     "M 84 300 L 168 300 L 168 322",
+     "M 300 322 L 380 322 L 380 300"].forEach(function (d) {
+      lines.appendChild(el("path", { d: d, "stroke-linecap": "square", "stroke-width": 1.4 }));
+    });
+    svg.appendChild(lines);
+
+    /* Vias and pads. */
+    var pads = grp("mc-line", { "stroke-width": 1.6 });
+    [[66, 62], [84, 258], [438, 74], [300, 288], [66, 118], [176, 96], [168, 322]].forEach(function (v) {
+      pads.appendChild(via(v[0], v[1]));
+    });
+    [[110, 176, 16, 16], [444, 194, 16, 16]].forEach(function (r) {
+      pads.appendChild(el("rect", { x: r[0], y: r[1], width: r[2], height: r[3], rx: 2 }));
+    });
+    svg.appendChild(pads);
+
+    /* The package in the middle, with its pins and orientation notch. */
+    var chip = grp("mc-line", { "stroke-width": 2 });
+    chip.appendChild(el("rect", { x: 250, y: 112, width: 136, height: 110, rx: 4 }));
+    chip.appendChild(el("path", { d: "M 250 128 A 10 10 0 0 0 250 148", "stroke-width": 1.5 }));
+    for (var i = 0; i < 4; i++) {
+      var y = 132 + i * 26;
+      chip.appendChild(el("path", { d: "M 244 " + y + " L 250 " + y, "stroke-width": 3 }));
+      chip.appendChild(el("path", { d: "M 386 " + (y + 10) + " L 392 " + (y + 10), "stroke-width": 3 }));
+    }
+    chip.appendChild(el("rect", { x: 272, y: 134, width: 92, height: 66, rx: 2, "stroke-width": 1, "stroke-dasharray": "4 5" }));
+    svg.appendChild(chip);
+
+    /* The signals. */
+    var sigG = grp("mc-signal", {});
+    var sigs = TRACES.map(function (d, n) {
+      var s = signal(d, 300);
+      sigG.appendChild(s);
+      return s;
+    });
+    svg.appendChild(sigG);
 
     return {
       svg: svg,
       update: function (p) {
-        var t = p * 900;
-        spinTo(A, t);
-        spinTo(B, -t * A.teeth / B.teeth);
-        spinTo(C, t * A.teeth / C.teeth);
+        sigs.forEach(function (s, n) { runSignal(s, 300, p, 3 + n * 0.4, n * 0.17); });
       }
     };
   };
 
-  /* --- Rack and pinion on a linear slide -------------------------------- */
-  BUILD.rack = function () {
-    var m = 7, teeth = 18;
-    var svg = el("svg", { viewBox: "0 0 470 250", fill: "none", stroke: "currentColor" });
-    var P = gear(235, 92, teeth, m, { spokes: 4 });
-    var r = P.r, pitchY = 92 + r;
+  /* --- Data matrix: cells filling as the write head passes -------------- */
+  BUILD.matrix = function () {
+    var COLS = 26, ROWS = 8, C = 15, G = 4;
+    var W = COLS * (C + G) - G, H = ROWS * (C + G) - G;
+    var svg = el("svg", { viewBox: "0 0 " + (W + 40) + " " + (H + 56), fill: "none" });
+    var ID = "m" + (uid++);
 
-    var frame = el("g", { class: "mc-frame", "stroke-width": 1.2 });
-    /* The slide the rack runs in. */
-    frame.appendChild(el("rect", { x: 24, y: pitchY + m * 2.2, width: 422, height: 20, rx: 2 }));
-    svg.appendChild(frame);
-    svg.appendChild(bedplate(24, pitchY + m * 2.2 + 20, 422));
-    svg.appendChild(driveShaft(P.cx, P.cy, 446, P.cy));
+    var cells = function (attrs) {
+      var g = el("g", attrs);
+      for (var r = 0; r < ROWS; r++) {
+        for (var c = 0; c < COLS; c++) {
+          g.appendChild(el("rect", {
+            x: 20 + c * (C + G), y: 28 + r * (C + G), width: C, height: C, rx: 1.5
+          }));
+        }
+      }
+      return g;
+    };
 
-    /* The rack. Teeth point up and share the pinion's module. */
-    var pitch = Math.PI * m, span = 960, n = Math.ceil(span / pitch);
-    var d = "M " + (-span / 2) + " " + (pitchY + m * 1.2);
-    for (var i = 0; i < n; i++) {
-      var x = -span / 2 + i * pitch;
-      d += " L " + (x + pitch * 0.18).toFixed(1) + " " + (pitchY + m * 1.2) +
-           " L " + (x + pitch * 0.32).toFixed(1) + " " + (pitchY - m) +
-           " L " + (x + pitch * 0.68).toFixed(1) + " " + (pitchY - m) +
-           " L " + (x + pitch * 0.82).toFixed(1) + " " + (pitchY + m * 1.2);
+    /* Outlines always; the filled copy is revealed only inside a moving
+       window, so a band of cells reads as currently being written. */
+    var outline = cells({ class: "mc-line", fill: "none", stroke: "currentColor", "stroke-width": 1.2 });
+    svg.appendChild(outline);
+
+    var clip = el("clipPath", { id: ID });
+    var win = el("rect", { x: -140, y: 0, width: 130, height: H + 56 });
+    clip.appendChild(win);
+    svg.appendChild(add(el("defs", {}), [clip]));
+
+    var filled = cells({ class: "mc-signal", fill: "currentColor", stroke: "none" });
+    var clipped = el("g", { "clip-path": "url(#" + ID + ")" });
+    clipped.appendChild(filled);
+    svg.appendChild(clipped);
+
+    /* Column ruler and the head itself. */
+    var frame = grp("mc-frame", { "stroke-width": 1.2 });
+    add(frame, [
+      el("path", { d: "M 20 18 L " + (20 + W) + " 18" }),
+      el("path", { d: "M 20 " + (H + 38) + " L " + (20 + W) + " " + (H + 38) })
+    ]);
+    for (var c2 = 0; c2 <= COLS; c2 += 2) {
+      frame.appendChild(el("path", { d: "M " + (20 + c2 * (C + G)) + " 18 L " + (20 + c2 * (C + G)) + " 12" }));
     }
-    d += " L " + (span / 2) + " " + (pitchY + m * 1.2);
+    svg.appendChild(frame);
 
-    var slide = el("g", {});
-    slide.appendChild(el("path", { d: d, "stroke-width": 1.6 }));
-    var wrap = el("g", { transform: "translate(235 0)" });
-    wrap.appendChild(slide);
+    var head = grp("mc-signal", { "stroke-width": 2 });
+    var headLine = el("path", { d: "M 0 12 L 0 " + (H + 44) });
+    var headTip = el("path", { d: "M -6 6 L 6 6 L 0 16 Z", fill: "currentColor", stroke: "none" });
+    add(head, [headLine, headTip]);
+    svg.appendChild(head);
+
+    return {
+      svg: svg,
+      update: function (p) {
+        var x = -140 + p * (W + 180);
+        win.setAttribute("x", x.toFixed(1));
+        head.setAttribute("transform", "translate(" + (x + 130).toFixed(1) + " 0)");
+      }
+    };
+  };
+
+  /* --- Network: nodes, links, packets ----------------------------------- */
+  BUILD.network = function () {
+    var svg = el("svg", { viewBox: "0 0 470 310", fill: "none" });
+    var N = [[62, 158], [148, 74], [148, 244], [244, 126], [244, 216],
+             [340, 62], [340, 166], [340, 262], [424, 158]];
+    var E = [[0, 1], [0, 2], [1, 3], [2, 4], [3, 4], [3, 5], [3, 6],
+             [4, 6], [4, 7], [5, 8], [6, 8], [7, 8]];
+
+    var frame = grp("mc-frame", { "stroke-width": 1 });
+    frame.appendChild(el("rect", { x: 16, y: 16, width: 438, height: 278, rx: 4, "stroke-dasharray": "3 6" }));
+    svg.appendChild(frame);
+
+    var links = grp("mc-line", { "stroke-width": 1.6 });
+    var paths = E.map(function (e) {
+      var a = N[e[0]], b = N[e[1]];
+      var d = "M " + a[0] + " " + a[1] + " L " + b[0] + " " + b[1];
+      links.appendChild(el("path", { d: d }));
+      return d;
+    });
+    svg.appendChild(links);
+
+    var sigG = grp("mc-signal", {});
+    var sigs = paths.map(function (d) { var s = signal(d, 160, 3.4); sigG.appendChild(s); return s; });
+    svg.appendChild(sigG);
+
+    var nodes = grp("mc-line", { "stroke-width": 2 });
+    var rings = N.map(function (n, i) {
+      nodes.appendChild(el("circle", { cx: n[0], cy: n[1], r: i === 0 || i === 8 ? 15 : 11 }));
+      nodes.appendChild(el("circle", { cx: n[0], cy: n[1], r: 3.4, fill: "currentColor", stroke: "none" }));
+      var ring = el("circle", { cx: n[0], cy: n[1], r: 11, "stroke-width": 1.6, class: "mc-signal" });
+      return ring;
+    });
+    svg.appendChild(nodes);
+    var ringG = el("g", { fill: "none", stroke: "currentColor" });
+    rings.forEach(function (r) { ringG.appendChild(r); });
+    svg.appendChild(ringG);
+
+    return {
+      svg: svg,
+      update: function (p) {
+        sigs.forEach(function (s, n) { runSignal(s, 160, p, 4 + (n % 3), n * 0.11); });
+        /* Each node breathes on its own phase, so the graph looks alive
+           rather than synchronised. */
+        rings.forEach(function (r, i) {
+          var ph = (p * 2 + i * 0.13) % 1;
+          r.setAttribute("r", (11 + ph * 13).toFixed(1));
+          r.setAttribute("stroke-opacity", (1 - ph).toFixed(3));
+        });
+      }
+    };
+  };
+
+  /* --- Pipeline: a job moving through stages ---------------------------- */
+  BUILD.pipeline = function () {
+    var svg = el("svg", { viewBox: "0 0 470 250", fill: "none" });
+    var X = [40, 152, 264, 376], Y = 76, W = 66, H = 76;
+
+    var frame = grp("mc-frame", { "stroke-width": 1.2 });
+    var stages = grp("mc-line", { "stroke-width": 1.8 });
+    X.forEach(function (x, i) {
+      stages.appendChild(el("rect", { x: x, y: Y, width: W, height: H, rx: 3 }));
+      for (var r = 0; r < 3; r++) {
+        stages.appendChild(el("path", {
+          d: "M " + (x + 12) + " " + (Y + 20 + r * 18) + " L " + (x + W - 12 - (r === 2 ? 16 : 0)) + " " + (Y + 20 + r * 18),
+          "stroke-width": 1
+        }));
+      }
+      if (i < X.length - 1) {
+        var mx = x + W, nx = X[i + 1];
+        frame.appendChild(el("path", { d: "M " + mx + " " + (Y + H / 2) + " L " + (nx - 10) + " " + (Y + H / 2) }));
+        frame.appendChild(el("path", { d: "M " + (nx - 14) + " " + (Y + H / 2 - 5) + " L " + (nx - 2) + " " + (Y + H / 2) + " L " + (nx - 14) + " " + (Y + H / 2 + 5) }));
+      }
+    });
+    svg.appendChild(frame);
+    svg.appendChild(stages);
+
+    /* Progress rail. */
+    var rail = grp("mc-frame", { "stroke-width": 3 });
+    rail.appendChild(el("path", { d: "M 40 196 L 442 196", "stroke-linecap": "round" }));
+    svg.appendChild(rail);
+    var fill = grp("mc-signal", { "stroke-width": 3 });
+    var fillLine = el("path", { d: "M 40 196 L 40 196", "stroke-linecap": "round" });
+    fill.appendChild(fillLine);
+    svg.appendChild(fill);
+
+    var packet = grp("mc-signal", { "stroke-width": 2 });
+    add(packet, [
+      el("rect", { x: -11, y: -11, width: 22, height: 22, rx: 2, fill: "currentColor", "fill-opacity": 0.5 }),
+      el("path", { d: "M -4 0 L 4 0 M 0 -4 L 0 4", "stroke-width": 1.6 })
+    ]);
+    svg.appendChild(packet);
+
+    return {
+      svg: svg,
+      update: function (p) {
+        var x = 40 + p * 402;
+        packet.setAttribute("transform", "translate(" + x.toFixed(1) + " " + (Y + H / 2) + ")");
+        fillLine.setAttribute("d", "M 40 196 L " + Math.max(40.1, x).toFixed(1) + " 196");
+      }
+    };
+  };
+
+  /* --- Storage: layers written from the bottom up ----------------------- */
+  BUILD.stack = function () {
+    var svg = el("svg", { viewBox: "0 0 220 290", fill: "none" });
+    var LAYERS = 7, LH = 26, LW = 150, X = 35, TOP = 40;
+
+    var frame = grp("mc-frame", { "stroke-width": 1.2 });
+    add(frame, [
+      el("path", { d: "M 22 " + (TOP - 12) + " L 22 " + (TOP + LAYERS * LH + 12) }),
+      el("path", { d: "M 198 " + (TOP - 12) + " L 198 " + (TOP + LAYERS * LH + 12) })
+    ]);
+    svg.appendChild(frame);
+
+    var plates = grp("mc-line", { "stroke-width": 1.6 });
+    var fills = [];
+    for (var i = 0; i < LAYERS; i++) {
+      var y = TOP + i * LH;
+      plates.appendChild(el("rect", { x: X, y: y, width: LW, height: LH - 5, rx: 2 }));
+      plates.appendChild(el("path", { d: "M " + (X + 10) + " " + (y + 10) + " L " + (X + 42) + " " + (y + 10), "stroke-width": 1 }));
+      var f = el("rect", { x: X, y: y, width: LW, height: LH - 5, rx: 2, fill: "currentColor", stroke: "none", "fill-opacity": 0 });
+      fills.push(f);
+    }
+    svg.appendChild(plates);
+    var fillG = grp("mc-signal", {});
+    fills.forEach(function (f) { fillG.appendChild(f); });
+    svg.appendChild(fillG);
+
+    var headG = grp("mc-signal", { "stroke-width": 2 });
+    var head = el("path", { d: "M " + (X - 20) + " 0 L " + (X - 6) + " 0 M " + (X - 11) + " -5 L " + (X - 6) + " 0 L " + (X - 11) + " 5" });
+    headG.appendChild(head);
+    svg.appendChild(headG);
+
+    return {
+      svg: svg,
+      update: function (p) {
+        /* Fills bottom-up, one layer at a time, with the head alongside. */
+        var t = p * LAYERS;
+        fills.forEach(function (f, i) {
+          var idx = LAYERS - 1 - i;                 /* bottom layer first */
+          var v = Math.max(0, Math.min(1, t - idx));
+          f.setAttribute("fill-opacity", (v * 0.55).toFixed(3));
+        });
+        var active = Math.min(LAYERS - 1, Math.floor(t));
+        headG.setAttribute("transform",
+          "translate(0 " + (TOP + (LAYERS - 1 - active) * LH + (LH - 5) / 2).toFixed(1) + ")");
+      }
+    };
+  };
+
+  /* --- Signal trace on a scope ------------------------------------------ */
+  BUILD.pulse = function () {
+    var svg = el("svg", { viewBox: "0 0 250 250", fill: "none" });
+    var ID = "s" + (uid++);
+    var X = 24, Y = 52, W = 202, H = 132;
+
+    var frame = grp("mc-frame", { "stroke-width": 1.2 });
+    frame.appendChild(el("rect", { x: X, y: Y, width: W, height: H, rx: 3 }));
+    for (var g = 1; g < 4; g++) frame.appendChild(el("path", { d: "M " + X + " " + (Y + g * H / 4) + " L " + (X + W) + " " + (Y + g * H / 4), "stroke-width": 0.8, "stroke-dasharray": "2 5" }));
+    for (var v = 1; v < 6; v++) frame.appendChild(el("path", { d: "M " + (X + v * W / 6) + " " + Y + " L " + (X + v * W / 6) + " " + (Y + H), "stroke-width": 0.8, "stroke-dasharray": "2 5" }));
+    svg.appendChild(frame);
+
+    /* A square-ish wave repeated well past the window, then scrolled. */
+    var mid = Y + H / 2, hi = Y + 24, lo = Y + H - 24, step = 34, d = "M -240 " + mid;
+    for (var i = 0; i < 20; i++) {
+      var x0 = -240 + i * step;
+      var top = i % 3 === 0 ? hi : (i % 3 === 1 ? lo : mid);
+      d += " L " + (x0 + 6) + " " + top + " L " + (x0 + step - 6) + " " + top + " L " + (x0 + step) + " " + mid;
+    }
+
+    var clip = el("clipPath", { id: ID });
+    clip.appendChild(el("rect", { x: X, y: Y, width: W, height: H }));
+    svg.appendChild(add(el("defs", {}), [clip]));
+
+    var wrap = el("g", { "clip-path": "url(#" + ID + ")" });
+    var moving = grp("mc-signal", { "stroke-width": 2.4, "stroke-linejoin": "round" });
+    moving.appendChild(el("path", { d: d }));
+    wrap.appendChild(moving);
     svg.appendChild(wrap);
 
-    svg.appendChild(P.node);
-    svg.appendChild(bearing(P.cx, P.cy, 14));
+    var read = grp("mc-line", { "stroke-width": 1.4 });
+    read.appendChild(el("path", { d: "M " + X + " " + (Y + H + 22) + " L " + (X + 54) + " " + (Y + H + 22) }));
+    read.appendChild(el("path", { d: "M " + (X + 66) + " " + (Y + H + 22) + " L " + (X + 104) + " " + (Y + H + 22) }));
+    svg.appendChild(read);
 
     return {
       svg: svg,
       update: function (p) {
-        var deg = p * 620;
-        spinTo(P, deg);
-        /* Rolling without slipping: the rack moves exactly the arc length. */
-        slide.setAttribute("transform",
-          "translate(" + (-(deg * Math.PI / 180) * r).toFixed(2) + " 0)");
+        moving.setAttribute("transform", "translate(" + ((p * 5 * step * 3) % (step * 3)).toFixed(1) + " 0)");
       }
     };
   };
 
-  /* --- Slider-crank: flywheel, connecting rod, piston, cylinder --------- */
-  BUILD.piston = function () {
-    var svg = el("svg", { viewBox: "0 0 480 270", fill: "none", stroke: "currentColor" });
-    var cx = 112, cy = 128, crank = 52, rod = 178, bore = 44, wall = 250;
+  /* --- Dependency tree, drawing itself in ------------------------------- */
+  BUILD.tree = function () {
+    var svg = el("svg", { viewBox: "0 0 250 250", fill: "none" });
+    var ROOT = [40, 34];
+    var ITEMS = [
+      { x: 74, y: 72,  kids: [[108, 100], [108, 128]] },
+      { x: 74, y: 164, kids: [[108, 192], [108, 220]] }
+    ];
 
-    var frame = el("g", { class: "mc-frame", "stroke-width": 1.3 });
-    /* Cylinder, with a flange where it bolts to the crankcase. */
-    frame.appendChild(el("path", {
-      d: "M " + wall + " " + (cy - bore) + " L 452 " + (cy - bore) +
-         " M " + wall + " " + (cy + bore) + " L 452 " + (cy + bore) +
-         " M 452 " + (cy - bore) + " L 452 " + (cy + bore)
-    }));
-    frame.appendChild(el("path", {
-      d: "M " + wall + " " + (cy - bore - 12) + " L " + wall + " " + (cy + bore + 12),
-      "stroke-width": 1.6
-    }));
-    [cy - bore - 6, cy + bore + 6].forEach(function (y) {
-      frame.appendChild(el("circle", { cx: wall, cy: y, r: 3.2 }));
-    });
-    frame.appendChild(el("circle", { cx: cx, cy: cy, r: crank, "stroke-dasharray": "4 6", "stroke-width": 0.9 }));
+    var frame = grp("mc-frame", { "stroke-width": 1 });
+    frame.appendChild(el("path", { d: "M 22 24 L 22 232", "stroke-dasharray": "3 5" }));
     svg.appendChild(frame);
-    svg.appendChild(bedplate(40, 216, 200));
-    svg.appendChild(driveShaft(cx, cy, 40, cy));
 
-    var fly = gear(cx, cy, 22, 5.4, { spokes: 4, sw: 1.4 });
-    svg.appendChild(fly.node);
-    svg.appendChild(bearing(cx, cy, 16));
-
-    var conrod = el("path", { "stroke-width": 2.2 });
-    var pin = el("circle", { r: 6, "stroke-width": 1.5 });
-    var head = el("g", { "stroke-width": 2 });
-    add(head, [
-      el("rect", { x: -26, y: -bore + 5, width: 52, height: (bore - 5) * 2, rx: 3 }),
-      el("path", {
-        d: "M -15 " + (-bore + 14) + " L -15 " + (bore - 14) +
-           " M 5 " + (-bore + 14) + " L 5 " + (bore - 14),
-        "stroke-width": 1
-      })
-    ]);
-    add(svg, [conrod, head, pin]);
-
-    return {
-      svg: svg,
-      update: function (p) {
-        var th = p * 6.4 * Math.PI;
-        spinTo(fly, th * 180 / Math.PI);
-        var px = cx + Math.cos(th) * crank, py = cy + Math.sin(th) * crank;
-        /* Slider-crank: x = r cos t + sqrt(L^2 - (r sin t)^2) */
-        var s = Math.sin(th) * crank;
-        var hx = cx + Math.cos(th) * crank + Math.sqrt(rod * rod - s * s);
-        conrod.setAttribute("d", "M " + px.toFixed(1) + " " + py.toFixed(1) + " L " + hx.toFixed(1) + " " + cy);
-        pin.setAttribute("cx", px.toFixed(1));
-        pin.setAttribute("cy", py.toFixed(1));
-        head.setAttribute("transform", "translate(" + hx.toFixed(1) + " " + cy + ")");
-      }
-    };
-  };
-
-  /* --- Belt drive over two pulleys -------------------------------------- */
-  BUILD.pulley = function () {
-    var svg = el("svg", { viewBox: "0 0 460 265", fill: "none", stroke: "currentColor" });
-    var c1 = { x: 112, y: 122, r: 68 }, c2 = { x: 342, y: 122, r: 38 };
-    var d = c2.x - c1.x, beta = Math.acos((c1.r - c2.r) / d);
-
-    function tp(c, sign) {
-      return { x: c.x + Math.cos(sign * beta) * c.r, y: c.y + Math.sin(sign * beta) * c.r };
-    }
-    var a1 = tp(c1, -1), a2 = tp(c2, -1), b1 = tp(c1, 1), b2 = tp(c2, 1);
-
-    svg.appendChild(bedplate(46, 226, 350));
-    add(svg, [
-      driveShaft(c1.x, c1.y, 46, c1.y),
-      el("path", {
-        d: "M " + c1.x + " " + c1.y + " L " + c1.x + " 226 M " + c2.x + " " + c2.y + " L " + c2.x + " 226",
-        class: "mc-frame", "stroke-width": 1.2
-      })
-    ]);
-
-    /* The belt, along the true external tangents. */
-    var belt = el("path", {
-      d: "M " + a1.x.toFixed(1) + " " + a1.y.toFixed(1) +
-         " L " + a2.x.toFixed(1) + " " + a2.y.toFixed(1) +
-         " A " + c2.r + " " + c2.r + " 0 0 1 " + b2.x.toFixed(1) + " " + b2.y.toFixed(1) +
-         " L " + b1.x.toFixed(1) + " " + b1.y.toFixed(1) +
-         " A " + c1.r + " " + c1.r + " 0 1 1 " + a1.x.toFixed(1) + " " + a1.y.toFixed(1),
-      "stroke-width": 3, "stroke-dasharray": "9 7"
+    var edges = [];
+    ITEMS.forEach(function (it) {
+      edges.push("M " + ROOT[0] + " " + (ROOT[1] + 8) + " L " + ROOT[0] + " " + it.y + " L " + it.x + " " + it.y);
+      it.kids.forEach(function (k) {
+        edges.push("M " + it.x + " " + (it.y + 8) + " L " + it.x + " " + k[1] + " L " + k[0] + " " + k[1]);
+      });
     });
-    svg.appendChild(belt);
 
-    var p1 = gear(c1.x, c1.y, 24, 5.2, { spokes: 6, sw: 1.3 });
-    var p2 = gear(c2.x, c2.y, 14, 5.0, { spokes: 4, sw: 1.3 });
-    add(svg, [p1.node, p2.node, bearing(c1.x, c1.y, 15), bearing(c2.x, c2.y, 11)]);
+    var lineG = grp("mc-line", { "stroke-width": 2 });
+    var drawn = edges.map(function (d) {
+      var pth = el("path", { d: d, "stroke-dasharray": 200, "stroke-dashoffset": 200 });
+      lineG.appendChild(pth);
+      return pth;
+    });
+    svg.appendChild(lineG);
 
-    return {
-      svg: svg,
-      update: function (p) {
-        var t = p * 700;
-        spinTo(p1, t);
-        /* A belt couples them by surface speed, so the ratio is by radius. */
-        spinTo(p2, t * c1.r / c2.r);
-        belt.setAttribute("stroke-dashoffset", (-t * 0.9).toFixed(1));
-      }
-    };
-  };
-
-  /* --- Centrifugal governor -------------------------------------------- */
-  /* The arms swing out, and because the lower links are the same length as
-     the upper ones the sleeve rises by exactly 2L*cos(a). It is the oldest
-     self-regulating machine there is, which is the point. */
-  BUILD.governor = function () {
-    var svg = el("svg", { viewBox: "0 0 220 280", fill: "none", stroke: "currentColor" });
-    var x = 110, top = 62, L = 66, ball = 13;
-
-    svg.appendChild(add(el("g", { class: "mc-frame", "stroke-width": 1.2 }), [
-      el("path", { d: "M " + x + " 28 L " + x + " 236" }),
-      el("path", { d: "M 62 236 L 158 236" }),
-      el("circle", { cx: x, cy: top, r: 4 })
-    ]));
-    svg.appendChild(bedplate(58, 236, 104));
-
-    var spin = gear(x, 246, 16, 4.6, { spokes: 4, sw: 1.2 });
-    svg.appendChild(spin.node);
-
-    var armL = el("path", { "stroke-width": 2 });
-    var armR = el("path", { "stroke-width": 2 });
-    var linkL = el("path", { "stroke-width": 1.4 });
-    var linkR = el("path", { "stroke-width": 1.4 });
-    var ballL = el("circle", { r: ball, "stroke-width": 1.8 });
-    var ballR = el("circle", { r: ball, "stroke-width": 1.8 });
-    var sleeve = el("rect", { x: x - 13, width: 26, height: 16, rx: 2, "stroke-width": 1.6 });
-    add(svg, [armL, armR, linkL, linkR, sleeve, ballL, ballR]);
-
-    return {
-      svg: svg,
-      update: function (p) {
-        spinTo(spin, p * 1400);
-        /* Opens and closes twice as the section passes. */
-        var a = (16 + 30 * (0.5 - 0.5 * Math.cos(p * 4 * Math.PI))) * Math.PI / 180;
-        var dx = Math.sin(a) * L, dy = Math.cos(a) * L;
-        var sy = top + 2 * dy;
-        [[armL, ballL, linkL, -1], [armR, ballR, linkR, 1]].forEach(function (s) {
-          var bx = x + s[3] * dx, by = top + dy;
-          s[0].setAttribute("d", "M " + x + " " + top + " L " + bx.toFixed(1) + " " + by.toFixed(1));
-          s[1].setAttribute("cx", bx.toFixed(1));
-          s[1].setAttribute("cy", by.toFixed(1));
-          s[2].setAttribute("d", "M " + bx.toFixed(1) + " " + by.toFixed(1) + " L " + x + " " + sy.toFixed(1));
-        });
-        sleeve.setAttribute("y", (sy - 8).toFixed(1));
-      }
-    };
-  };
-
-  /* --- Eccentric cam and roller follower -------------------------------- */
-  BUILD.cam = function () {
-    var svg = el("svg", { viewBox: "0 0 240 270", fill: "none", stroke: "currentColor" });
-    var sx = 108, sy = 168, R = 52, ecc = 22, roll = 14;
-
-    svg.appendChild(add(el("g", { class: "mc-frame", "stroke-width": 1.2 }), [
-      el("path", { d: "M " + (sx - 16) + " 30 L " + (sx - 16) + " 74 M " + (sx + 16) + " 30 L " + (sx + 16) + " 74" }),
-      el("circle", { cx: sx, cy: sy, r: 3.5 })
-    ]));
-    svg.appendChild(bedplate(44, 236, 150));
-    svg.appendChild(driveShaft(sx, sy, 194, sy));
-
-    var cam = el("circle", { r: R, "stroke-width": 1.8 });
-    var camHub = el("circle", { r: 6, "stroke-width": 1.2 });
-    var roller = el("circle", { r: roll, "stroke-width": 1.6 });
-    var rod = el("path", { "stroke-width": 2.2 });
-    add(svg, [cam, camHub, rod, roller]);
-    svg.appendChild(bearing(sx, sy, 14));
-
-    return {
-      svg: svg,
-      update: function (p) {
-        var th = p * 5 * Math.PI;
-        var cxx = sx + Math.cos(th) * ecc, cyy = sy + Math.sin(th) * ecc;
-        cam.setAttribute("cx", cxx.toFixed(1));
-        cam.setAttribute("cy", cyy.toFixed(1));
-        camHub.setAttribute("cx", cxx.toFixed(1));
-        camHub.setAttribute("cy", cyy.toFixed(1));
-        /* The roller sits on the axis, so its height follows from the cam
-           centre being off it: dy = sqrt((R+r)^2 - dx^2). */
-        var dx = cxx - sx;
-        var ry = cyy - Math.sqrt((R + roll) * (R + roll) - dx * dx);
-        roller.setAttribute("cx", sx);
-        roller.setAttribute("cy", ry.toFixed(1));
-        rod.setAttribute("d", "M " + sx + " " + ry.toFixed(1) + " L " + sx + " 34");
-      }
-    };
-  };
-
-  /* --- Ratchet and pawl ------------------------------------------------- */
-  /* Turns one way and locks the other — the reason a shift stays shifted. */
-  BUILD.ratchet = function () {
-    var svg = el("svg", { viewBox: "0 0 240 240", fill: "none", stroke: "currentColor" });
-    var cx = 110, cy = 118, r = 74, N = 16, step = TAU / N;
-
-    /* Teeth drawn about the origin so the whole wheel is one rotate(). */
-    var d = "M " + xy(r, 0);
-    for (var i = 0; i < N; i++) {
-      var a = i * step;
-      d += " L " + xy(r * 0.78, a + step * 0.62) + " L " + xy(r, a + step);
+    function chip(x, y, w, cls) {
+      var g = grp(cls, { "stroke-width": 1.6 });
+      g.appendChild(el("rect", { x: x, y: y - 8, width: w, height: 17, rx: 2 }));
+      g.appendChild(el("path", { d: "M " + (x + 6) + " " + (y + 0.5) + " L " + (x + w - 8) + " " + (y + 0.5), "stroke-width": 1 }));
+      return g;
     }
 
-    var wheel = el("g", {});
-    add(wheel, [
-      el("path", { d: d + " Z", "stroke-width": 1.6 }),
-      el("circle", { r: 20, "stroke-width": 1.3 }),
-      el("circle", { r: 5, "stroke-width": 1.2 })
-    ]);
-    var hub = el("g", { transform: "translate(" + cx + " " + cy + ")" });
-    hub.appendChild(wheel);
+    var nodes = [chip(ROOT[0] - 12, ROOT[1], 62, "mc-line")];
+    ITEMS.forEach(function (it) {
+      nodes.push(chip(it.x, it.y, 54, "mc-line"));
+      it.kids.forEach(function (k) { nodes.push(chip(k[0], k[1], 46, "mc-line")); });
+    });
+    nodes.forEach(function (n) { svg.appendChild(n); });
 
-    svg.appendChild(bedplate(38, 212, 156));
-    svg.appendChild(driveShaft(cx, cy, 38, cy));
-    svg.appendChild(hub);
-    svg.appendChild(bearing(cx, cy, 14));
-
-    /* The pawl: pivoted above and to the right, tip resting on the teeth. */
-    var pawl = el("g", { "stroke-width": 1.9 });
-    add(pawl, [
-      el("path", { d: "M 204 44 L 132 92" }),
-      el("circle", { cx: 204, cy: 44, r: 4.5, "stroke-width": 1.3 }),
-      el("path", { d: "M 204 44 L 214 30", class: "mc-frame", "stroke-width": 1.2 })
-    ]);
-    svg.appendChild(pawl);
+    var cursorG = grp("mc-signal", { "stroke-width": 2 });
+    cursorG.appendChild(el("rect", { x: 0, y: -9, width: 3, height: 18, fill: "currentColor", stroke: "none" }));
+    svg.appendChild(cursorG);
 
     return {
       svg: svg,
       update: function (p) {
-        var deg = p * 540;
-        spinTo({ spin: wheel }, deg);
-        /* Rides up the back of a tooth, then drops off its end. */
-        var frac = ((deg / (360 / N)) % 1 + 1) % 1;
-        pawl.setAttribute("transform", "rotate(" + (-7 + 9 * frac).toFixed(2) + " 204 44)");
+        var t = ((p * 1.4) % 1) * drawn.length;
+        drawn.forEach(function (pt, i) {
+          pt.setAttribute("stroke-dashoffset", (200 * (1 - Math.max(0, Math.min(1, t - i)))).toFixed(1));
+        });
+        var active = Math.min(nodes.length - 1, Math.floor(t));
+        var box = nodes[active].firstChild;
+        cursorG.setAttribute("transform", "translate(" +
+          (parseFloat(box.getAttribute("x")) + parseFloat(box.getAttribute("width")) + 6) + " " +
+          (parseFloat(box.getAttribute("y")) + 8.5) + ")");
       }
     };
   };
@@ -498,9 +477,9 @@
     machines.forEach(function (m) {
       if (!m.on) return;
       var r = m.host.getBoundingClientRect();
-      /* 0 as the assembly enters from the bottom, 1 as it leaves the top. */
+      /* 0 as it enters from the bottom, 1 as it leaves the top. */
       var p = 1 - (r.top + r.height) / (vh + r.height);
-      m.update(Math.max(-0.15, Math.min(1.15, p)));
+      m.update(Math.max(0, Math.min(1, p)));
     });
   }
 
@@ -512,8 +491,6 @@
 
   window.addEventListener("scroll", request, { passive: true });
   window.addEventListener("resize", request, { passive: true });
-  document.addEventListener("visibilitychange", function () {
-    if (!document.hidden) request();
-  });
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) request(); });
   request();
 })();
