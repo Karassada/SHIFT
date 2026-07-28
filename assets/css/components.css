@@ -366,58 +366,34 @@
    Numbered badge — the anchor at the top-left of anything explained in steps
    ========================================================================== */
 
-/* A package, not a filled square. The body is a thin outline over a light
-   tint so you can see through it, pins run along all four edges, and the
-   number is the darkest thing in it so it stays the first thing you read. */
+/* A package, drawn rather than faked with gradients. CSS could not give
+   identical pins on four edges — each edge's gradient started at its own
+   offset — and could not show anything inside the body at all. The chip is
+   an SVG: sixteen pins of exactly the same size, a body you can see through,
+   and a die with bond wires visible inside it. */
 .badge {
-  --pin: 5px;
   position: relative;
-  isolation: isolate;
   display: inline-grid;
-  place-content: center;
-  width: 2.35rem;
-  height: 2.35rem;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
   flex: none;
   color: var(--c-accent);
+}
+.badge__pkg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+/* The number sits above the package and is the darkest thing in it. */
+.badge__n {
+  position: relative;
   font-family: var(--f-mono);
   font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.04em;
-
-  /* Pins: vertical dashes in the bands above and below, horizontal dashes in
-     the bands left and right. Thin, and short enough to read as legs. */
-  background-image:
-    repeating-linear-gradient(to right,  var(--c-accent) 0 2px, transparent 2px 7px),
-    repeating-linear-gradient(to right,  var(--c-accent) 0 2px, transparent 2px 7px),
-    repeating-linear-gradient(to bottom, var(--c-accent) 0 2px, transparent 2px 7px),
-    repeating-linear-gradient(to bottom, var(--c-accent) 0 2px, transparent 2px 7px);
-  background-size: 62% var(--pin), 62% var(--pin), var(--pin) 62%, var(--pin) 62%;
-  background-position: center top, center bottom, left center, right center;
-  background-repeat: no-repeat;
-}
-
-/* The body. Behind the number, so the digits are never sitting on a fill. */
-.badge::before {
-  content: "";
-  position: absolute;
-  inset: var(--pin);
-  z-index: -1;
-  border: 1.5px solid var(--c-accent);
-  border-radius: 2px;
-  background: var(--c-accent-lo);
-  background: color-mix(in srgb, var(--c-accent) 13%, transparent);
-}
-
-/* Orientation notch, inside the body. */
-.badge__notch {
-  position: absolute;
-  top: calc(var(--pin) + 3px);
-  left: calc(var(--pin) + 3px);
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  border: 1px solid var(--c-accent);
-  opacity: 0.7;
+  letter-spacing: 0.03em;
+  color: var(--c-accent);
 }
 
 /* ==========================================================================
