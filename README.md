@@ -15,11 +15,7 @@ Pages redeploys in about a minute.
 ### Where things are
 
 ```
-index.html        Homepage
-services.html     サービス / Services
-ventures.html     事業・ブランド / Ventures — your other businesses
-about.html        会社概要 / About + the company profile table
-contact.html      お問い合わせ / Contact form
+index.html        The whole site: hero, services, ventures, 会社概要, contact
 privacy.html      プライバシーポリシー / Privacy policy
 404.html          shown for any address that doesn't exist
 
@@ -28,15 +24,18 @@ robots.txt        points at the sitemap
 
 assets/css/tokens.css      colours, type sizes, spacing, motion timing
 assets/css/base.css        reset, typography, grid, print styles
-assets/css/components.css  header, buttons, cards, forms, footer
+assets/css/components.css  header, buttons, cards, footer
 assets/css/motion.css      every animation
-assets/js/config.js        contact form endpoint + email address
+assets/js/config.js        contact email address
 assets/js/machinery.js     the circuit, cluster, matrix, network, pipeline,
                            stack, signal and folder tree behind the content
 assets/img/shift-logo.svg  the logo, as vector
 assets/img/og-card.png     the picture shown when the link is shared
 assets/img/og-card.svg     the source that PNG is rendered from
 ```
+
+It is one page. The header tabs are anchors, and the block behind them
+follows whichever section you are looking at.
 
 ### The link-share picture
 
@@ -71,29 +70,16 @@ machinery, focus rings.
 
 ### Things marked for you
 
-Search the HTML for `GUTO:` — those comments mark the places left deliberately
+Search `index.html` for `GUTO:` — those comments mark what is deliberately
 unfinished:
 
-- **The SHIFT explanation** — `index.html` (`#about-shift`) and `about.html`.
-  Placeholder paragraphs, waiting for your words.
-- **会社概要 table** — `about.html`. Rows reading 準備中 / To be confirmed need
-  the real details from the 履歴事項全部証明書. Nothing there is invented.
-- **Venture links** — `index.html` and `ventures.html`. The rows are not linked
+- **会社概要 table** — rows reading 準備中 / To be confirmed need the real
+  details from the 履歴事項全部証明書. Nothing there is invented.
+- **Venture links** — in `index.html`. The rows are not linked
   yet because the URLs aren't known. The markup to wrap a row in is sitting in
   a comment right above the list. Copy a `.vrow` block to add another venture.
 
 ---
-
-## Contact form
-
-Out of the box the form opens the visitor's mail app with the message filled
-in, so it works with no server. To receive submissions as email instead,
-create a form at [Formspree](https://formspree.io) (or Basin, Web3Forms) and
-put the endpoint in `assets/js/config.js`:
-
-```js
-formEndpoint: "https://formspree.io/f/xxxxxxxx",
-```
 
 ---
 

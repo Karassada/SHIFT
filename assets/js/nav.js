@@ -37,12 +37,23 @@
     var block = rail.querySelector(".rail__block");
     var chev = rail.querySelector(".rail__chev");
     var links = Array.prototype.slice.call(rail.querySelectorAll(".rail__link"));
-    var current = rail.querySelector('.rail__link[aria-current="page"]') || links[0];
+    var current = rail.querySelector(".rail__link[aria-current]") || links[0];
 
+    var retries = 0;
     function place(el, preview) {
       if (!el || !block) return;
       var x = el.offsetLeft;
       var w = el.offsetWidth;
+
+      /* The rail is display:none below its breakpoint, so a measurement taken
+         while it is hidden comes back zero — and a zero-width block leaves
+         the current tab's light text sitting on nothing. Keep the last good
+         value and try again shortly rather than writing the zero. */
+      if (!w) {
+        if (retries++ < 20) window.setTimeout(function () { place(el, preview); }, 120);
+        return;
+      }
+      retries = 0;
       if (preview && current) {
         /* Sit 70% of the way there — a shift in progress, not a commitment. */
         var cx = current.offsetLeft;
@@ -53,6 +64,7 @@
       block.style.setProperty("--block-x", x + "px");
       block.style.setProperty("--block-w", w + "px");
       if (chev) chev.style.setProperty("--chev-x", (x - 12) + "px");
+      rail.classList.add("is-ready");
     }
 
     function home() { place(current, false); }
@@ -70,15 +82,62 @@
       if (!rail.contains(e.relatedTarget)) home();
     });
 
-    /* Measure once the real fonts are in — swapped metrics move the tabs. */
-    function measure() { home(); rail.classList.add("is-ready"); }
+    /* Measure once the real fonts are in — swapped metrics move the tabs.
+       `is-ready` is set inside place(), only after a real measurement. */
+    function measure() { home(); }
     measure();
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
     window.addEventListener("resize", home, { passive: true });
+    /* The rail only exists above its breakpoint; measure it the moment it
+       appears rather than waiting for a scroll. */
+    var wide = window.matchMedia("(min-width: 62em)");
+    (wide.addEventListener ? wide.addEventListener.bind(wide, "change")
+                           : wide.addListener.bind(wide))(function () { measure(); });
     window.addEventListener("shift:langchange", function () {
       /* Japanese and English labels are different widths. */
       requestAnimationFrame(measure);
     });
+
+    /* ----------------------------------------------------------------------
+       On a single page the tabs point at sections rather than documents, so
+       "current" has to be worked out from what you are actually looking at.
+       The block then travels as you scroll, which is the same gesture it
+       made between pages.
+       ---------------------------------------------------------------------- */
+    if (rail.hasAttribute("data-spy")) {
+      var targets = links.map(function (a) {
+        var id = (a.getAttribute("href") || "").replace(/^#/, "");
+        return id ? document.getElementById(id) : null;
+      });
+
+      var spying = false;
+      function spy() {
+        spying = false;
+        /* The section whose top has most recently passed the reading line. */
+        var line = window.innerHeight * 0.34, best = 0;
+        for (var i = 0; i < targets.length; i++) {
+          if (targets[i] && targets[i].getBoundingClientRect().top <= line) best = i;
+        }
+        /* At the very bottom the last section wins even if it never
+           reached the line — otherwise Contact can never become current. */
+        if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) {
+          best = links.length - 1;
+        }
+        if (links[best] === current) return;
+        current.removeAttribute("aria-current");
+        current = links[best];
+        current.setAttribute("aria-current", "true");
+        home();
+      }
+      function requestSpy() {
+        if (spying) return;
+        spying = true;
+        requestAnimationFrame(spy);
+      }
+      window.addEventListener("scroll", requestSpy, { passive: true });
+      window.addEventListener("resize", requestSpy, { passive: true });
+      requestSpy();
+    }
   }
 
   /* ------------------------------------------------------------------------

@@ -67,9 +67,9 @@ try{if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion:
       <span class="rail__block" aria-hidden="true"></span>
       <span class="rail__chev" aria-hidden="true">»</span>
       <a class="rail__link" href="index.html"><span class="ja">ホーム</span><span class="en">Home</span></a>
-      <a class="rail__link" href="services.html"><span class="ja">サービス</span><span class="en">Services</span></a>
-      <a class="rail__link" href="ventures.html"><span class="ja">事業・ブランド</span><span class="en">Ventures</span></a>
-      <a class="rail__link" href="about.html"><span class="ja">会社概要</span><span class="en">About</span></a>
+      <a class="rail__link" href="index.html#services"><span class="ja">サービス</span><span class="en">Services</span></a>
+      <a class="rail__link" href="index.html#ventures"><span class="ja">事業・ブランド</span><span class="en">Ventures</span></a>
+      <a class="rail__link" href="index.html#company"><span class="ja">会社概要</span><span class="en">About</span></a>
     </nav>
 
     <div class="header__actions">
@@ -79,7 +79,7 @@ try{if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion:
         <button class="lang__btn" type="button" data-lang-btn="en" aria-pressed="false">EN</button>
       </div>
 
-      <a class="btn btn--sm" href="contact.html">
+      <a class="btn btn--sm" href="index.html#contact">
         <span class="btn__roll">
           <span><span class="ja">お問い合わせ</span><span class="en">Contact</span></span>
           <span><span class="ja">お問い合わせ</span><span class="en">Contact</span></span>
@@ -101,10 +101,10 @@ try{if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion:
   </div>
   <nav class="wrap menu__list" aria-label="モバイルナビゲーション">
     <div class="menu__item"><a class="menu__link" href="index.html" style="--i:0"><span><span class="ja">ホーム</span><span class="en">Home</span></span><span class="num">01</span></a></div>
-    <div class="menu__item"><a class="menu__link" href="services.html" style="--i:1"><span><span class="ja">サービス</span><span class="en">Services</span></span><span class="num">02</span></a></div>
-    <div class="menu__item"><a class="menu__link" href="ventures.html" style="--i:2"><span><span class="ja">事業・ブランド</span><span class="en">Ventures</span></span><span class="num">03</span></a></div>
-    <div class="menu__item"><a class="menu__link" href="about.html" style="--i:3"><span><span class="ja">会社概要</span><span class="en">About</span></span><span class="num">04</span></a></div>
-    <div class="menu__item"><a class="menu__link" href="contact.html" style="--i:4"><span><span class="ja">お問い合わせ</span><span class="en">Contact</span></span><span class="num">05</span></a></div>
+    <div class="menu__item"><a class="menu__link" href="index.html#services" style="--i:1"><span><span class="ja">サービス</span><span class="en">Services</span></span><span class="num">02</span></a></div>
+    <div class="menu__item"><a class="menu__link" href="index.html#ventures" style="--i:2"><span><span class="ja">事業・ブランド</span><span class="en">Ventures</span></span><span class="num">03</span></a></div>
+    <div class="menu__item"><a class="menu__link" href="index.html#company" style="--i:3"><span><span class="ja">会社概要</span><span class="en">About</span></span><span class="num">04</span></a></div>
+    <div class="menu__item"><a class="menu__link" href="index.html#contact" style="--i:4"><span><span class="ja">お問い合わせ</span><span class="en">Contact</span></span><span class="num">05</span></a></div>
   </nav>
   <div class="wrap menu__foot">
     <span class="label label--bare">TOKYO, JAPAN</span>
@@ -137,7 +137,7 @@ try{if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion:
       <div class="card" data-reveal>
         <div class="card__index"><span class="label"><span class="ja">01 ／ 取得する情報</span><span class="en">01 &mdash; What we collect</span></span></div>
         <h2 class="card__title"><span class="ja">取得する情報</span><span class="en">What we collect</span></h2>
-        <p class="card__body"><span class="ja">お問い合わせフォームを通じて、お名前、会社名、メールアドレス、ご相談内容をお預かりします。入力は任意であり、送信された場合にのみ取得します。当社は、これら以外の個人情報を本ウェブサイト上で収集しません。</span><span class="en">Through the contact form: your name, company, email address, and the content of your message. Submitting the form is entirely voluntary, and we collect this only when you do. We collect no other personal information on this site.</span></p>
+        <p class="card__body"><span class="ja">本ウェブサイトにはお問い合わせフォームがありません。ご連絡はメールでいただく形のみで、その際にお預かりするのは、お客様がメールに記載された情報に限られます。当社は本ウェブサイト上で個人情報を収集しません。</span><span class="en">This site has no contact form. You reach us by email, so the only information we hold is whatever you choose to put in that email. The site itself collects no personal information.</span></p>
       </div>
 
       <div class="card" data-reveal>
@@ -149,7 +149,7 @@ try{if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion:
       <div class="card" data-reveal>
         <div class="card__index"><span class="label"><span class="ja">03 ／ 第三者提供</span><span class="en">03 &mdash; Third parties</span></span></div>
         <h2 class="card__title"><span class="ja">第三者への提供</span><span class="en">Sharing with third parties</span></h2>
-        <p class="card__body"><span class="ja">法令に基づく場合を除き、ご本人の同意なく個人情報を第三者へ提供することはありません。フォームの送信および当社のメール受信には外部サービスを利用する場合があり、その範囲で情報が処理されることがあります。</span><span class="en">We do not pass your information to third parties without your consent, except where required by law. Form delivery and our email may be handled by external service providers, and your information is processed by them to that extent.</span></p>
+        <p class="card__body"><span class="ja">法令に基づく場合を除き、ご本人の同意なく個人情報を第三者へ提供することはありません。当社のメール受信には外部サービスを利用しており、その範囲で情報が処理されます。</span><span class="en">We do not pass your information to third parties without your consent, except where required by law. Our email is handled by an external provider, and your message is processed by them to that extent.</span></p>
       </div>
 
       <div class="card" data-reveal>
@@ -203,10 +203,10 @@ try{if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion:
       <nav class="footer__col" aria-label="フッターナビゲーション">
         <span class="footer__label"><span class="ja">サイト</span><span class="en">Site</span></span>
         <a class="footer__link" href="index.html"><span class="ja">ホーム</span><span class="en">Home</span></a>
-        <a class="footer__link" href="services.html"><span class="ja">サービス</span><span class="en">Services</span></a>
-        <a class="footer__link" href="ventures.html"><span class="ja">事業・ブランド</span><span class="en">Ventures</span></a>
-        <a class="footer__link" href="about.html"><span class="ja">会社概要</span><span class="en">About</span></a>
-        <a class="footer__link" href="contact.html"><span class="ja">お問い合わせ</span><span class="en">Contact</span></a>
+        <a class="footer__link" href="index.html#services"><span class="ja">サービス</span><span class="en">Services</span></a>
+        <a class="footer__link" href="index.html#ventures"><span class="ja">事業・ブランド</span><span class="en">Ventures</span></a>
+        <a class="footer__link" href="index.html#company"><span class="ja">会社概要</span><span class="en">About</span></a>
+        <a class="footer__link" href="index.html#contact"><span class="ja">お問い合わせ</span><span class="en">Contact</span></a>
       </nav>
 
       <div class="footer__col">

@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title data-title-ja="SHIFT合同会社 — いまのやり方を、次のかたちへ。" data-title-en="SHIFT GK — Shift the way it gets done.">SHIFT合同会社 — いまのやり方を、次のかたちへ。</title>
-<meta name="description" content="SHIFT合同会社は東京の会社です。Google Workspaceの導入から、業務を理解して動くAIの設置、自動化、ダッシュボードやウェブサイト制作まで、会社の仕組みをまとめて整えます。">
+<meta name="description" content="SHIFT合同会社は東京の会社です。会社やチームのOSづくり、ウェブサイト制作、Google Workspaceの導入まで。">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <link rel="canonical" href="https://karassada.github.io/SHIFT/">
+
 <!-- How the page presents itself when the link is shared -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SHIFT合同会社">
@@ -14,7 +15,7 @@
 <meta property="og:locale:alternate" content="en_US">
 <meta property="og:url" content="https://karassada.github.io/SHIFT/">
 <meta property="og:title" content="SHIFT合同会社 — いまのやり方を、次のかたちへ。">
-<meta property="og:description" content="SHIFT合同会社は東京の会社です。Google Workspaceの導入から、業務を理解して動くAIの設置、自動化、ダッシュボードやウェブサイト制作まで、会社の仕組みをまとめて整えます。">
+<meta property="og:description" content="会社やチームのOSづくり、ウェブサイト制作、Google Workspaceの導入まで。東京。">
 <meta property="og:image" content="https://karassada.github.io/SHIFT/assets/img/og-card.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -34,14 +35,13 @@
   "url": "https://karassada.github.io/SHIFT/",
   "logo": "https://karassada.github.io/SHIFT/assets/img/shift-logo.svg",
   "image": "https://karassada.github.io/SHIFT/assets/img/og-card.png",
-  "description": "東京を拠点に、会社の土台づくりからAIの導入・自動化、ダッシュボードやウェブサイト制作までを手がけています。",
+  "description": "会社やチームのOSづくり、ウェブサイト制作、Google Workspaceの導入。",
   "email": "admin@shiftgk.com",
   "address": { "@type": "PostalAddress", "addressLocality": "東京", "addressCountry": "JP" },
   "areaServed": "JP",
   "knowsLanguage": ["ja", "en"]
 }
 </script>
-
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -65,7 +65,6 @@ try{if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion:
 <body>
 <a class="skip" href="#main"><span class="ja">本文へスキップ</span><span class="en">Skip to content</span></a>
 
-<!-- Page transition panels -->
 <div class="wipe" aria-hidden="true" style="--panels:6">
   <div class="wipe__panel" style="--i:0"></div>
   <div class="wipe__panel" style="--i:1"></div>
@@ -75,22 +74,19 @@ try{if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion:
   <div class="wipe__panel" style="--i:5"></div>
 </div>
 
-<!-- ====================================================================== -->
-<!-- Header                                                                  -->
-<!-- ====================================================================== -->
 <header class="header" data-header>
   <div class="wrap header__inner">
-    <a class="header__brand" href="index.html" aria-label="SHIFT合同会社 — ホーム">
+    <a class="header__brand" href="#main" aria-label="SHIFT合同会社">
       <span class="logo logo--header" role="img" aria-label="SHIFT"></span>
     </a>
 
-    <nav class="rail" data-rail aria-label="メインナビゲーション">
+    <nav class="rail" data-rail data-spy aria-label="メインナビゲーション">
       <span class="rail__block" aria-hidden="true"></span>
       <span class="rail__chev" aria-hidden="true">»</span>
-      <a class="rail__link" href="index.html" aria-current="page"><span class="ja">ホーム</span><span class="en">Home</span></a>
-      <a class="rail__link" href="services.html"><span class="ja">サービス</span><span class="en">Services</span></a>
-      <a class="rail__link" href="ventures.html"><span class="ja">事業・ブランド</span><span class="en">Ventures</span></a>
-      <a class="rail__link" href="about.html"><span class="ja">会社概要</span><span class="en">About</span></a>
+      <a class="rail__link" href="#services" aria-current="true"><span class="ja">サービス</span><span class="en">Services</span></a>
+      <a class="rail__link" href="#ventures"><span class="ja">事業</span><span class="en">Ventures</span></a>
+      <a class="rail__link" href="#company"><span class="ja">会社概要</span><span class="en">Company</span></a>
+      <a class="rail__link" href="#contact"><span class="ja">連絡先</span><span class="en">Contact</span></a>
     </nav>
 
     <div class="header__actions">
@@ -100,14 +96,6 @@ try{if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion:
         <button class="lang__btn" type="button" data-lang-btn="en" aria-pressed="false">EN</button>
       </div>
 
-      <a class="btn btn--sm" href="contact.html" data-desk-cta>
-        <span class="btn__roll">
-          <span><span class="ja">お問い合わせ</span><span class="en">Contact</span></span>
-          <span><span class="ja">お問い合わせ</span><span class="en">Contact</span></span>
-        </span>
-        <span class="btn__chev" aria-hidden="true">»</span>
-      </a>
-
       <button class="burger" type="button" data-burger aria-expanded="false" aria-controls="menu" aria-label="メニュー">
         <span class="burger__bar"></span>
         <span class="burger__bar"></span>
@@ -116,17 +104,15 @@ try{if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion:
   </div>
 </header>
 
-<!-- Mobile menu -->
 <div class="menu" id="menu" data-menu-panel>
   <div class="wrap">
     <span class="label label--bare"><span class="ja">メニュー</span><span class="en">Menu</span></span>
   </div>
   <nav class="wrap menu__list" aria-label="モバイルナビゲーション">
-    <div class="menu__item"><a class="menu__link" href="index.html" style="--i:0" aria-current="page"><span><span class="ja">ホーム</span><span class="en">Home</span></span><span class="num">01</span></a></div>
-    <div class="menu__item"><a class="menu__link" href="services.html" style="--i:1"><span><span class="ja">サービス</span><span class="en">Services</span></span><span class="num">02</span></a></div>
-    <div class="menu__item"><a class="menu__link" href="ventures.html" style="--i:2"><span><span class="ja">事業・ブランド</span><span class="en">Ventures</span></span><span class="num">03</span></a></div>
-    <div class="menu__item"><a class="menu__link" href="about.html" style="--i:3"><span><span class="ja">会社概要</span><span class="en">About</span></span><span class="num">04</span></a></div>
-    <div class="menu__item"><a class="menu__link" href="contact.html" style="--i:4"><span><span class="ja">お問い合わせ</span><span class="en">Contact</span></span><span class="num">05</span></a></div>
+    <div class="menu__item"><a class="menu__link" href="#services" style="--i:0"><span><span class="ja">サービス</span><span class="en">Services</span></span><span class="num">01</span></a></div>
+    <div class="menu__item"><a class="menu__link" href="#ventures" style="--i:1"><span><span class="ja">事業</span><span class="en">Ventures</span></span><span class="num">02</span></a></div>
+    <div class="menu__item"><a class="menu__link" href="#company" style="--i:2"><span><span class="ja">会社概要</span><span class="en">Company</span></span><span class="num">03</span></a></div>
+    <div class="menu__item"><a class="menu__link" href="#contact" style="--i:3"><span><span class="ja">連絡先</span><span class="en">Contact</span></span><span class="num">04</span></a></div>
   </nav>
   <div class="wrap menu__foot">
     <span class="label label--bare">TOKYO, JAPAN</span>
@@ -136,13 +122,10 @@ try{if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion:
 
 <main id="main">
 
-<!-- ====================================================================== -->
-<!-- Hero                                                                    -->
-<!-- ====================================================================== -->
+<!-- Hero -->
 <section class="section hero has-machine" style="padding-top: clamp(7rem, 16vw, 11rem)">
   <div class="machine machine--circuit" data-machine="circuit" aria-hidden="true"></div>
   <div class="wrap grid">
-
     <div class="col-6 stack flow-lg" style="align-content:center">
       <span class="label" data-reveal style="--i:0">
         <span class="ja">合同会社 SHIFT ／ 東京</span><span class="en">SHIFT GK &mdash; Tokyo</span>
@@ -154,205 +137,81 @@ try{if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion:
       </h1>
 
       <p class="t-lead" data-reveal style="--i:3">
-        <span class="ja">東京を拠点とする合同会社です。会社の土台づくりから、業務を理解して動くAIの導入、ダッシュボードやウェブサイトまで。ばらばらになっている作業を、ひとつの仕組みにまとめます。</span>
-        <span class="en">A Tokyo company. We set up the groundwork a business runs on, put an AI in place that understands it, and build the dashboards and sites that make it visible &mdash; turning scattered work into one system.</span>
+        <span class="ja">東京の合同会社です。会社やチームが動くための仕組みを、AIの導入からウェブサイトまで、まとめて組み立てています。</span>
+        <span class="en">A Tokyo company. We build the systems a business or a team runs on &mdash; from putting an AI in place to the website on the front of it.</span>
       </p>
-
-      <div class="row" data-reveal style="--i:4">
-        <a class="btn" href="contact.html">
-          <span class="btn__roll">
-            <span><span class="ja">相談する</span><span class="en">Start a conversation</span></span>
-            <span><span class="ja">相談する</span><span class="en">Start a conversation</span></span>
-          </span>
-          <span class="btn__chev" aria-hidden="true">»</span>
-        </a>
-        <a class="btn btn--ghost" href="services.html">
-          <span class="btn__roll">
-            <span><span class="ja">サービスを見る</span><span class="en">What we do</span></span>
-            <span><span class="ja">サービスを見る</span><span class="en">What we do</span></span>
-          </span>
-          <span class="btn__chev" aria-hidden="true">»</span>
-        </a>
-      </div>
     </div>
 
-    <!-- The gearbox behind this column is the hero image; this is its
-         caption, in the manner of the drawing it is imitating. -->
     <div class="col-5 start-8 hero__fig" aria-hidden="true">
       <span>FIG.01</span>
       <span class="ja">信号経路図</span><span class="en">Signal trace layout</span>
     </div>
-
   </div>
 </section>
 
-<!-- Capability strip -->
-<div class="marquee" aria-hidden="true">
-  <div class="marquee__track">
-    <span class="marquee__item">WORKSPACE SETUP</span>
-    <span class="marquee__item">環境構築</span>
-    <span class="marquee__item">AI INTEGRATION</span>
-    <span class="marquee__item">AI導入</span>
-    <span class="marquee__item">AUTOMATION</span>
-    <span class="marquee__item">自動化</span>
-    <span class="marquee__item">DASHBOARDS</span>
-    <span class="marquee__item">ダッシュボード</span>
-    <span class="marquee__item">WEBSITES</span>
-    <span class="marquee__item">ウェブサイト</span>
-    <span class="marquee__item">MONTHLY SUPPORT</span>
-    <span class="marquee__item">月次サポート</span>
-    <span class="marquee__item">WORKSPACE SETUP</span>
-    <span class="marquee__item">環境構築</span>
-    <span class="marquee__item">AI INTEGRATION</span>
-    <span class="marquee__item">AI導入</span>
-    <span class="marquee__item">AUTOMATION</span>
-    <span class="marquee__item">自動化</span>
-    <span class="marquee__item">DASHBOARDS</span>
-    <span class="marquee__item">ダッシュボード</span>
-    <span class="marquee__item">WEBSITES</span>
-    <span class="marquee__item">ウェブサイト</span>
-    <span class="marquee__item">MONTHLY SUPPORT</span>
-    <span class="marquee__item">月次サポート</span>
-  </div>
-</div>
-
-<!-- ====================================================================== -->
-<!-- About SHIFT                                                             -->
-<!-- ==== GUTO: this is the block you said you'd still think about.     ==== -->
-<!-- ==== Replace the two paragraphs below with your own words.         ==== -->
-<!-- ====================================================================== -->
-<section class="section has-machine" id="about-shift">
-  <div class="machine machine--stack" data-machine="stack" aria-hidden="true"></div>
-  <div class="wrap grid">
-    <div class="col-4" data-shift="-58">
-      <span class="label" data-reveal><span class="ja">01 ／ SHIFTについて</span><span class="en">01 &mdash; About SHIFT</span></span>
-    </div>
-
-    <div class="col-7 start-6 stack flow-lg" data-shift="58">
-      <h2 class="t-h2 reveal-lines">
-        <span><span><span class="ja">名前が、そのまま</span><span class="en">The name is</span></span></span>
-        <span><span><span class="ja">仕事の内容です。</span><span class="en">the job description.</span></span></span>
-      </h2>
-
-      <div class="callout" data-reveal>
-        <p class="callout__lead">
-          <span class="ja">SHIFT とは、<strong>いまやっていることを、より速く、より賢いかたちへ動かすこと</strong>。作業を増やすのではなく、置き換えます。</span>
-          <span class="en">SHIFT means <strong>moving what you already do into a faster, smarter shape</strong>. Not adding work &mdash; replacing it.</span>
-        </p>
-        <p class="t-small ink-2">
-          <span class="ja">手で回していたものを仕組みに。その場しのぎを、何度でも再現できる形に。</span>
-          <span class="en">What was handled by hand becomes a system. What was improvised becomes something you can repeat.</span>
-        </p>
-      </div>
-
-      <p class="t-body ink-2" data-reveal>
-        <span class="ja">〔ここは差し替え用のプレースホルダーです。会社の考え方を、ご自身の言葉で書いてください。〕</span>
-        <span class="en">[Placeholder. Replace this paragraph with the company's own words.]</span>
-      </p>
-
-      <div data-reveal>
-        <a class="link" href="about.html">
-          <span class="ja">会社概要を見る</span><span class="en">Read about the company</span>
-          <span class="link__chev" aria-hidden="true">»</span>
-        </a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ====================================================================== -->
-<!-- Services                                                                -->
-<!-- ====================================================================== -->
+<!-- Services -->
 <section class="section section--sunk has-machine">
-  <div class="machine machine--matrix" data-machine="matrix" aria-hidden="true"></div>
-  <div class="wrap stack flow-lg">
-    <div class="grid" style="align-items:end">
-      <div class="col-6 head">
-        <span class="label" data-reveal><span class="ja">02 ／ サービス</span><span class="en">02 &mdash; Services</span></span>
-        <h2 class="t-h2 head__title reveal-lines">
-          <span><span><span class="ja">会社の仕組みを、</span><span class="en">We set up the</span></span></span>
-          <span><span><span class="ja">まとめて整えます。</span><span class="en">whole backbone.</span></span></span>
-        </h2>
-      </div>
-      <div class="col-5 start-8" data-reveal>
-        <p class="t-body ink-2">
-          <span class="ja">ゼロからでも、いまの環境の途中からでも。必要なところだけでも構いません。</span>
-          <span class="en">From nothing, or from wherever you already are. Any one part of it on its own is fine too.</span>
-        </p>
-      </div>
+  <div class="machine machine--cluster" data-machine="cluster" aria-hidden="true"></div>
+  <div class="wrap stack flow-lg" id="services">
+    <div class="head">
+      <span class="label" data-reveal><span class="ja">01 ／ サービス</span><span class="en">01 &mdash; Services</span></span>
+      <h2 class="t-h2 head__title" data-reveal><span class="ja">やっていること。</span><span class="en">What we do.</span></h2>
     </div>
 
-    <div style="margin-top:var(--s-6)">
-      <div class="scards">
+    <div class="scards">
       <article class="scard" data-reveal>
         <span class="badge" aria-hidden="true">01</span>
         <div class="scard__main">
-          <h3 class="scard__title"><span class="ja">土台をつくる</span><span class="en">The groundwork</span><span class="chev" aria-hidden="true">»</span></h3>
-          <p class="scard__summary"><span class="ja">会社の情報を、まず一か所に。</span><span class="en">Everything in one place, first.</span></p>
-          <p class="scard__body"><span class="ja">Google Workspace の導入、Google ビジネスプロフィールの整備、ドライブのフォルダ構成、入ってくるデータを受けるスプレッドシートの型。どこに何があるか分かる状態をつくります。</span><span class="en">Google Workspace set up, your Google Business Profile put in order, a folder structure on Drive that makes sense, and spreadsheet templates ready to catch the data coming in. You end up knowing where everything is.</span></p>
-          <div class="scard__tags"><span class="tag">Google Workspace</span><span class="tag">Drive</span><span class="tag">Templates</span></div>
+          <h3 class="scard__title"><span class="ja">OSをつくる</span><span class="en">Build your OS</span><span class="chev" aria-hidden="true">»</span></h3>
+          <p class="scard__summary"><span class="ja">会社やチームが動くための土台を、一式で。</span><span class="en">The whole operating layer a business runs on.</span></p>
+          <p class="scard__body">
+            <span class="ja">使っているAI（Claude、Codex など）と、いま使っているツールをつなぎます。フォルダ構成、ダッシュボード、自動化まで。その会社のやり方に合わせて、ブランドがあればその見た目のまま組み立てます。</span>
+            <span class="en">We connect the AI you use &mdash; Claude, Codex, whichever it is &mdash; to the tools you already have. Folder structure, dashboards, automations. Built around how you actually work, and in your brand if you have one.</span>
+          </p>
         </div>
       </article>
+
       <article class="scard" data-reveal>
         <span class="badge" aria-hidden="true">02</span>
         <div class="scard__main">
-          <h3 class="scard__title"><span class="ja">会社を知っているAI</span><span class="en">An AI that knows the business</span><span class="chev" aria-hidden="true">»</span></h3>
-          <p class="scard__summary"><span class="ja">貼り付けて聞くAIではなく、事情を分かっているAIを。</span><span class="en">Not a chatbot you paste things into &mdash; one that already knows.</span></p>
-          <p class="scard__body"><span class="ja">会社のファイル、予定、これまでのやり取りを踏まえて動くAIを、お手元の環境に用意します。データはドライブに控えを残すので、消えて取り返しがつかない、という事態は起きません。</span><span class="en">An AI running on your own machine with your files, your calendar and your history already behind it &mdash; and a copy of everything kept on your Drive, so nothing can be lost for good.</span></p>
-          <div class="scard__tags"><span class="tag">On your machine</span><span class="tag">Backed up</span><span class="tag">Context</span></div>
+          <h3 class="scard__title"><span class="ja">ウェブサイト制作</span><span class="en">Websites</span><span class="chev" aria-hidden="true">»</span></h3>
+          <p class="scard__summary"><span class="ja">サイトも、同じ手で。</span><span class="en">The site, by the same hands.</span></p>
+          <p class="scard__body">
+            <span class="ja">ウェブサイトとランディングページ。単体でも、OSづくりと合わせても。必要な形に合わせます。</span>
+            <span class="en">Websites and landing pages &mdash; on their own, or alongside the OS build. Whichever the job needs.</span>
+          </p>
         </div>
       </article>
+
       <article class="scard" data-reveal>
         <span class="badge" aria-hidden="true">03</span>
         <div class="scard__main">
-          <h3 class="scard__title"><span class="ja">つないで、任せる</span><span class="en">Connected, then handed over</span><span class="chev" aria-hidden="true">»</span></h3>
-          <p class="scard__summary"><span class="ja">散らばった連絡と予定を、ひとつにまとめる。</span><span class="en">Scattered messages and dates, joined up.</span></p>
-          <p class="scard__body"><span class="ja">いま使っているツールをつなぎます。カレンダー、メール、必要であれば Slack のような連絡の場も用意して、そこにAIを入れます。毎回手でやっていた作業が、自動で回りはじめます。</span><span class="en">We connect the tools you already use &mdash; calendar, email, and a place to talk like Slack if you do not have one &mdash; and put the AI inside them. The work you were repeating by hand starts running on its own.</span></p>
-          <div class="scard__tags"><span class="tag">Calendar</span><span class="tag">Slack</span><span class="tag">Automation</span></div>
+          <h3 class="scard__title"><span class="ja">はじめの環境づくり</span><span class="en">Getting set up</span><span class="chev" aria-hidden="true">»</span></h3>
+          <p class="scard__summary"><span class="ja">パソコンが得意でなくても、ここから。</span><span class="en">Start here, even if computers aren't your thing.</span></p>
+          <p class="scard__body">
+            <span class="ja">Google Workspace の導入、人数分の会社メール、ビジネスプロフィールの整備とSEO、データを受けるスプレッドシートの型づくりまで。</span>
+            <span class="en">Google Workspace, company email for everyone who needs one, your Business Profile and its SEO, and spreadsheet templates for the data you already collect.</span>
+          </p>
         </div>
       </article>
-      <article class="scard" data-reveal>
-        <span class="badge" aria-hidden="true">04</span>
-        <div class="scard__main">
-          <h3 class="scard__title"><span class="ja">見えるかたちにする</span><span class="en">Something you can just look at</span><span class="chev" aria-hidden="true">»</span></h3>
-          <p class="scard__summary"><span class="ja">開けば、いまどうなっているか分かる。</span><span class="en">Open it and you can see where things stand.</span></p>
-          <p class="scard__body"><span class="ja">ダッシュボード、ウェブサイト、ランディングページ。色、書体、細部まで、その会社のデザインに合わせて作ります。テンプレートにロゴを載せ替えたものではありません。</span><span class="en">Dashboards, a website, landing pages &mdash; with the colours, type and details built to your brand, not a template with your logo dropped into it.</span></p>
-          <div class="scard__tags"><span class="tag">Dashboards</span><span class="tag">Websites</span><span class="tag">Brand</span></div>
-        </div>
-      </article>
-      <article class="scard" data-reveal>
-        <span class="badge" aria-hidden="true">05</span>
-        <div class="scard__main">
-          <h3 class="scard__title"><span class="ja">続けて、賢くしていく</span><span class="en">Kept running, and improving</span><span class="chev" aria-hidden="true">»</span></h3>
-          <p class="scard__summary"><span class="ja">使うほど、任せられる範囲が広がる。</span><span class="en">The longer it runs, the more it handles.</span></p>
-          <p class="scard__body"><span class="ja">毎月の改善と保守。あわせて、AIがその会社のことをより深く覚え、自分でやり方を増やしていける状態にしておきます。</span><span class="en">Monthly improvements and maintenance &mdash; and the AI set up to keep learning your business and adding to its own methods as it goes.</span></p>
-          <div class="scard__tags"><span class="tag">Monthly</span><span class="tag">Maintenance</span><span class="tag">Self-improving</span></div>
-        </div>
-      </article>
-    </div>
-    </div>
-
-    <div data-reveal>
-      <a class="link" href="services.html">
-        <span class="ja">サービスの詳細</span><span class="en">Services in detail</span>
-        <span class="link__chev" aria-hidden="true">»</span>
-      </a>
     </div>
   </div>
 </section>
 
-<!-- ====================================================================== -->
-<!-- Ventures                                                                -->
-<!-- ====================================================================== -->
+<!-- Ventures -->
 <section class="section has-machine">
-  <div class="machine machine--pulse" data-machine="pulse" aria-hidden="true"></div>
-  <div class="wrap stack flow-lg">
+  <div class="machine machine--matrix" data-machine="matrix" aria-hidden="true"></div>
+  <div class="wrap stack flow-lg" id="ventures">
     <div class="head">
-      <span class="label" data-reveal><span class="ja">03 ／ 自社事業</span><span class="en">03 &mdash; Own ventures</span></span>
-      <h2 class="t-h2 head__title" data-reveal><span class="ja">SHIFTが手がけている事業</span><span class="en">What SHIFT runs</span></h2>
+      <span class="label" data-reveal><span class="ja">02 ／ 自社事業</span><span class="en">02 &mdash; Ventures</span></span>
+      <h2 class="t-h2 head__title" data-reveal><span class="ja">自分たちで動かしているもの。</span><span class="en">What we run ourselves.</span></h2>
     </div>
 
     <div class="vlist" data-reveal>
+      <!-- GUTO: to link a venture out to its own site, wrap the row:      -->
+      <!--   <a class="vrow" href="https://example.com" target="_blank"     -->
+      <!--      rel="noopener">  ...same two spans...  </a>                 -->
+      <!-- Send me the two URLs and I will wire them up.                    -->
       <div class="vrow">
         <span class="vrow__name">MONEZY</span>
         <span class="vrow__desc"><span class="ja">日本で暮らす人のためのパーソナルファイナンス・プロダクト。</span><span class="en">A personal finance product for people living in Japan.</span></span>
@@ -362,85 +221,75 @@ try{if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion:
         <span class="vrow__desc"><span class="ja">東京発のアパレルブランド。</span><span class="en">A Tokyo clothing brand.</span></span>
       </div>
     </div>
-      <!-- GUTO: to link a venture out to its own site, wrap the row:      -->
-      <!--   <a class="vrow" href="https://example.com" target="_blank"     -->
-      <!--      rel="noopener">  ...same three spans...  </a>               -->
-      <!-- Send me the two URLs and I will wire them up.                    -->
   </div>
 </section>
 
-<!-- ====================================================================== -->
-<!-- Approach                                                                -->
-<!-- ====================================================================== -->
+<!-- Company profile -->
 <section class="section section--sunk has-machine">
-  <div class="machine machine--cluster" data-machine="cluster" aria-hidden="true"></div>
-  <div class="wrap grid">
-    <div class="col-5" data-shift="-50">
-      <div class="head">
-        <span class="label" data-reveal><span class="ja">04 ／ 進め方</span><span class="en">04 &mdash; Approach</span></span>
-        <h2 class="t-h2 head__title reveal-lines">
-          <span><span><span class="ja">三手で</span><span class="en">Three moves,</span></span></span>
-          <span><span><span class="ja">動かします。</span><span class="en">in order.</span></span></span>
-        </h2>
-      </div>
+  <div class="machine machine--folders" data-machine="folders" aria-hidden="true"></div>
+  <div class="wrap stack flow-lg" id="company">
+    <div class="head">
+      <span class="label" data-reveal><span class="ja">03 ／ 会社概要</span><span class="en">03 &mdash; Company</span></span>
+      <h2 class="t-h2 head__title" data-reveal><span class="ja">会社概要</span><span class="en">Company profile</span></h2>
     </div>
 
-    <div class="col-6 start-7 stack" style="--flow: var(--s-5)" data-shift="50" data-reveal-group>
-      <div class="card">
-        <div class="card__index"><span class="badge" aria-hidden="true">01</span><span class="num muted">›</span></div>
-        <h3 class="card__title"><span class="ja">見る</span><span class="en">Look</span></h3>
-        <p class="card__body">
-          <span class="ja">いま実際に何が起きているかを、月単位で洗い出します。思っている業務と、動いている業務は違います。</span>
-          <span class="en">We map what is actually happening, month by month. The work people think they do and the work they do are rarely the same.</span>
-        </p>
+    <!-- GUTO: fill the 準備中 rows from the 履歴事項全部証明書.               -->
+    <!-- Nothing here is invented.                                            -->
+    <dl class="profile" data-reveal>
+      <div class="profile__row">
+        <dt class="profile__key"><span class="ja">商号</span><span class="en">Legal name</span></dt>
+        <dd class="profile__val"><span class="ja">SHIFT合同会社</span><span class="en">SHIFT GK (合同会社)</span></dd>
       </div>
-      <div class="card">
-        <div class="card__index"><span class="badge" aria-hidden="true">02</span><span class="num muted">›</span></div>
-        <h3 class="card__title"><span class="ja">動かす</span><span class="en">Shift</span></h3>
-        <p class="card__body">
-          <span class="ja">手作業を仕組みに置き換えます。一度に全部ではなく、効く順に一つずつ。</span>
-          <span class="en">Manual steps are replaced with systems &mdash; one at a time, in the order that pays off fastest, not all at once.</span>
-        </p>
+      <div class="profile__row">
+        <dt class="profile__key"><span class="ja">所在地</span><span class="en">Registered office</span></dt>
+        <dd class="profile__val"><span class="ja">東京都 <span class="muted">〔詳細は準備中〕</span></span><span class="en">Tokyo, Japan <span class="muted">[full address to be confirmed]</span></span></dd>
       </div>
-      <div class="card">
-        <div class="card__index"><span class="badge" aria-hidden="true">03</span><span class="num muted">›</span></div>
-        <h3 class="card__title"><span class="ja">渡す</span><span class="en">Hand over</span></h3>
-        <p class="card__body">
-          <span class="ja">運営を続けることも、そちらのチームに引き渡すこともできます。仕組みは残る形で置いていきます。</span>
-          <span class="en">We either keep running it, or hand it to your team. Either way the system stays behind, documented.</span>
-        </p>
+      <div class="profile__row">
+        <dt class="profile__key"><span class="ja">設立</span><span class="en">Founded</span></dt>
+        <dd class="profile__val muted"><span class="ja">準備中</span><span class="en">To be confirmed</span></dd>
       </div>
-    </div>
+      <div class="profile__row">
+        <dt class="profile__key"><span class="ja">代表社員</span><span class="en">Representative partner</span></dt>
+        <dd class="profile__val muted"><span class="ja">準備中</span><span class="en">To be confirmed</span></dd>
+      </div>
+      <div class="profile__row">
+        <dt class="profile__key"><span class="ja">事業内容</span><span class="en">Business</span></dt>
+        <dd class="profile__val">
+          <span class="ja">業務環境・仕組みづくり／ウェブサイト制作／Google Workspace 導入支援</span>
+          <span class="en">Business systems and internal tooling / Websites / Google Workspace setup</span>
+        </dd>
+      </div>
+      <div class="profile__row">
+        <dt class="profile__key"><span class="ja">適格請求書登録番号</span><span class="en">Invoice reg. no.</span></dt>
+        <dd class="profile__val muted"><span class="ja">準備中</span><span class="en">To be confirmed</span></dd>
+      </div>
+    </dl>
   </div>
 </section>
 
-<!-- ====================================================================== -->
-<!-- CTA                                                                     -->
-<!-- ====================================================================== -->
+<!-- Contact -->
 <section class="section has-machine">
   <div class="machine machine--pipeline" data-machine="pipeline" aria-hidden="true"></div>
-  <div class="wrap grid" style="align-items:center">
+  <div class="wrap grid" id="contact" style="align-items:center">
     <div class="col-7 head">
-      <span class="label" data-reveal><span class="ja">05 ／ お問い合わせ</span><span class="en">05 &mdash; Contact</span></span>
-      <h2 class="t-h1 reveal-lines" style="max-width:16ch">
-        <span><span><span class="ja">お気軽に</span><span class="en">Get in</span></span></span>
-        <span><span><span class="ja">ご連絡ください。</span><span class="en">touch.</span></span></span>
-      </h2>
+      <span class="label" data-reveal><span class="ja">04 ／ 連絡先</span><span class="en">04 &mdash; Contact</span></span>
+      <h2 class="t-h2" data-reveal style="max-width:18ch"><span class="ja">ご連絡は、こちらへ。</span><span class="en">Reach us here.</span></h2>
       <p class="t-lead" data-reveal>
-        <span class="ja">ご相談もお見積りも、何から手をつけるべきか分からない段階でも構いません。3営業日以内に返信します。</span>
-        <span class="en">Questions, quotes, or not yet knowing where to start &mdash; all fine. We reply within three business days.</span>
+        <span class="ja">お問い合わせもお見積りも、このアドレスで受けています。日本語・英語どちらでも。</span>
+        <span class="en">Enquiries and quotes both come to this address, in Japanese or English.</span>
       </p>
     </div>
     <div class="col-4 start-9" data-reveal>
-      <a class="btn btn--full" href="contact.html">
+      <a class="btn btn--full" href="mailto:admin@shiftgk.com">
         <span class="btn__roll">
-          <span><span class="ja">問い合わせる</span><span class="en">Get in touch</span></span>
-          <span><span class="ja">問い合わせる</span><span class="en">Get in touch</span></span>
+          <span>admin@shiftgk.com</span>
+          <span>admin@shiftgk.com</span>
         </span>
         <span class="btn__chev" aria-hidden="true">»</span>
       </a>
       <p class="t-small muted" style="margin-top:var(--s-4); text-align:center">
-        <a class="link" href="mailto:admin@shiftgk.com">admin@shiftgk.com</a>
+        <span class="ja">3営業日以内に返信します。</span>
+        <span class="en">We reply within three business days.</span>
       </p>
     </div>
   </div>
@@ -448,9 +297,6 @@ try{if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion:
 
 </main>
 
-<!-- ====================================================================== -->
-<!-- Footer                                                                  -->
-<!-- ====================================================================== -->
 <footer class="footer">
   <div class="wrap">
     <div class="footer__grid">
@@ -463,12 +309,11 @@ try{if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion:
       </div>
 
       <nav class="footer__col" aria-label="フッターナビゲーション">
-        <span class="footer__label"><span class="ja">サイト</span><span class="en">Site</span></span>
-        <a class="footer__link" href="index.html"><span class="ja">ホーム</span><span class="en">Home</span></a>
-        <a class="footer__link" href="services.html"><span class="ja">サービス</span><span class="en">Services</span></a>
-        <a class="footer__link" href="ventures.html"><span class="ja">事業・ブランド</span><span class="en">Ventures</span></a>
-        <a class="footer__link" href="about.html"><span class="ja">会社概要</span><span class="en">About</span></a>
-        <a class="footer__link" href="contact.html"><span class="ja">お問い合わせ</span><span class="en">Contact</span></a>
+        <span class="footer__label"><span class="ja">ページ内</span><span class="en">On this page</span></span>
+        <a class="footer__link" href="#services"><span class="ja">サービス</span><span class="en">Services</span></a>
+        <a class="footer__link" href="#ventures"><span class="ja">自社事業</span><span class="en">Ventures</span></a>
+        <a class="footer__link" href="#company"><span class="ja">会社概要</span><span class="en">Company</span></a>
+        <a class="footer__link" href="#contact"><span class="ja">連絡先</span><span class="en">Contact</span></a>
       </nav>
 
       <div class="footer__col">

@@ -106,8 +106,11 @@
   transition: color var(--d-comp) var(--e-mech);
 }
 .rail__link:hover { color: var(--c-ink); }
-.rail__link[aria-current="page"] { color: var(--c-on-ink); }
-.rail__link[aria-current="page"]:hover { color: var(--c-on-ink); }
+/* Only flip the current tab to light once the block is actually behind it.
+   Until then it stays dark, so it can never be invisible. */
+.rail.is-ready .rail__link[aria-current] { color: var(--c-on-ink); }
+.rail__link[aria-current] { color: var(--c-ink); }
+.rail.is-ready .rail__link[aria-current]:hover { color: var(--c-on-ink); }
 
 /* Chevron leading the block — lifted straight off the logo's terminals. */
 .rail__chev {
@@ -242,7 +245,7 @@
 }
 .menu__item:nth-child(even) .menu__link { --from: 110%; }
 [data-menu="open"] .menu__link { transform: translateX(0); opacity: 1; }
-.menu__link[aria-current="page"] { color: var(--c-accent); }
+.menu__link[aria-current] { color: var(--c-accent); }
 .menu__link .num { font-size: var(--t-label); color: var(--c-muted); }
 
 .menu__foot { display: grid; gap: var(--s-3); }
