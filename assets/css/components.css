@@ -366,46 +366,60 @@
    Numbered badge — the anchor at the top-left of anything explained in steps
    ========================================================================== */
 
+/* A package, not a filled square. The body is a thin outline over a light
+   tint so you can see through it, pins run along all four edges, and the
+   number is the darkest thing in it so it stays the first thing you read. */
 .badge {
+  --pin: 5px;
+  position: relative;
+  isolation: isolate;
   display: inline-grid;
   place-content: center;
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 2.35rem;
+  height: 2.35rem;
   flex: none;
-  position: relative;
-  border-radius: 3px;
-  background: var(--c-accent);
-  color: var(--c-on-accent);
+  color: var(--c-accent);
   font-family: var(--f-mono);
-  font-size: 0.8125rem;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  transition: background-color var(--d-comp) linear;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+
+  /* Pins: vertical dashes in the bands above and below, horizontal dashes in
+     the bands left and right. Thin, and short enough to read as legs. */
+  background-image:
+    repeating-linear-gradient(to right,  var(--c-accent) 0 2px, transparent 2px 7px),
+    repeating-linear-gradient(to right,  var(--c-accent) 0 2px, transparent 2px 7px),
+    repeating-linear-gradient(to bottom, var(--c-accent) 0 2px, transparent 2px 7px),
+    repeating-linear-gradient(to bottom, var(--c-accent) 0 2px, transparent 2px 7px);
+  background-size: 62% var(--pin), 62% var(--pin), var(--pin) 62%, var(--pin) 62%;
+  background-position: center top, center bottom, left center, right center;
+  background-repeat: no-repeat;
 }
 
-/* Pins down both sides and a notch in the corner: the number now sits in a
-   package rather than a plain square. */
-.badge::before,
-.badge::after {
+/* The body. Behind the number, so the digits are never sitting on a fill. */
+.badge::before {
   content: "";
   position: absolute;
-  top: 18%;
-  height: 64%;
-  width: 4px;
-  background: repeating-linear-gradient(
-    to bottom, var(--c-accent) 0 4px, transparent 4px 9px);
+  inset: var(--pin);
+  z-index: -1;
+  border: 1.5px solid var(--c-accent);
+  border-radius: 2px;
+  background: var(--c-accent-lo);
+  background: color-mix(in srgb, var(--c-accent) 13%, transparent);
 }
-.badge::before { left: -4px; }
-.badge::after  { right: -4px; }
 
-/* The orientation notch. */
+/* Orientation notch, inside the body. */
 .badge__notch {
   position: absolute;
-  top: 4px; left: 4px;
-  width: 6px; height: 6px;
+  top: calc(var(--pin) + 3px);
+  left: calc(var(--pin) + 3px);
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
-  border: 1px solid color-mix(in srgb, var(--c-on-accent) 60%, transparent);
+  border: 1px solid var(--c-accent);
+  opacity: 0.7;
 }
+
 /* ==========================================================================
    Service cards
    Each explanation is a box: a number to anchor it, a coloured title, one
