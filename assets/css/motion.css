@@ -101,16 +101,39 @@
 .machine--folders { bottom: 9%; left: 2%; width: 17%; }
 .machine--cluster { top: 12%; right: 0; width: 58%; }
 
+/* --------------------------------------------------------------------------
+   Phone placement.
+
+   On a narrow screen the text runs the full width, so a full-bleed drawing
+   centred in the section ends up directly behind a paragraph and reads as
+   wallpaper. Here each piece is smaller, anchored to a different corner, and
+   deliberately hung off one edge so only part of it is on screen — a glimpse
+   of something larger passing behind the page rather than a backdrop under
+   it. Corners alternate down the page so no two consecutive sections put
+   their drawing in the same place.
+   -------------------------------------------------------------------------- */
 @media (max-width: 47.99em) {
-  .machine { --mc-line: 0.13; --mc-frame: 0.07; --mc-sig: 0.38; --mc-glow: 0.1; --mc-lamp: 0.46; }
-  .machine--circuit  { width: 112%; right: -6%; }
-  .machine--matrix   { width: 150%; left: -26%; }
-  .machine--network  { width: 118%; right: -9%; }
-  .machine--pipeline { width: 112%; right: -6%; }
-  .machine--stack    { width: 30%; left: -5%; }
-  .machine--pulse    { width: 38%; right: -8%; }
-  .machine--folders  { width: 40%; left: -7%; }
-  .machine--cluster  { width: 122%; right: -10%; }
+  .machine {
+    --mc-line: 0.14; --mc-frame: 0.075; --mc-sig: 0.42;
+    --mc-glow: 0.11; --mc-lamp: 0.52;
+  }
+
+  /* bottom-right, half off the edge */
+  .machine--circuit  { top: auto; bottom: -7%; right: -26%; left: auto; width: 74%; translate: none; }
+  /* top-right */
+  .machine--cluster  { top: -5%; bottom: auto; right: -28%; left: auto; width: 70%; }
+  /* bottom-left, running on past as it does everywhere */
+  .machine--matrix   { top: auto; bottom: -9%; left: -50%; right: auto; width: 92%; }
+  /* top-left, small */
+  .machine--folders  { top: 2%; bottom: auto; left: -12%; right: auto; width: 42%; }
+  /* bottom-right again, but lower and smaller than the circuit */
+  .machine--pipeline { top: auto; bottom: -5%; right: -22%; left: auto; width: 68%; }
+  /* top-right */
+  .machine--network  { top: -4%; bottom: auto; right: -30%; left: auto; width: 74%; }
+  /* left edge, tucked high */
+  .machine--stack    { top: 5%; bottom: auto; left: -6%; right: auto; width: 26%; translate: none; }
+  /* right edge, low */
+  .machine--pulse    { top: auto; bottom: 5%; right: -9%; left: auto; width: 34%; translate: none; }
 }
 
 /* Content always sits above the machinery. */
@@ -130,7 +153,9 @@
 .hero .machine--circuit { --mc-line: 0.26; --mc-frame: 0.15; --mc-sig: 0.72; --mc-glow: 0.22; --mc-lamp: 0.85; width: 54%; }
 @media (max-width: 47.99em) {
   .hero { min-height: auto; }
-  .hero .machine--circuit { --mc-line: 0.15; --mc-sig: 0.4; width: 118%; }
+  /* Only the width is overridden — the corner it hangs off comes from the
+     phone placement above, so the hero follows the same scatter as the rest. */
+  .hero .machine--circuit { --mc-line: 0.17; --mc-sig: 0.48; width: 88%; }
 }
 
 /* Interior page headers are much shorter than the home hero, so the board is
@@ -138,7 +163,7 @@
    running up under the fixed header. */
 .phero .machine--circuit { width: 40%; }
 @media (max-width: 61.99em) { .phero .machine--circuit { width: 58%; } }
-@media (max-width: 47.99em) { .phero .machine--circuit { width: 104%; } }
+@media (max-width: 47.99em) { .phero .machine--circuit { width: 76%; } }
 
 /* The drawing's caption block. */
 .hero__fig {
