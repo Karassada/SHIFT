@@ -85,53 +85,15 @@
 .machine .mc-glow   { color: var(--c-accent); stroke-opacity: var(--mc-glow); fill-opacity: var(--mc-glow); }
 .machine .mc-lamp   { color: var(--c-accent); fill-opacity: var(--mc-lamp); }
 
-/* One per section, each in its own bay. Sections clip, so nothing can wander
-   into its neighbour's space. Each sits fully inside the viewport — a board
-   outline sliced by the screen edge reads as a mistake. The matrix is the
-   exception: it is meant to run on past. */
-.machine--circuit  { top: 50%; right: -3%; width: 48%; translate: 0 -50%; }
-.machine--matrix   { top: 6%;  left: -22%; width: 62%; }
-.machine--network  { bottom: 6%; right: -4%; width: 44%; }
-.machine--pipeline { top: 12%; right: -4%; width: 42%; }
+/* One drawing only, behind the hero, sitting to the right of the column. */
+.machine--circuit { top: 50%; right: -3%; width: 48%; translate: 0 -50%; }
 
-/* Smaller pieces fill the quieter stretches, so movement carries all the way
-   down the page instead of stopping after the first screen. */
-.machine--stack { top: 50%; left: 2%;  width: 13%; translate: 0 -50%; }
-.machine--pulse { top: 50%; right: 3%; width: 17%; translate: 0 -50%; }
-.machine--folders { bottom: 9%; left: 2%; width: 17%; }
-.machine--cluster { top: 10%; right: -5%; width: 44%; }
-
-/* --------------------------------------------------------------------------
-   Phone placement.
-
-   On a narrow screen the text runs the full width, so a full-bleed drawing
-   centred in the section ends up directly behind a paragraph and reads as
-   wallpaper. Here each piece is smaller, anchored to a different corner, and
-   deliberately hung off one edge so only part of it is on screen — a glimpse
-   of something larger passing behind the page rather than a backdrop under
-   it. Corners alternate down the page so no two consecutive sections put
-   their drawing in the same place.
-   -------------------------------------------------------------------------- */
+/* On a phone the rails carry the drawing entirely; the board drops below the
+   text rather than sitting behind it. */
 @media (max-width: 47.99em) {
-  .machine {
-    --mc-line: 0.14; --mc-frame: 0.075; --mc-sig: 0.42;
-    --mc-glow: 0.11; --mc-lamp: 0.52;
-  }
-
-  /* bottom-right, half off the edge */
-  .machine--circuit  { top: auto; bottom: -7%; right: -26%; left: auto; width: 74%; translate: none; }
-  /* Everything but the hero board steps aside on a phone: with the rails
-     running down both edges, a second drawing behind the text column is
-     exactly what made it read as wallpaper. */
-  .machine--cluster,
-  .machine--matrix,
-  .machine--folders,
-  .machine--pipeline,
-  .machine--network,
-  .machine--stack,
-  .machine--pulse { display: none; }
+  .machine { --mc-line: 0.13; --mc-frame: 0.07; --mc-sig: 0.38; --mc-glow: 0.1; --mc-lamp: 0.45; }
+  .machine--circuit { top: auto; bottom: -7%; right: -26%; left: auto; width: 74%; translate: none; }
 }
-
 /* Content always sits above the machinery. */
 .section > .wrap, .phero > .wrap { position: relative; z-index: var(--z-body); }
 
@@ -146,7 +108,7 @@
    and enough contrast to carry the composition on its own.
    -------------------------------------------------------------------------- */
 .hero { min-height: min(78vh, 740px); display: grid; align-items: center; }
-.hero .machine--circuit { --mc-line: 0.26; --mc-frame: 0.15; --mc-sig: 0.72; --mc-glow: 0.22; --mc-lamp: 0.85; width: 46%; }
+.hero .machine--circuit { --mc-line: 0.17; --mc-frame: 0.10; --mc-sig: 0.5; --mc-glow: 0.15; --mc-lamp: 0.6; width: 46%; }
 @media (max-width: 47.99em) {
   .hero { min-height: auto; }
   /* Only the width is overridden — the corner it hangs off comes from the
@@ -273,11 +235,11 @@
   z-index: -1;
   pointer-events: none;
   color: var(--c-ink);
-  --mc-line: 0.16;
-  --mc-frame: 0.09;
-  --mc-sig: 0.5;
-  --mc-glow: 0.14;
-  --mc-lamp: 0.6;
+  --mc-line: 0.12;
+  --mc-frame: 0.07;
+  --mc-sig: 0.38;
+  --mc-glow: 0.10;
+  --mc-lamp: 0.45;
 }
 .railbus--left  { left: 0; }
 /* Mirrored rather than drawn twice, so both sides stay in step by construction. */
@@ -290,25 +252,34 @@
 .railbus .mc-glow   { color: var(--c-accent); stroke-opacity: var(--mc-glow); }
 .railbus .mc-lamp   { color: var(--c-accent); fill-opacity: var(--mc-lamp); }
 
-/* Current, always running. A rail that only moves when you scroll reads as
-   dead — and this is the one thing on the page that should look powered. */
-@keyframes rail-flow { to { stroke-dashoffset: -352; } }
-.rail-flow { animation: rail-flow 4.2s linear infinite; }
-.rail-flow--1 { animation-duration: 6.8s; animation-direction: reverse; }
+/* Current, always running. Everything else on the page moves only when you
+   scroll, which is right for content — but a rail that sits still reads as
+   dead, and this is the one thing that should look powered.
 
-@keyframes rail-lamp { 0%, 44% { opacity: 0.12; } 50%, 94% { opacity: 1; } 100% { opacity: 0.12; } }
-.rail-lamp { animation: rail-lamp 3.4s steps(1, end) infinite; }
+   It travels by transform, not by stroke-dashoffset. Dashoffset makes the
+   browser repaint the whole stroke every frame; a transform is handed to the
+   compositor and costs nothing while the page scrolls. */
+@keyframes rail-pulse { to { transform: translateY(var(--travel, 900px)); } }
+.rail-pulse { animation: rail-pulse 10s linear infinite; will-change: transform; }
+
+/* The board's two live traces. Only two paths animate this way, over a small
+   area, so the repaint is negligible. */
+@keyframes board-flow { to { stroke-dashoffset: -320; } }
+.board-flow { animation: board-flow 12s linear infinite; }
+
+@keyframes mc-blink { 0%, 46% { opacity: 0.1; } 52%, 96% { opacity: 1; } 100% { opacity: 0.1; } }
+.mc-blink { animation: mc-blink 5s steps(1, end) infinite; }
 
 /* Keep the text clear of the rails. The gutter already scales with the
    viewport; this only guarantees a minimum that clears the rail width. */
 .wrap { padding-left: max(var(--gutter), 4.25rem); padding-right: max(var(--gutter), 4.25rem); }
 
 @media (max-width: 47.99em) {
-  .railbus { --mc-line: 0.15; --mc-sig: 0.46; --mc-glow: 0.12; --mc-lamp: 0.55; }
+  .railbus { --mc-line: 0.12; --mc-sig: 0.36; --mc-glow: 0.09; --mc-lamp: 0.42; }
   .railbus svg { width: 34px; }
   .wrap { padding-left: max(var(--gutter), 3rem); padding-right: max(var(--gutter), 3rem); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .rail-flow, .rail-lamp { animation: none; }
+  .rail-pulse, .board-flow, .mc-blink { animation: none; }
 }

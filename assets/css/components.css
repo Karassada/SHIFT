@@ -32,10 +32,11 @@
 .header::after {
   content: "";
   position: absolute; inset: 0;
+  /* A blurred backdrop here meant re-blurring the whole strip on every
+     scroll frame, which is most of what made desktop scrolling feel heavy.
+     An opaque-enough tint reads the same over a flat page and costs nothing. */
   background: var(--c-base);
-  background: color-mix(in srgb, var(--c-base) 80%, transparent);
-  backdrop-filter: blur(14px) saturate(1.4);
-  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  background: color-mix(in srgb, var(--c-base) 94%, transparent);
   border-bottom: var(--hair) solid transparent;
   opacity: 0;
   transition: opacity var(--d-comp) linear,
