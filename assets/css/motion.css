@@ -244,7 +244,7 @@
 .railbus--left  { left: 0; }
 /* Mirrored rather than drawn twice, so both sides stay in step by construction. */
 .railbus--right { right: 0; transform: scaleX(-1); }
-.railbus svg { height: 100%; width: auto; }
+.railbus svg { display: block; }
 
 .railbus .mc-line   { stroke-opacity: var(--mc-line); fill-opacity: var(--mc-line); }
 .railbus .mc-frame  { stroke-opacity: var(--mc-frame); }
@@ -260,12 +260,12 @@
    browser repaint the whole stroke every frame; a transform is handed to the
    compositor and costs nothing while the page scrolls. */
 @keyframes rail-pulse { to { transform: translateY(var(--travel, 900px)); } }
-.rail-pulse { animation: rail-pulse 10s linear infinite; will-change: transform; }
+.rail-pulse { animation: rail-pulse 6s linear infinite; will-change: transform; }
 
 /* The board's two live traces. Only two paths animate this way, over a small
    area, so the repaint is negligible. */
 @keyframes board-flow { to { stroke-dashoffset: -320; } }
-.board-flow { animation: board-flow 12s linear infinite; }
+.board-flow { animation: board-flow 7s linear infinite; }
 
 @keyframes mc-blink { 0%, 46% { opacity: 0.1; } 52%, 96% { opacity: 1; } 100% { opacity: 0.1; } }
 .mc-blink { animation: mc-blink 5s steps(1, end) infinite; }
@@ -276,10 +276,36 @@
 
 @media (max-width: 47.99em) {
   .railbus { --mc-line: 0.12; --mc-sig: 0.36; --mc-glow: 0.09; --mc-lamp: 0.42; }
-  .railbus svg { width: 34px; }
   .wrap { padding-left: max(var(--gutter), 3rem); padding-right: max(var(--gutter), 3rem); }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .rail-pulse, .board-flow, .mc-blink { animation: none; }
 }
+
+/* The card edge trace — a short length of bus down the side of each service
+   card, framing it the way the rails frame the page. */
+.scard { position: relative; }
+.cardtrace {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -22px;
+  width: 22px;
+  pointer-events: none;
+  color: var(--c-ink);
+  --mc-line: 0.14;
+  --mc-sig: 0.42;
+  --mc-glow: 0.11;
+  --mc-lamp: 0.5;
+  overflow: hidden;
+}
+.cardtrace .mc-line   { stroke-opacity: var(--mc-line); }
+.cardtrace .mc-signal { color: var(--c-accent); stroke-opacity: var(--mc-sig); }
+.cardtrace .mc-glow   { color: var(--c-accent); stroke-opacity: var(--mc-glow); }
+.cardtrace .mc-lamp   { color: var(--c-accent); fill-opacity: var(--mc-lamp); }
+.cardtrace svg { display: block; }
+
+/* No room for it beside the card on a phone — the rails already carry that
+   edge of the screen. */
+@media (max-width: 61.99em) { .cardtrace { display: none; } }

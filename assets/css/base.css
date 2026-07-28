@@ -68,6 +68,10 @@ ul, ol { list-style: none; padding: 0; }
 [data-lang="ja"] .t-display { letter-spacing: -0.02em; line-height: 1.24; }
 [data-lang="ja"] :is(h1, h2, h3) { line-height: 1.42; letter-spacing: -0.01em; }
 [data-lang="ja"] body { letter-spacing: 0.01em; }
+/* Japanese wraps per character, but not anywhere: strict keeps small kana,
+   long vowel marks and closing brackets off the start of a line. */
+[data-lang="ja"] { line-break: strict; word-break: normal; overflow-wrap: normal; }
+.ja { line-break: strict; }
 .ja { font-feature-settings: "palt" 1; }
 
 /* ==========================================================================
@@ -155,7 +159,8 @@ strong, b { font-weight: 700; color: var(--c-ink); }
 }
 
 .section { padding-top: var(--section); padding-bottom: var(--section); position: relative; }
-.section--sunk { background: var(--surface-sunk); }
+/* Sections all share the page colour — no banding. */
+.section--sunk { background: none; }
 .section--tight { padding-top: clamp(3rem, 6vw, 5.5rem); padding-bottom: clamp(3rem, 6vw, 5.5rem); }
 
 /* 12-column Swiss grid. Collapses to a single column below 768px. */
@@ -169,22 +174,27 @@ strong, b { font-weight: 700; color: var(--c-ink); }
   .grid > * { grid-column: auto !important; }
 }
 
-.col-3  { grid-column: span 3; }
-.col-4  { grid-column: span 4; }
-.col-5  { grid-column: span 5; }
-.col-6  { grid-column: span 6; }
-.col-7  { grid-column: span 7; }
-.col-8  { grid-column: span 8; }
-.col-12 { grid-column: span 12; }
+/* Span is set on the END edge, not with the shorthand. `grid-column: span N`
+   writes to grid-column-START, so a later `grid-column-start` — which is what
+   the .start-* utilities do — silently wiped the span and collapsed the
+   element to a single column. */
+.col-3  { grid-column-end: span 3; }
+.col-4  { grid-column-end: span 4; }
+.col-5  { grid-column-end: span 5; }
+.col-6  { grid-column-end: span 6; }
+.col-7  { grid-column-end: span 7; }
+.col-8  { grid-column-end: span 8; }
+.col-12 { grid-column-end: span 12; }
 .start-2 { grid-column-start: 2; }
 .start-6 { grid-column-start: 6; }
 .start-7 { grid-column-start: 7; }
+.start-8 { grid-column-start: 8; }
+.start-9 { grid-column-start: 9; }
 
 @media (min-width: 48em) and (max-width: 63.99em) {
-  .col-3 { grid-column: span 6; }
-  .col-4 { grid-column: span 6; }
-  .col-5, .col-7, .col-8 { grid-column: span 12; }
-  .start-2, .start-6, .start-7 { grid-column-start: auto; }
+  .col-3, .col-4 { grid-column-end: span 6; }
+  .col-5, .col-6, .col-7, .col-8 { grid-column-end: span 12; }
+  .start-2, .start-6, .start-7, .start-8, .start-9 { grid-column-start: auto; }
 }
 
 .stack { display: flex; flex-direction: column; }

@@ -372,7 +372,8 @@
   width: 2.75rem;
   height: 2.75rem;
   flex: none;
-  border-radius: var(--radius-lg);
+  position: relative;
+  border-radius: 3px;
   background: var(--c-accent);
   color: var(--c-on-accent);
   font-family: var(--f-mono);
@@ -380,6 +381,30 @@
   font-weight: 500;
   letter-spacing: 0.02em;
   transition: background-color var(--d-comp) linear;
+}
+
+/* Pins down both sides and a notch in the corner: the number now sits in a
+   package rather than a plain square. */
+.badge::before,
+.badge::after {
+  content: "";
+  position: absolute;
+  top: 18%;
+  height: 64%;
+  width: 4px;
+  background: repeating-linear-gradient(
+    to bottom, var(--c-accent) 0 4px, transparent 4px 9px);
+}
+.badge::before { left: -4px; }
+.badge::after  { right: -4px; }
+
+/* The orientation notch. */
+.badge__notch {
+  position: absolute;
+  top: 4px; left: 4px;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--c-on-accent) 60%, transparent);
 }
 /* ==========================================================================
    Service cards
@@ -631,3 +656,15 @@ select.input { cursor: pointer; }
 
 .phero { padding-top: calc(var(--section) + 3rem); padding-bottom: var(--section); position: relative; }
 .phero__title { max-width: 16ch; }
+
+/* A short aside under a card's summary — used to say plainly what a term
+   means before the detail assumes you know it. */
+.scard__note {
+  font-size: var(--t-small);
+  line-height: 1.7;
+  color: var(--c-ink-2);
+  padding: var(--s-3) var(--s-4);
+  border-left: 2px solid var(--c-accent);
+  background: var(--c-accent-lo);
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
