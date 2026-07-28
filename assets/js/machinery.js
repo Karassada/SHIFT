@@ -577,6 +577,109 @@
   };
 
   /* ======================================================================
+     The edge bus.
+
+     Two vertical rails pinned to the left and right of the window, running
+     the full height of it, carrying current the whole time. This is where
+     the drawing belongs on a phone: the text column has the middle, and the
+     machine lives in the margins either side of it, which is what a board
+     actually looks like.
+
+     The current here is a CSS animation rather than scroll-driven. A fixed
+     rail that only moves when you scroll reads as dead; this one is always
+     running. It costs one compositor property and stops on reduced motion.
+     ====================================================================== */
+  function buildRail(side) {
+    var host = document.createElement("div");
+    host.className = "railbus railbus--" + side;
+    host.setAttribute("aria-hidden", "true");
+
+    var W = 60;
+    var H = Math.max(window.innerHeight, 640);
+    var svg = el("svg", {
+      viewBox: "0 0 " + W + " " + H, width: W, height: H,
+      preserveAspectRatio: "xMidYMin meet", fill: "none"
+    });
+    var G = lampDefs(svg, "railamp" + side + (uid++));
+
+    var frame = grp("mc-frame", { "stroke-width": 1 });
+    frame.appendChild(el("path", { d: "M 3 0 L 3 " + H, "stroke-dasharray": "2 7" }));
+    svg.appendChild(frame);
+
+    /* Two bus traces the whole way down. */
+    var BUS = [16, 32];
+    var lines = grp("mc-line", { "stroke-width": 2, "stroke-linecap": "square" });
+    BUS.forEach(function (x) { lines.appendChild(el("path", { d: "M " + x + " -4 L " + x + " " + (H + 4) })); });
+
+    /* Branches jogging out to a via, alternating which bus they leave and
+       which way they turn — the reason a real board never looks regular. */
+    var MOD = 168, n = 0;
+    for (var y = 90; y < H - 40; y += MOD, n++) {
+      var from = BUS[n % 2], to = n % 2 ? 52 : 6;
+      lines.appendChild(el("path", { d: "M " + from + " " + y + " L " + from + " " + (y + 22) + " L " + to + " " + (y + 22) }));
+      lines.appendChild(el("circle", { cx: to, cy: y + 22, r: 4.5, "stroke-width": 1.6 }));
+      lines.appendChild(el("circle", { cx: to, cy: y + 22, r: 1.6, "stroke-width": 1 }));
+    }
+    svg.appendChild(lines);
+
+    /* Packages docked to the bus at wider intervals. */
+    var chips = grp("mc-line", { "stroke-width": 1.6 });
+    for (var cy = 190; cy < H - 90; cy += MOD * 2) {
+      chips.appendChild(el("rect", { x: 11, y: cy, width: 26, height: 40, rx: 3 }));
+      chips.appendChild(el("rect", { x: 16, y: cy + 7, width: 16, height: 26, rx: 1.5, "stroke-width": 1, "stroke-dasharray": "3 4" }));
+      for (var pin = 0; pin < 3; pin++) {
+        chips.appendChild(el("path", { d: "M 7 " + (cy + 9 + pin * 12) + " L 11 " + (cy + 9 + pin * 12), "stroke-width": 2.4 }));
+        chips.appendChild(el("path", { d: "M 37 " + (cy + 9 + pin * 12) + " L 41 " + (cy + 9 + pin * 12), "stroke-width": 2.4 }));
+      }
+    }
+    svg.appendChild(chips);
+
+    /* Current, animated in CSS. Two traces at different rates so the rail
+       never pulses as one block. */
+    var flow = grp("mc-glow", { "stroke-width": 9, "stroke-linecap": "round" });
+    var core = grp("mc-signal", { "stroke-width": 2.4, "stroke-linecap": "round" });
+    BUS.forEach(function (x, i) {
+      var d = "M " + x + " -4 L " + x + " " + (H + 4);
+      var attrs = { d: d, "stroke-dasharray": "26 150", class: "rail-flow rail-flow--" + i };
+      flow.appendChild(el("path", attrs));
+      core.appendChild(el("path", { d: d, "stroke-dasharray": "26 150", class: "rail-flow rail-flow--" + i }));
+    });
+    add(svg, [flow, core]);
+
+    /* Indicator lamps beside the bus, each on its own delay. */
+    var lamps = el("g", {});
+    var k = 0;
+    for (var ly = 132; ly < H - 40; ly += MOD, k++) {
+      var l = led(n % 2 ? 44 : 46, ly, G, 2.6);
+      l.setAttribute("class", "mc-lamp rail-lamp");
+      l.style.animationDelay = (k * 0.37).toFixed(2) + "s";
+      lamps.appendChild(l);
+    }
+    svg.appendChild(lamps);
+
+    host.appendChild(svg);
+    return host;
+  }
+
+  var railHosts = [];
+  function mountRails() {
+    railHosts.forEach(function (h) { h.remove(); });
+    railHosts = [buildRail("left"), buildRail("right")];
+    railHosts.forEach(function (h) { document.body.appendChild(h); });
+  }
+  mountRails();
+
+  var railTimer = null, lastH = window.innerHeight;
+  window.addEventListener("resize", function () {
+    /* Only rebuild when the height actually changed enough to matter —
+       mobile browsers fire resize constantly as the URL bar hides. */
+    if (Math.abs(window.innerHeight - lastH) < 120) return;
+    lastH = window.innerHeight;
+    window.clearTimeout(railTimer);
+    railTimer = window.setTimeout(mountRails, 200);
+  }, { passive: true });
+
+  /* ======================================================================
      Mount and drive
      ====================================================================== */
   var machines = [];

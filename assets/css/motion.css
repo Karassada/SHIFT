@@ -89,17 +89,17 @@
    into its neighbour's space. Each sits fully inside the viewport — a board
    outline sliced by the screen edge reads as a mistake. The matrix is the
    exception: it is meant to run on past. */
-.machine--circuit  { top: 50%; right: 0; width: 60%; translate: 0 -50%; }
-.machine--matrix   { top: 8%;  left: -16%; width: 76%; }
-.machine--network  { bottom: 8%; right: 0; width: 58%; }
-.machine--pipeline { top: 14%; right: 0; width: 54%; }
+.machine--circuit  { top: 50%; right: -3%; width: 48%; translate: 0 -50%; }
+.machine--matrix   { top: 6%;  left: -22%; width: 62%; }
+.machine--network  { bottom: 6%; right: -4%; width: 44%; }
+.machine--pipeline { top: 12%; right: -4%; width: 42%; }
 
 /* Smaller pieces fill the quieter stretches, so movement carries all the way
    down the page instead of stopping after the first screen. */
 .machine--stack { top: 50%; left: 2%;  width: 13%; translate: 0 -50%; }
 .machine--pulse { top: 50%; right: 3%; width: 17%; translate: 0 -50%; }
 .machine--folders { bottom: 9%; left: 2%; width: 17%; }
-.machine--cluster { top: 12%; right: 0; width: 58%; }
+.machine--cluster { top: 10%; right: -5%; width: 44%; }
 
 /* --------------------------------------------------------------------------
    Phone placement.
@@ -120,20 +120,16 @@
 
   /* bottom-right, half off the edge */
   .machine--circuit  { top: auto; bottom: -7%; right: -26%; left: auto; width: 74%; translate: none; }
-  /* top-right */
-  .machine--cluster  { top: -5%; bottom: auto; right: -28%; left: auto; width: 70%; }
-  /* bottom-left, running on past as it does everywhere */
-  .machine--matrix   { top: auto; bottom: -9%; left: -50%; right: auto; width: 92%; }
-  /* top-left, small */
-  .machine--folders  { top: 2%; bottom: auto; left: -12%; right: auto; width: 42%; }
-  /* bottom-right again, but lower and smaller than the circuit */
-  .machine--pipeline { top: auto; bottom: -5%; right: -22%; left: auto; width: 68%; }
-  /* top-right */
-  .machine--network  { top: -4%; bottom: auto; right: -30%; left: auto; width: 74%; }
-  /* left edge, tucked high */
-  .machine--stack    { top: 5%; bottom: auto; left: -6%; right: auto; width: 26%; translate: none; }
-  /* right edge, low */
-  .machine--pulse    { top: auto; bottom: 5%; right: -9%; left: auto; width: 34%; translate: none; }
+  /* Everything but the hero board steps aside on a phone: with the rails
+     running down both edges, a second drawing behind the text column is
+     exactly what made it read as wallpaper. */
+  .machine--cluster,
+  .machine--matrix,
+  .machine--folders,
+  .machine--pipeline,
+  .machine--network,
+  .machine--stack,
+  .machine--pulse { display: none; }
 }
 
 /* Content always sits above the machinery. */
@@ -150,7 +146,7 @@
    and enough contrast to carry the composition on its own.
    -------------------------------------------------------------------------- */
 .hero { min-height: min(78vh, 740px); display: grid; align-items: center; }
-.hero .machine--circuit { --mc-line: 0.26; --mc-frame: 0.15; --mc-sig: 0.72; --mc-glow: 0.22; --mc-lamp: 0.85; width: 54%; }
+.hero .machine--circuit { --mc-line: 0.26; --mc-frame: 0.15; --mc-sig: 0.72; --mc-glow: 0.22; --mc-lamp: 0.85; width: 46%; }
 @media (max-width: 47.99em) {
   .hero { min-height: auto; }
   /* Only the width is overridden — the corner it hangs off comes from the
@@ -261,4 +257,58 @@
   .reveal-lines > span > span { transform: none; }
   .marquee__track { animation: none; }
   .wipe { display: none; }
+}
+
+/* ==========================================================================
+   The edge bus
+   Two rails pinned to the sides of the window, carrying current the whole
+   time. The text column keeps the middle; the machine lives in the margins.
+   z-index -1 puts it behind everything, so the footer's own background still
+   covers it and nothing ever sits on top of a word.
+   ========================================================================== */
+.railbus {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  z-index: -1;
+  pointer-events: none;
+  color: var(--c-ink);
+  --mc-line: 0.16;
+  --mc-frame: 0.09;
+  --mc-sig: 0.5;
+  --mc-glow: 0.14;
+  --mc-lamp: 0.6;
+}
+.railbus--left  { left: 0; }
+/* Mirrored rather than drawn twice, so both sides stay in step by construction. */
+.railbus--right { right: 0; transform: scaleX(-1); }
+.railbus svg { height: 100%; width: auto; }
+
+.railbus .mc-line   { stroke-opacity: var(--mc-line); fill-opacity: var(--mc-line); }
+.railbus .mc-frame  { stroke-opacity: var(--mc-frame); }
+.railbus .mc-signal { color: var(--c-accent); stroke-opacity: var(--mc-sig); }
+.railbus .mc-glow   { color: var(--c-accent); stroke-opacity: var(--mc-glow); }
+.railbus .mc-lamp   { color: var(--c-accent); fill-opacity: var(--mc-lamp); }
+
+/* Current, always running. A rail that only moves when you scroll reads as
+   dead — and this is the one thing on the page that should look powered. */
+@keyframes rail-flow { to { stroke-dashoffset: -352; } }
+.rail-flow { animation: rail-flow 4.2s linear infinite; }
+.rail-flow--1 { animation-duration: 6.8s; animation-direction: reverse; }
+
+@keyframes rail-lamp { 0%, 44% { opacity: 0.12; } 50%, 94% { opacity: 1; } 100% { opacity: 0.12; } }
+.rail-lamp { animation: rail-lamp 3.4s steps(1, end) infinite; }
+
+/* Keep the text clear of the rails. The gutter already scales with the
+   viewport; this only guarantees a minimum that clears the rail width. */
+.wrap { padding-left: max(var(--gutter), 4.25rem); padding-right: max(var(--gutter), 4.25rem); }
+
+@media (max-width: 47.99em) {
+  .railbus { --mc-line: 0.15; --mc-sig: 0.46; --mc-glow: 0.12; --mc-lamp: 0.55; }
+  .railbus svg { width: 34px; }
+  .wrap { padding-left: max(var(--gutter), 3rem); padding-right: max(var(--gutter), 3rem); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rail-flow, .rail-lamp { animation: none; }
 }
